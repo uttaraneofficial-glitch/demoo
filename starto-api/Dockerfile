@@ -12,7 +12,7 @@ RUN ./mvnw clean package -DskipTests -B
 # ─────────────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
-RUN addgroup -S starto && adduser -S starto -G starto
+RUN addgroup --system starto && adduser --system --ingroup starto starto
 WORKDIR /app
 
 COPY --from=builder /build/target/*.jar app.jar
