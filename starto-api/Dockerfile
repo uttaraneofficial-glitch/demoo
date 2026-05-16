@@ -1,29 +1,12 @@
-# syntax=docker/dockerfile:1.4
-FROM eclipse-temurin:21-jdk-alpine AS builder
-
-WORKDIR /build
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
-
-COPY src ./src
-RUN ./mvnw clean package -DskipTests -B
-
-# ─────────────────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jre-alpine AS runtime
-
-RUN addgroup --system starto && adduser --system --ingroup starto starto
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn clean package -DskipTests -B
 
-COPY --from=builder /build/target/*.jar app.jar
-
-# Firebase service account will be mounted as a secret/volume
-# Do NOT bake it into the image
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-USER starto
-ENTRYPOINT ["java", \
-  "-XX:+UseContainerSupport", \
-  "-XX:MaxRAMPercentage=75.0", \
-  "-Djava.security.egd=file:/dev/./urandom", \
-  "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
