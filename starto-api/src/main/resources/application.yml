@@ -68,12 +68,19 @@ openai:
   api-key: ${OPENAI_API_KEY:dummy}
 
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID:dummy}
-  key-secret: ${RAZORPAY_KEY_SECRET:dummy}
+  key:
+    id: ${RAZORPAY_KEY_ID:dummy_key_id}
+    secret: ${RAZORPAY_KEY_SECRET:dummy_key_secret}
   plans:
+    trial: ${RAZORPAY_PLAN_TRIAL:plan_dummy_trial}
+    sprint: ${RAZORPAY_PLAN_SPRINT:plan_dummy_sprint}
+    boost: ${RAZORPAY_PLAN_BOOST:plan_dummy_boost}
+    pro: ${RAZORPAY_PLAN_PRO:plan_dummy_pro}
     captain: ${RAZORPAY_PLAN_CAPTAIN:plan_dummy_captain}
-    crew: ${RAZORPAY_PLAN_CREW:plan_dummy_crew}
-    explorer: ${RAZORPAY_PLAN_EXPLORER:plan_dummy_explorer}
+    captainPro: ${RAZORPAY_PLAN_CAPTAIN_PRO:plan_dummy_captain_pro}
+    proPlus: ${RAZORPAY_PLAN_PRO_PLUS:plan_dummy_pro_plus}
+    growth: ${RAZORPAY_PLAN_GROWTH:plan_dummy_growth}
+    annual: ${RAZORPAY_PLAN_ANNUAL:plan_dummy_annual}
 
 logging:
   level:
