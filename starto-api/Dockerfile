@@ -5,6 +5,6 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests -B
 RUN cp target/*.jar app.jar
-# cache bust: v2
+# force-rebuild-v3
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
