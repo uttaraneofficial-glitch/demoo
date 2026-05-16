@@ -4,19 +4,31 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 5
+      minimum-idle: 2
+      idle-timeout: 600000
+      max-lifetime: 1800000
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
+    open-in-view: false
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      connect-timeout: 2000ms
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
@@ -28,21 +40,44 @@ spring:
           auth: true
           starttls:
             enable: true
+            required: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
 
 server:
   port: ${PORT:8080}
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
 
 firebase:
-  service-account-b64: ${FIREBASE_SERVICE_ACCOUNT_B64:}
+  service-account-b64: ${FIREBASE_SERVICE_ACCOUNT_B64:dummy}
   config-path: ${FIREBASE_CONFIG_PATH:}
 
 gemini:
-  api-key: ${GEMINI_API_KEY:}
+  api-key: ${GEMINI_API_KEY:dummy}
+
+google:
+  maps:
+    api-key: ${GOOGLE_MAPS_API_KEY:dummy}
+
+openai:
+  api-key: ${OPENAI_API_KEY:dummy}
 
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID:}
-  key-secret: ${RAZORPAY_KEY_SECRET:}
+  key-id: ${RAZORPAY_KEY_ID:dummy}
+  key-secret: ${RAZORPAY_KEY_SECRET:dummy}
   plans:
-    captain: ${RAZORPAY_PLAN_CAPTAIN:plan_placeholder}
-    crew: ${RAZORPAY_PLAN_CREW:plan_placeholder}
-    explorer: ${RAZORPAY_PLAN_EXPLORER:plan_placeholder}
+    captain: ${RAZORPAY_PLAN_CAPTAIN:plan_dummy_captain}
+    crew: ${RAZORPAY_PLAN_CREW:plan_dummy_crew}
+    explorer: ${RAZORPAY_PLAN_EXPLORER:plan_dummy_explorer}
+
+logging:
+  level:
+    root: INFO
+    com.starto: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: INFO
