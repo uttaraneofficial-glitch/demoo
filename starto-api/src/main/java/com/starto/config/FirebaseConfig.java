@@ -14,32 +14,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
-/**
- * Fix #6: Firebase initialisation prefers base64-encoded JSON injected via env var,
- * making it container/cloud-safe (no file-system mounting required).
- *
- * Priority order:
- *   1. FIREBASE_CONFIG_BASE64   (alias accepted by this config)
- *   2. FIREBASE_SERVICE_ACCOUNT_B64  (original name, also accepted)
- *   3. FIREBASE_CONFIG_PATH     (local dev fallback — reads from filesystem)
- *
- * How to generate the base64 value:
- *   Linux/Mac:   base64 -w 0 firebase-service-account.json
- *   PowerShell:  [Convert]::ToBase64String([IO.File]::ReadAllBytes("firebase-service-account.json"))
- */
 @Configuration
 public class FirebaseConfig {
 
-    /** Primary env var: FIREBASE_CONFIG_BASE64 */
     @Value("${firebase.config-base64:}")
     private String configBase64;
 
-    /** Legacy alias: FIREBASE_SERVICE_ACCOUNT_B64 (kept for backwards compatibility) */
     @Value("${firebase.service-account-b64:}")
     private String serviceAccountB64;
 
-    /** Local dev fallback: path to firebase-service-account.json */
-    @Value("${firebase.config-path:src/main/resources/firebase-service-account.json}")
+    @Value("${firebase.config-path:}")
     private String configPath;
 
     @PostConstruct
@@ -48,17 +32,29 @@ public class FirebaseConfig {
             return;
         }
 
-        // Resolve effective base64 value — prefer config-base64, fall back to service-account-b64
-        String effectiveB64 = StringUtils.hasText(configBase64) ? configBase64 : serviceAccountB64;
+        String effectiveB64 = StringUtils.hasText(configBase64)
+                ? configBase64 : serviceAccountB64;
+
+        if (!StringUtils.hasText(effectiveB64) &&
+            !StringUtils.hasText(configPath)) {
+            System.out.println("WARNING: Firebase not configured - " +
+                "set FIREBASE_SERVICE_ACCOUNT_B64. Skipping init.");
+            return;
+        }
 
         InputStream serviceAccount;
 
         if (StringUtils.hasText(effectiveB64)) {
-            // Container / production path: decode inline base64 JSON
-            byte[] decoded = Base64.getDecoder().decode(effectiveB64.trim());
-            serviceAccount = new ByteArrayInputStream(decoded);
+            try {
+                byte[] decoded = Base64.getDecoder()
+                    .decode(effectiveB64.trim());
+                serviceAccount = new ByteArrayInputStream(decoded);
+            } catch (IllegalArgumentException e) {
+                System.out.println("WARNING: Invalid Firebase base64 - " +
+                    "skipping Firebase init: " + e.getMessage());
+                return;
+            }
         } else {
-            // Local dev fallback: load from filesystem path
             serviceAccount = new FileInputStream(configPath);
         }
 
@@ -67,6 +63,7 @@ public class FirebaseConfig {
                 .build();
 
         FirebaseApp.initializeApp(options);
-        System.out.println("Firebase initialised: " + FirebaseApp.getApps().size() + " app(s)");
+        System.out.println("Firebase initialised: " +
+            FirebaseApp.getApps().size() + " app(s)");
     }
 }
