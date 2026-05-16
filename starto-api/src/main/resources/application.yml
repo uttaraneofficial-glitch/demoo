@@ -42,3 +42,7 @@ gemini:
 razorpay:
   key-id: ${RAZORPAY_KEY_ID:}
   key-secret: ${RAZORPAY_KEY_SECRET:}
+  plans:
+    captain: ${RAZORPAY_PLAN_CAPTAIN:plan_placeholder}
+    crew: ${RAZORPAY_PLAN_CREW:plan_placeholder}
+    explorer: ${RAZORPAY_PLAN_EXPLORER:plan_placeholder}
