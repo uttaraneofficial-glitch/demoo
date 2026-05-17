@@ -34,18 +34,16 @@ export default function AdminDashboard() {
     const [stats, setStats] = useState({ totalUsers: 0 })
 
     useEffect(() => {
-        if (!authLoading) {
-            if (!isAuthenticated) {
-                router.push('/auth')
-                return
-            }
-            if (user?.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-                router.push('/feed')
-                return
-            }
-            fetchData()
-        }
-    }, [isAuthenticated, user, authLoading, router])
+    if (!isAuthenticated) {
+        router.push('/auth')
+        return
+    }
+    if (user?.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        router.push('/feed')
+        return
+    }
+    fetchData()
+}, [isAuthenticated, user, router])
 
     const fetchData = async () => {
         setLoading(true)
