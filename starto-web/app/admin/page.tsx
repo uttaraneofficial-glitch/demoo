@@ -26,7 +26,7 @@ const ADMIN_EMAIL = "krishnamurthikm07@gmail.com";
 
 export default function AdminDashboard() {
     const router = useRouter()
-    const { isAuthenticated, user, loading: authLoading } = useAuthStore()
+    const { isAuthenticated, user } = useAuthStore()
     const [users, setUsers] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
