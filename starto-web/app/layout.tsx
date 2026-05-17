@@ -5,6 +5,8 @@ import AuthProvider from '@/components/AuthProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from '@/components/ThemeProvider';
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
     title: 'Starto V3',
     description: 'Unified Growth Ecosystem Platform',
