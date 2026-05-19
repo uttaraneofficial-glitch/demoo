@@ -13,14 +13,14 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   async rewrites() {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:9090'
-    return process.env.NODE_ENV === 'production' ? [] : [
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:9090';
+    return [                              // ✅ removed the production check
       {
         source: '/api/:path*',
         destination: `${apiBase}/api/:path*`,
       },
-    ]
+    ];
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
