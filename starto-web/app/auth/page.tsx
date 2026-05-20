@@ -303,11 +303,12 @@ export default function AuthPage() {
 
                         setAuth(firebaseUser, token, profile as any)
                         setSignupSuccess(true)
+                        setIsWaitingForVerification(false)
                         router.push('/dashboard')
                     }
                 } catch (err) {
                     console.error("Polling error:", err)
-                    clearInterval(pollInterval)
+                    
                 }
             }, 3000)
 
