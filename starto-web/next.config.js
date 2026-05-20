@@ -14,10 +14,14 @@ const nextConfig = {
   },
   async rewrites() {
     const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:9090';
-    return [                              // ✅ removed the production check
+    return [
       {
         source: '/api/:path*',
         destination: `${apiBase}/api/:path*`,
+      },
+      {
+        source: '/avatars/:path*',
+        destination: `${apiBase}/avatars/:path*`,
       },
     ];
   },
