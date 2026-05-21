@@ -110,7 +110,7 @@ export default function CityAutocomplete({
                 }
             );
         } else {
-            console.warn('[CityAutocomplete] Google API not ready, no fallback used.');
+            
             combineSuggestions([]);
         }
 
