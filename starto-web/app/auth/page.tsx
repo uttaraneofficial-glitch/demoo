@@ -276,41 +276,48 @@ export default function AuthPage() {
 
             const pollInterval = setInterval(async () => {
                 try {
-                    await firebaseUser.reload()
-                    if (firebaseUser.emailVerified) {
-                        clearInterval(pollInterval)
+                    // ✅ Always fetch the live currentUser reference
+                    const currentUser = auth.currentUser;
+                    if (currentUser) {
+                        await currentUser.reload();
                         
-                        // 3. Register in Backend ONLY AFTER VERIFIED
-                        const { data: profile, error: apiError } = await usersApi.register({
-                            email: email.trim(),
-                            name: name.trim(),
-                            role,
-                            bio,
-                            city,
-                            lat,
-                            lng,
-                            address: address || city,
-                            phone,
-                            gender,
-                            avatarUrl
-                        } as any, token)
+                        if (currentUser.emailVerified) {
+                            clearInterval(pollInterval);
+                            
+                            // ✅ Get a fresh token now that they are verified
+                            const freshToken = await currentUser.getIdToken(true);
+                            
+                            // 3. Register in Backend ONLY AFTER VERIFIED
+                            const { data: profile, error: apiError } = await usersApi.register({
+                                email: email.trim(),
+                                name: name.trim(),
+                                role,
+                                bio,
+                                city,
+                                lat,
+                                lng,
+                                address: address || city,
+                                phone,
+                                gender,
+                                avatarUrl
+                            } as any, freshToken);
 
-                        if (apiError || !profile) {
+                            if (apiError || !profile) {
+                                setIsWaitingForVerification(false);
+                                setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'));
+                                return;
+                            }
+
+                            setAuth(currentUser, freshToken, profile as any);
+                            setSignupSuccess(true);
                             setIsWaitingForVerification(false);
-                            setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'));
-                            return;
+                            router.push('/dashboard');
                         }
-
-                        setAuth(firebaseUser, token, profile as any)
-                        setSignupSuccess(true)
-                        setIsWaitingForVerification(false)
-                        router.push('/dashboard')
                     }
                 } catch (err) {
-                    console.error("Polling error:", err)
-                    
+                    console.error("Polling error:", err);
                 }
-            }, 3000)
+            }, 3000);
 
             // Prevent the finally block from firing and removing loading state if something else happened.
             return;
