@@ -35,30 +35,47 @@ export async function apiFetch<T>(
         }
 
         // Auto-inject Firebase ID Token if user is logged in
-        let token = overrideToken;
-        const skipAuth = headers.get('X-Skip-Auth') === 'true';
-        headers.delete('X-Skip-Auth');
+       // ❌ REMOVE THIS ENTIRE BLOCK (lines ~47–58):
+let token = overrideToken;
+const skipAuth = headers.get('X-Skip-Auth') === 'true';
+headers.delete('X-Skip-Auth');
 
-        if (!token && !skipAuth && typeof window !== 'undefined') {
-            const auth = getAuth();
-            if (auth.currentUser) {
-                token = await auth.currentUser.getIdToken();
-            } else {
-                // Fallback: Try reading from zustand storage in localStorage
-                try {
-                    const storage = localStorage.getItem('starto-auth-storage');
-                    console.log('[apiFetch] raw storage:', storage);
-                    if (storage) {
-                        const parsed = JSON.parse(storage);
-                        token = parsed.state?.token;
-                        console.log('[apiFetch] Found token in localStorage:', token ? 'Yes (starts with ' + token.substring(0, 10) + '...)' : 'No');
-                        if (token) console.log('[apiFetch] Using token fallback from localStorage');
-                    }
-                } catch (e) {
-                    console.error('Failed to read token from localStorage', e);
-                }
+if (!token && !skipAuth && typeof window !== 'undefined') {
+    const auth = getAuth();
+    if (auth.currentUser) {
+        token = await auth.currentUser.getIdToken();
+    } else {
+        // Fallback: Try reading from zustand storage in localStorage
+        try {
+            const storage = localStorage.getItem('starto-auth-storage');
+            console.log('[apiFetch] raw storage:', storage);
+            if (storage) {
+                const parsed = JSON.parse(storage);
+                token = parsed.state?.token;
+                // ...
             }
+        } catch (e) {
+            console.error('Failed to read token from localStorage', e);
         }
+    }
+}
+
+// ✅ REPLACE WITH THIS:
+let token = overrideToken;
+const skipAuth = headers.get('X-Skip-Auth') === 'true';
+headers.delete('X-Skip-Auth');
+
+if (!token && !skipAuth && typeof window !== 'undefined') {
+    const auth = getAuth();
+    if (auth.currentUser) {
+        try {
+            token = await auth.currentUser.getIdToken(false);
+        } catch (e) {
+            console.error('[apiFetch] Failed to get Firebase token:', e);
+        }
+    }
+    // ✅ NO localStorage fallback — stale tokens cause 400/401 loops
+}
 
         if (token && !skipAuth) {
             headers.set('Authorization', `Bearer ${token}`);
