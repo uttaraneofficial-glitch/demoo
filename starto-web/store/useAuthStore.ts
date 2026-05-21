@@ -1,3 +1,4 @@
+// starto-web/store/useAuthStore.ts
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { User as FirebaseUser } from 'firebase/auth';
@@ -37,11 +38,12 @@ interface AuthState {
     isAuthenticated: boolean;
     isLoading: boolean;
     isInitialized: boolean;
-
+    isFirebaseReady: boolean; // ✅ NEW FLAG
     setAuth: (firebaseUser: FirebaseUser, token: string, user: UserProfile) => void;
     clearAuth: () => void;
     setLoading: (isLoading: boolean) => void;
     setInitialized: (isInitialized: boolean) => void;
+    setFirebaseReady: (ready: boolean) => void; // ✅ NEW ACTION
     updateUser: (updates: Partial<UserProfile>) => void;
 }
 
@@ -54,26 +56,26 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: false,
             isLoading: true,
             isInitialized: false,
-
+            isFirebaseReady: false, // ✅ starts false
             setAuth: (firebaseUser, token, user) => set({
                 firebaseUser,
                 token,
                 user,
                 isAuthenticated: true,
-                isLoading: false
+                isLoading: false,
+                isFirebaseReady: true, // ✅ mark ready on real login
             }),
-            
             clearAuth: () => set({
                 user: null,
                 firebaseUser: null,
                 token: null,
                 isAuthenticated: false,
-                isLoading: false
+                isLoading: false,
+                isFirebaseReady: true, // ✅ still ready, just not logged in
             }),
-
             setLoading: (isLoading) => set({ isLoading }),
             setInitialized: (isInitialized) => set({ isInitialized }),
-            
+            setFirebaseReady: (ready) => set({ isFirebaseReady: ready }), // ✅
             updateUser: (updates) => set((state) => ({
                 user: state.user ? { ...state.user, ...updates } : null
             }))
@@ -81,11 +83,12 @@ export const useAuthStore = create<AuthState>()(
         {
             name: 'starto-auth-storage',
             storage: createJSONStorage(() => localStorage),
-            partialize: (state) => ({ 
-                user: state.user, 
-                token: state.token, 
-                isAuthenticated: state.isAuthenticated 
-            }), // Do not persist firebaseUser object directly
+            partialize: (state) => ({
+                user: state.user,
+                token: state.token,
+                isAuthenticated: state.isAuthenticated
+                // ✅ Do NOT persist isFirebaseReady — always starts false
+            }),
         }
     )
 );
