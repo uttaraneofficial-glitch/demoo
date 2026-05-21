@@ -31,18 +31,11 @@ useEffect(() => {
 
             // ✅ Only register if user truly doesn't exist (404), not on other errors
             if (status === 404) {
-                const { data: newUser, error } = await usersApi.register({
-                    email: firebaseUser.email ?? '',
-                    name: firebaseUser.displayName ?? '',
-                    avatarUrl: firebaseUser.photoURL ?? null,
-                }, token);
-
-                if (newUser) {
-                    setAuth(firebaseUser, token, newUser);
-                } else {
-                    console.error('[Auth] Register failed:', error);
-                    clearAuth();
-                }
+                // User is in Firebase but not in backend (e.g., halfway through signup)
+                // Do NOT auto-register here. Let auth/page.tsx handle the explicit registration.
+                console.warn('[Auth] User in Firebase but not in backend. Waiting for manual registration.');
+                setLoading(false);
+                // We do NOT clearAuth() because we need the firebase session active for signup to complete.
             } else {
                 // ✅ Don't retry on 400/401/500 — clear auth and stop
                 console.error('[Auth] getMe failed with status:', status);
