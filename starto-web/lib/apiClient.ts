@@ -35,24 +35,21 @@ export async function apiFetch<T>(
         }
 
         // Auto-inject Firebase ID Token if user is logged in
-       // ❌ REMOVE THIS ENTIRE BLOCK (lines ~47–58):
+        let token = overrideToken;
+        const skipAuth = headers.get('X-Skip-Auth') === 'true';
+        headers.delete('X-Skip-Auth');
 
-// ✅ REPLACE WITH THIS:
-let token = overrideToken;
-const skipAuth = headers.get('X-Skip-Auth') === 'true';
-headers.delete('X-Skip-Auth');
-
-if (!token && !skipAuth && typeof window !== 'undefined') {
-    const auth = getAuth();
-    if (auth.currentUser) {
-        try {
-            token = await auth.currentUser.getIdToken(false);
-        } catch (e) {
-            console.error('[apiFetch] Failed to get Firebase token:', e);
+        if (!token && !skipAuth && typeof window !== 'undefined') {
+            const auth = getAuth();
+            if (auth.currentUser) {
+                try {
+                    token = await auth.currentUser.getIdToken(false);
+                } catch (e) {
+                    console.error('[apiFetch] Failed to get Firebase token:', e);
+                }
+            }
+            // NO localStorage fallback — stale tokens cause 400/401 loops
         }
-    }
-    // ✅ NO localStorage fallback — stale tokens cause 400/401 loops
-}
 
         if (token && !skipAuth) {
             headers.set('Authorization', `Bearer ${token}`);
