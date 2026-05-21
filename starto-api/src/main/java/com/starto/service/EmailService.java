@@ -21,8 +21,7 @@ public class EmailService {
 
     private static final String FROM_EMAIL = "startoindiaofficial@gmail.com";
 
-    // COMMON METHOD
-    @Async("aiExecutor")
+    // COMMON METHOD (Called internally — runs on the background thread spawned by public entry points)
     public void sendEmail(String to, String subject, String body) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -43,6 +42,7 @@ public class EmailService {
     }
 
     //  EXPIRY REMINDER 
+    @Async("aiExecutor")
     public void sendExpiryReminder(User user, int daysLeft) {
         String subject = "Your Starto plan expires in " + daysLeft + " day(s)";
         sendEmail(user.getEmail(), subject, buildExpiryBody(user, daysLeft));
@@ -68,6 +68,7 @@ public class EmailService {
     }
 
     // WELCOME 
+    @Async("aiExecutor")
     public void sendWelcomePlanEmail(User user) {
         String subject = "Welcome to Starto " + user.getPlan().name() + " 🎉";
         sendEmail(user.getEmail(), subject, buildWelcomeBody(user));
@@ -94,6 +95,7 @@ public class EmailService {
     }
 
     //  PAYMENT
+    @Async("aiExecutor")
     public void sendPaymentSuccessEmail(User user, String plan, int amountPaise, String orderId) {
 
         double amount = amountPaise / 100.0;
@@ -123,6 +125,7 @@ public class EmailService {
     }
 
     //  UPGRADE 
+    @Async("aiExecutor")
     public void sendPlanUpgradeEmail(User user, String oldPlan, String newPlan) {
 
         String subject = "Upgraded to " + newPlan + " 🚀";
@@ -145,6 +148,7 @@ public class EmailService {
     }
 
     //  EXPIRED 
+    @Async("aiExecutor")
     public void sendPlanExpiredEmail(User user) {
 
         String subject = "Your Plan Expired ❌";
@@ -181,7 +185,7 @@ public class EmailService {
         };
     }
 
-
+    @Async("aiExecutor")
     public void sendWelcomeEmail(User user) {
 
     String subject = "Welcome to Starto 🚀";
@@ -222,6 +226,7 @@ public class EmailService {
     sendEmail(user.getEmail(), subject, body);
     }
 
+    @Async("aiExecutor")
     public void sendContactEmail(String name, String fromEmail, String message) {
         String subject = "New Contact Form Submission from " + name;
         String body = """
