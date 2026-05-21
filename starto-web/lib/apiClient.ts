@@ -36,29 +36,6 @@ export async function apiFetch<T>(
 
         // Auto-inject Firebase ID Token if user is logged in
        // ❌ REMOVE THIS ENTIRE BLOCK (lines ~47–58):
-let token = overrideToken;
-const skipAuth = headers.get('X-Skip-Auth') === 'true';
-headers.delete('X-Skip-Auth');
-
-if (!token && !skipAuth && typeof window !== 'undefined') {
-    const auth = getAuth();
-    if (auth.currentUser) {
-        token = await auth.currentUser.getIdToken();
-    } else {
-        // Fallback: Try reading from zustand storage in localStorage
-        try {
-            const storage = localStorage.getItem('starto-auth-storage');
-            console.log('[apiFetch] raw storage:', storage);
-            if (storage) {
-                const parsed = JSON.parse(storage);
-                token = parsed.state?.token;
-                // ...
-            }
-        } catch (e) {
-            console.error('Failed to read token from localStorage', e);
-        }
-    }
-}
 
 // ✅ REPLACE WITH THIS:
 let token = overrideToken;
