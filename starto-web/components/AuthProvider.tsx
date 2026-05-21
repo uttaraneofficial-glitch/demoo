@@ -1,63 +1,58 @@
-"use client"
-import { useEffect, ReactNode } from 'react'
-import { useAuthStore } from '@/store/useAuthStore'
-import { usersApi } from '@/lib/apiClient'
-import { auth, firebaseConfigured } from '@/lib/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
+// In your AuthProvider / Firebase auth listener file
+import { onAuthStateChanged } from 'firebase/auth';
+import { useAuthStore } from '@/store/useAuthStore';
+import { usersApi } from '@/lib/apiClient';
 
-export default function AuthProvider({ children }: { children: ReactNode }) {
-    const { token, isAuthenticated, user, clearAuth, setAuth, setLoading, setInitialized } = useAuthStore()
+// Inside your useEffect:
+useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        const { setAuth, clearAuth, setLoading, setInitialized, setFirebaseReady } = useAuthStore.getState();
 
-    // 1. Listen for Firebase Auth changes to sync store.
-    //    Guard: if Firebase is not configured (missing env vars) we skip the
-    //    onAuthStateChanged call entirely — calling it on the {} stub throws
-    //    "onAuthStateChanged is not a function" and crashes the whole app.
-    useEffect(() => {
-        if (!firebaseConfigured) {
-            // Firebase not ready — treat as unauthenticated, stop loading spinner
-            setLoading(false)
-            return
+        // ✅ Mark Firebase as initialized FIRST before any API calls
+        setFirebaseReady(true);
+        setInitialized(true);
+
+        if (!firebaseUser) {
+            clearAuth();
+            return;
         }
 
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                // Firebase user present — refresh profile from backend to ensure up-to-date data
-                const token = await firebaseUser.getIdToken();
-                try {
-                    const { data: profile } = await usersApi.getMe(token);
-                    if (profile) {
-                        setAuth(firebaseUser, token, profile as any);
-                    }
-                } catch (err) {
-                    console.error('Failed to refresh profile on auth change', err);
+        try {
+            setLoading(true);
+            const token = await firebaseUser.getIdToken(false);
+
+            // Try to fetch existing user
+            const { data: existingUser, status } = await usersApi.getMe(token);
+
+            if (existingUser) {
+                setAuth(firebaseUser, token, existingUser);
+                return;
+            }
+
+            // ✅ Only register if user truly doesn't exist (404), not on other errors
+            if (status === 404) {
+                const { data: newUser, error } = await usersApi.register({
+                    email: firebaseUser.email ?? '',
+                    name: firebaseUser.displayName ?? '',
+                    avatarUrl: firebaseUser.photoURL ?? null,
+                }, token);
+
+                if (newUser) {
+                    setAuth(firebaseUser, token, newUser);
+                } else {
+                    console.error('[Auth] Register failed:', error);
+                    clearAuth();
                 }
             } else {
-                // Firebase user gone (sign-out or session expired) — clear store
-                if (isAuthenticated) clearAuth()
+                // ✅ Don't retry on 400/401/500 — clear auth and stop
+                console.error('[Auth] getMe failed with status:', status);
+                clearAuth();
             }
-            setInitialized(true)
-            setLoading(false)
-        })
-
-        return () => unsubscribe()
-    }, [isAuthenticated, clearAuth, setAuth, setLoading])
-
-    // 2. Heartbeat every 30 seconds to update presence
-    useEffect(() => {
-        if (!isAuthenticated) return
-
-        const sendHeartbeat = async () => {
-            try {
-                await usersApi.heartbeat()
-            } catch (error) {
-                console.error('Heartbeat failed', error)
-            }
+        } catch (err) {
+            console.error('[Auth] Auth flow error:', err);
+            clearAuth();
         }
+    });
 
-        sendHeartbeat()
-        const interval = setInterval(sendHeartbeat, 30000)
-        return () => clearInterval(interval)
-    }, [isAuthenticated])
-
-    return <>{children}</>
-}
+    return () => unsubscribe();
+}, []);
