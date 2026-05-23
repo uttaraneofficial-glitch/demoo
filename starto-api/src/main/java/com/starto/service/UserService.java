@@ -6,6 +6,7 @@ import com.starto.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -78,8 +79,9 @@ public class UserService {
     return userOpt;
 }
 
-@Transactional
-public void syncVerificationAndSendWelcome(User user) {
+    @Async("aiExecutor")
+    @Transactional
+    public void syncVerificationAndSendWelcome(User user) {
     if (user.getWelcomeEmailSent() != null && user.getWelcomeEmailSent()) {
         return; 
     }
@@ -136,7 +138,12 @@ public User createOrUpdateUser(String firebaseUid,
                 if (user.getCity() == null) user.setCity(city);
                 if (user.getState() == null) user.setState(state);
                 if (user.getCountry() == null) user.setCountry(country != null ? country : "India");
-                if (user.getPhone() == null) user.setPhone(phone);
+                if (user.getPhone() == null) {
+                    if (phone != null && userRepository.existsByPhone(phone)) {
+                        throw new RuntimeException("phone: This phone number is already registered to another account.");
+                    }
+                    user.setPhone(phone);
+                }
                 if (user.getGender() == null) user.setGender(gender);
                 if (user.getBio() == null) user.setBio(bio);
                 if (user.getAvatarUrl() == null) user.setAvatarUrl(avatarUrl);
@@ -147,6 +154,38 @@ public User createOrUpdateUser(String firebaseUid,
                 return userRepository.save(user);
             })
             .orElseGet(() -> {
+                // Self-healing: If Firebase account was wiped but Postgres record exists, 
+                // link the new Firebase UID to the existing email.
+                Optional<User> existingEmailUser = userRepository.findByEmail(email);
+                if (existingEmailUser.isPresent()) {
+                    User existingUser = existingEmailUser.get();
+                    existingUser.setFirebaseUid(firebaseUid);
+                    existingUser.setLastSeen(OffsetDateTime.now());
+                    existingUser.setIsOnline(true);
+                    
+                    if (existingUser.getCity() == null) existingUser.setCity(city);
+                    if (existingUser.getState() == null) existingUser.setState(state);
+                    if (existingUser.getCountry() == null) existingUser.setCountry(country != null ? country : "India");
+                    if (existingUser.getPhone() == null) {
+                        if (phone != null && userRepository.existsByPhone(phone)) {
+                            throw new RuntimeException("phone: This phone number is already registered to another account.");
+                        }
+                        existingUser.setPhone(phone);
+                    }
+                    if (existingUser.getGender() == null) existingUser.setGender(gender);
+                    if (existingUser.getBio() == null) existingUser.setBio(bio);
+                    if (existingUser.getAvatarUrl() == null) existingUser.setAvatarUrl(avatarUrl);
+                    if (existingUser.getLat() == null) existingUser.setLat(lat);
+                    if (existingUser.getLng() == null) existingUser.setLng(lng);
+                    if (existingUser.getAddress() == null) existingUser.setAddress(address);
+                    
+                    return userRepository.save(existingUser);
+                }
+
+                // Check duplicate phone for completely new registration
+                if (phone != null && userRepository.existsByPhone(phone)) {
+                    throw new RuntimeException("phone: This phone number is already registered to another account.");
+                }
 
                 String finalUsername = generateUniqueUsername(name, role);
 
@@ -211,7 +250,7 @@ if (user.getAvatarUrl() != null) existing.setAvatarUrl(user.getAvatarUrl());
 }
 
 
-    public Optional<User> getUserByUsername(String username) {
+     public Optional<User> getUserByUsername(String username) {
         System.out.println("[UserLookup] Searching for identifier: '" + username + "'");
         // Smart Lookup: check if it's a UUID first
         try {
