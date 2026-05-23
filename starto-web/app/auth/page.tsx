@@ -381,9 +381,15 @@ function AuthFormContent() {
 
             const pollInterval = setInterval(async () => {
                 try {
-                    await firebaseUser.reload()
-                    if (firebaseUser.emailVerified) {
+                    const currentUser = auth.currentUser
+                    if (!currentUser) return
+
+                    await currentUser.reload()
+                    if (currentUser.emailVerified) {
                         clearInterval(pollInterval)
+                        
+                        // Force refresh the token so the JWT contains "email_verified: true" claim
+                        const freshToken = await currentUser.getIdToken(true)
                         
                         // 3. Register in Backend ONLY AFTER VERIFIED
                         const { data: profile, error: apiError } = await usersApi.register({
@@ -398,7 +404,7 @@ function AuthFormContent() {
                             phone,
                             gender,
                             avatarUrl
-                        } as any, token)
+                        } as any, freshToken)
 
                         if (apiError || !profile) {
                             setIsWaitingForVerification(false);
@@ -406,7 +412,7 @@ function AuthFormContent() {
                             return;
                         }
 
-                        setAuth(firebaseUser, token, profile as any)
+                        setAuth(currentUser, freshToken, profile as any)
                         setSignupSuccess(true)
                         setIsWaitingForVerification(false)
                         router.push('/dashboard')
@@ -440,7 +446,7 @@ function AuthFormContent() {
                         className="flex flex-col items-center justify-center py-10"
                     >
                         <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6">
-                            <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mb-4"></div>
                         </div>
                         <h2 className="text-2xl font-bold mb-2">Verifying Link</h2>
                         <p className="text-gray-400 mb-6 px-4">
