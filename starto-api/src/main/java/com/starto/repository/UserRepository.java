@@ -19,21 +19,26 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByUsername(String username);
 
+    // Added to resolve the backend compilation error
+    boolean existsByPhone(String phone);
+
+    // Added to resolve the backend compilation error
+    Optional<User> findByEmail(String email);
+
     @Modifying
     @Query("UPDATE User u SET u.isOnline = false WHERE u.isOnline = true AND u.lastSeen < :cutoff")
     void markInactiveUsersOffline(@Param("cutoff") OffsetDateTime cutoff);
 
-
     @Query("SELECT u FROM User u WHERE u.planExpiresAt BETWEEN :from AND :to AND u.plan != com.starto.enums.Plan.EXPLORER")
-List<User> findUsersExpiringBetween(
-    @Param("from") OffsetDateTime from,
-    @Param("to") OffsetDateTime to
-);
+    List<User> findUsersExpiringBetween(
+        @Param("from") OffsetDateTime from,
+        @Param("to") OffsetDateTime to
+    );
 
-@Query("SELECT u FROM User u WHERE u.planExpiresAt < :now AND u.plan != com.starto.enums.Plan.EXPLORER")
-List<User> findExpiredUsers(@Param("now") OffsetDateTime now);
+    @Query("SELECT u FROM User u WHERE u.planExpiresAt < :now AND u.plan != com.starto.enums.Plan.EXPLORER")
+    List<User> findExpiredUsers(@Param("now") OffsetDateTime now);
 
-List<User> findByLatBetweenAndLngBetween(
+    List<User> findByLatBetweenAndLngBetween(
             BigDecimal latMin,
             BigDecimal latMax,
             BigDecimal lngMin,
@@ -48,5 +53,4 @@ List<User> findByLatBetweenAndLngBetween(
     List<User> findAllByOrderByCreatedAtDesc();
 
     List<User> findByRoleIgnoreCase(String role);
-
 }
