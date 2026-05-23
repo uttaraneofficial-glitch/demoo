@@ -80,31 +80,34 @@ public class UserService {
 }
 
     @Async("aiExecutor")
-    @Transactional
     public void syncVerificationAndSendWelcome(User user) {
-    if (user.getWelcomeEmailSent() != null && user.getWelcomeEmailSent()) {
-        return; 
-    }
-
-    try {
-        UserRecord userRecord = FirebaseAuth.getInstance().getUser(user.getFirebaseUid());
-        boolean isVerifiedInFirebase = userRecord.isEmailVerified();
-        
-        System.out.println("[VerificationSync] User: " + user.getEmail() + " | Firebase Verified: " + isVerifiedInFirebase);
-
-        if (isVerifiedInFirebase) {
-            user.setIsVerified(true);
-            user.setWelcomeEmailSent(true);
-            userRepository.save(user);
-            emailService.sendWelcomeEmail(user);
-            System.out.println("WELCOME EMAIL SENT TO VERIFIED USER: " + user.getEmail());
-        } else {
-            System.out.println("[VerificationSync] Skipping welcome email - Firebase still says NOT VERIFIED.");
+        if (user.getWelcomeEmailSent() != null && user.getWelcomeEmailSent()) {
+            return; 
         }
-    } catch (Exception e) {
-        System.err.println("FAILED TO SYNC VERIFICATION FOR: " + user.getEmail() + " | " + e.getMessage());
+
+        try {
+            // Firebase Admin call is a remote network operation (do not hold a DB connection)
+            UserRecord userRecord = FirebaseAuth.getInstance().getUser(user.getFirebaseUid());
+            boolean isVerifiedInFirebase = userRecord.isEmailVerified();
+            
+            System.out.println("[VerificationSync] User: " + user.getEmail() + " | Firebase Verified: " + isVerifiedInFirebase);
+
+            if (isVerifiedInFirebase) {
+                // Open a brief, isolated select-and-update transaction to save and release immediately
+                userRepository.findByFirebaseUid(user.getFirebaseUid()).ifPresent(freshUser -> {
+                    freshUser.setIsVerified(true);
+                    freshUser.setWelcomeEmailSent(true);
+                    userRepository.save(freshUser);
+                    emailService.sendWelcomeEmail(freshUser);
+                    System.out.println("WELCOME EMAIL SENT TO VERIFIED USER: " + freshUser.getEmail());
+                });
+            } else {
+                System.out.println("[VerificationSync] Skipping welcome email - Firebase still says NOT VERIFIED.");
+            }
+        } catch (Exception e) {
+            System.err.println("FAILED TO SYNC VERIFICATION FOR: " + user.getEmail() + " | " + e.getMessage());
+        }
     }
-}
 
 
 public User getUserCached(String firebaseUid) {
