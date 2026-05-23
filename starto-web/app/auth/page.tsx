@@ -26,19 +26,20 @@ type AuthMode = 'login' | 'signup' | 'onboarding' | 'forgot_password' | 'reset_p
 
 const ROLES = ['founder', 'talent', 'mentor', 'investor']
 
+// Add / update these specific lines starting from line 29:
 function AuthFormContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const { setAuth } = useAuthStore()
+    const { setAuth, isAuthenticated } = useAuthStore() // Extracted isAuthenticated
 
     const [mode, setMode] = useState<AuthMode>('login')
 
-    // Show Firebase config banner only on client (after hydration) to avoid
-    // SSR/client mismatch — server always renders false, client checks the real value.
-    const [firebaseBannerVisible, setFirebaseBannerVisible] = useState(false)
+    // Redirect authenticated users immediately to feed
     useEffect(() => {
-        setFirebaseBannerVisible(!firebaseConfigured)
-    }, [])
+        if (isAuthenticated && !isWaitingForVerification) {
+            router.push('/dashboard')
+        }
+    }, [isAuthenticated, isWaitingForVerification, router])
 
     // Shared fields
     const [email, setEmail] = useState('')
