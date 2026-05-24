@@ -445,12 +445,12 @@ function AuthFormContent() {
             // Save auth state
             setAuth(refreshedUser, freshToken, profile as any)
 
-            setSignupSuccess(true)
+           // setSignupSuccess(true)
 
             setIsWaitingForVerification(false)
 
             // Redirect instantly
-            router.push('/dashboard')
+            // router.push('/dashboard')
         }
     } catch (err) {
         console.error('Verification polling error:', err)
