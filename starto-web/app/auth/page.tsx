@@ -249,7 +249,7 @@ export default function AuthPage() {
                     avatarUrl
                 } as any, token)
 
-                if (apiError || !profile) {
+                if (apiError) {
                     setError(formatBackendError(apiError || 'Failed to save profile.'));
                     setLoading(false);
                     return;
@@ -315,7 +315,9 @@ export default function AuthPage() {
                             setAuth(currentUser, freshToken, profile as any)
                             setSignupSuccess(true)
                             setIsWaitingForVerification(false)
+                            setTimeout(() => {
                             router.push('/dashboard')
+                            }, 1000)
                             return true;
                         }
                     }
