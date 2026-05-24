@@ -29,11 +29,15 @@ export default function AuthPage() {
 
     const [mode, setMode] = useState<AuthMode>('login')
 
-    // Show Firebase config banner only on client (after hydration) to avoid
+        // Show Firebase config banner only on client (after hydration) to avoid
     // SSR/client mismatch — server always renders false, client checks the real value.
     const [firebaseBannerVisible, setFirebaseBannerVisible] = useState(false)
     useEffect(() => {
         setFirebaseBannerVisible(!firebaseConfigured)
+        
+        // 🚀 NEW: Background ping to wake up the backend (e.g. Railway) 
+        // to avoid cold-start delays during signup registration
+        usersApi.checkUsername('wakeup-ping', 'founder').catch(() => {});
     }, [])
 
     // Shared fields
