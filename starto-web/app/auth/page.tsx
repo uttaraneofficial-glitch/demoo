@@ -26,20 +26,19 @@ type AuthMode = 'login' | 'signup' | 'onboarding' | 'forgot_password' | 'reset_p
 
 const ROLES = ['founder', 'talent', 'mentor', 'investor']
 
-// Add / update these specific lines starting from line 29:
 function AuthFormContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const { setAuth, isAuthenticated } = useAuthStore() // Extracted isAuthenticated
+    const { setAuth, isAuthenticated } = useAuthStore()
 
     const [mode, setMode] = useState<AuthMode>('login')
 
-    // Redirect authenticated users immediately to feed
+    // Show Firebase config banner only on client (after hydration) to avoid
+    // SSR/client mismatch — server always renders false, client checks the real value.
+    const [firebaseBannerVisible, setFirebaseBannerVisible] = useState(false)
     useEffect(() => {
-        if (isAuthenticated && !isWaitingForVerification) {
-            router.push('/dashboard')
-        }
-    }, [isAuthenticated, isWaitingForVerification, router])
+        setFirebaseBannerVisible(!firebaseConfigured)
+    }, [])
 
     // Shared fields
     const [email, setEmail] = useState('')
@@ -73,6 +72,13 @@ function AuthFormContent() {
     const [isDetecting, setIsDetecting] = useState(false)
 
     const [forgotSuccess, setForgotSuccess] = useState(false)
+
+    // ✅ Redirect authenticated users immediately to feed (Safe from Temporal Dead Zone)
+    useEffect(() => {
+        if (isAuthenticated && !isWaitingForVerification) {
+            router.push('/dashboard')
+        }
+    }, [isAuthenticated, isWaitingForVerification, router])
 
     // Detect Firebase action codes from search parameters (email verification, password reset, etc.)
     useEffect(() => {
