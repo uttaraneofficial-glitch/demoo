@@ -71,22 +71,31 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "Unauthorized"));
-        }
-        String firebaseUid = authentication.getPrincipal().toString();
-        
-        return userService.getUserByFirebaseUid(firebaseUid)
-                .map(user -> {
-                    // Sync verification status if not already set
-                    // and send welcome email if verified and not yet sent
-                    userService.syncVerificationAndSendWelcome(user);
-                    return ResponseEntity.ok(user);
-                })
-                .orElse(ResponseEntity.notFound().build());
+public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+
+    if (authentication == null || authentication.getPrincipal() == null) {
+        return ResponseEntity.status(401)
+                .body(Map.of("error", "Unauthorized"));
     }
 
+    String firebaseUid = authentication.getPrincipal().toString();
+
+    return userService.getUserByFirebaseUid(firebaseUid)
+            .map(user -> {
+
+                userService.syncVerificationAndSendWelcome(user);
+
+                return ResponseEntity.ok(user);
+            })
+            .orElseGet(() -> {
+
+                // IMPORTANT FIX
+                return ResponseEntity.ok(Map.of(
+                        "pending", true,
+                        "message", "Profile still syncing"
+                ));
+            });
+}
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest body) {
         passwordResetService.sendPasswordResetEmail(body.getEmail());
