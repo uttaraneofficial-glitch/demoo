@@ -387,49 +387,82 @@ function AuthFormContent() {
             setLoading(false)
 
             const pollInterval = setInterval(async () => {
-                try {
-                    const currentUser = auth.currentUser
-                    if (!currentUser) return
+    try {
+        const currentUser = auth.currentUser
 
-                    await currentUser.reload()
-                    if (currentUser.emailVerified) {
-                        clearInterval(pollInterval)
-                        
-                        // Force refresh the token so the JWT contains "email_verified: true" claim
-                        const freshToken = await currentUser.getIdToken(true)
-                        
-                        // 3. Register in Backend ONLY AFTER VERIFIED
-                        const { data: profile, error: apiError } = await usersApi.register({
-                            email: email.trim(),
-                            name: name.trim(),
-                            role,
-                            bio,
-                            city,
-                            lat,
-                            lng,
-                            address: address || city,
-                            phone,
-                            gender,
-                            avatarUrl
-                        } as any, freshToken)
+        if (!currentUser) {
+            clearInterval(pollInterval)
+            return
+        }
 
-                        if (apiError || !profile) {
-                            setIsWaitingForVerification(false);
-                            setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'));
-                            return;
-                        }
+        // Reload latest Firebase user state
+        await currentUser.reload()
 
-                        setAuth(currentUser, freshToken, profile as any)
-                        setSignupSuccess(true)
-                        setIsWaitingForVerification(false)
-                        router.push('/dashboard')
-                    }
-                } catch (err) {
-                    console.error("Polling error:", err)
-                }
-            }, 3000)
+        // Get fresh user object
+        const refreshedUser = auth.currentUser
 
-            return;
+        if (!refreshedUser) {
+            clearInterval(pollInterval)
+            return
+        }
+
+        // FORCE refresh token
+        await refreshedUser.getIdToken(true)
+
+        // Check verification status
+        if (refreshedUser.emailVerified) {
+            clearInterval(pollInterval)
+
+            const freshToken = await refreshedUser.getIdToken(true)
+
+            // Register in backend
+            const { data: profile, error: apiError } = await usersApi.register({
+                email: email.trim(),
+                name: name.trim(),
+                role,
+                bio,
+                city,
+                lat,
+                lng,
+                address: address || city,
+                phone,
+                gender,
+                avatarUrl
+            } as any, freshToken)
+
+            if (apiError || !profile) {
+                setIsWaitingForVerification(false)
+
+                setError(
+                    formatBackendError(
+                        apiError || 'Account verified but backend sync failed.'
+                    )
+                )
+
+                return
+            }
+
+            // Save auth state
+            setAuth(refreshedUser, freshToken, profile as any)
+
+            setSignupSuccess(true)
+
+            setIsWaitingForVerification(false)
+
+            // Redirect instantly
+            router.push('/dashboard')
+        }
+    } catch (err) {
+        console.error('Verification polling error:', err)
+    }
+}, 1000)
+
+// Optional cleanup timeout
+setTimeout(() => {
+    clearInterval(pollInterval)
+}, 10 * 60 * 1000)
+
+return
         } catch (err: any) {
             setError(firebaseErrorMessage(err))
             setLoading(false)
