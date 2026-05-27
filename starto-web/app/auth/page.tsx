@@ -73,6 +73,8 @@ function AuthFormContent() {
 
     const [forgotSuccess, setForgotSuccess] = useState(false)
     const [manualChecking, setManualChecking] = useState(false)
+    const [resendingEmail, setResendingEmail] = useState(false)
+    const [resendStatus, setResendStatus] = useState('')
     const isCheckingRef = useRef(false)
 
     // Redirect authenticated users immediately to feed
@@ -324,9 +326,13 @@ function AuthFormContent() {
         }
     }
 
-    const checkVerification = async () => {
+    const checkVerification = async (isManual = false) => {
         if (isCheckingRef.current) return
         isCheckingRef.current = true
+        if (isManual) {
+            setError('')
+            setResendStatus('')
+        }
         try {
             const user = auth.currentUser
             if (!user) {
@@ -366,11 +372,35 @@ function AuthFormContent() {
                 setSignupSuccess(true)
                 setIsWaitingForVerification(false)
                 router.push('/dashboard')
+            } else if (isManual) {
+                setError('Email not verified yet. Please check your inbox and click the verification link.')
             }
         } catch (err) {
             console.error("Verification check failed:", err)
+            if (isManual) {
+                setError('Failed to check verification status. Please try again.')
+            }
         } finally {
             isCheckingRef.current = false
+        }
+    }
+
+    const handleResendEmail = async () => {
+        setResendingEmail(true)
+        setResendStatus('')
+        setError('')
+        try {
+            const user = auth.currentUser
+            if (user) {
+                await sendEmailVerification(user)
+                setResendStatus('Verification email resent successfully! Please check your inbox.')
+            } else {
+                setError('No active session found. Please reload and try signing up again.')
+            }
+        } catch (err: any) {
+            setResendStatus(firebaseErrorMessage(err) || 'Failed to resend verification email.')
+        } finally {
+            setResendingEmail(false)
         }
     }
 
@@ -545,10 +575,10 @@ function AuthFormContent() {
                             
                             <button
                                 type="button"
-                                disabled={manualChecking}
+                                disabled={manualChecking || resendingEmail}
                                 onClick={async () => {
                                     setManualChecking(true)
-                                    await checkVerification()
+                                    await checkVerification(true)
                                     setManualChecking(false)
                                 }}
                                 className="w-full mt-2 bg-white text-black py-3 px-6 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-all disabled:opacity-50 text-sm"
@@ -562,6 +592,26 @@ function AuthFormContent() {
                                     'I have verified my email'
                                 )}
                             </button>
+
+                            {error && (
+                                <p className="text-red-500 text-xs flex items-center justify-center gap-1 font-medium mt-2 max-w-sm text-center">
+                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {error}
+                                </p>
+                            )}
+
+                            <div className="mt-4 pt-4 border-t border-white/5 w-full flex flex-col items-center gap-2">
+                                <button
+                                    type="button"
+                                    disabled={resendingEmail || manualChecking}
+                                    onClick={handleResendEmail}
+                                    className="text-xs text-gray-400 hover:text-white underline transition-colors disabled:opacity-50"
+                                >
+                                    {resendingEmail ? 'Sending new link...' : "Didn't get the email? Resend verification link"}
+                                </button>
+                                {resendStatus && (
+                                    <p className="text-xs text-green-400 font-medium text-center">{resendStatus}</p>
+                                )}
+                            </div>
                         </div>
                     </motion.div>
                 ) : (
