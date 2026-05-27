@@ -72,6 +72,7 @@ function AuthFormContent() {
     const [isDetecting, setIsDetecting] = useState(false)
 
     const [forgotSuccess, setForgotSuccess] = useState(false)
+    const [manualChecking, setManualChecking] = useState(false)
 
     // Redirect authenticated users immediately to feed
     useEffect(() => {
@@ -322,6 +323,100 @@ function AuthFormContent() {
         }
     }
 
+    const checkVerification = async () => {
+        try {
+            const user = auth.currentUser
+            if (!user) return
+
+            await user.reload()
+            const refreshedUser = auth.currentUser
+            if (refreshedUser && refreshedUser.emailVerified) {
+                // Force refresh the token so the JWT contains "email_verified: true" claim
+                const freshToken = await refreshedUser.getIdToken(true)
+                
+                // Register in Backend ONLY AFTER VERIFIED
+                const { data: profile, error: apiError } = await usersApi.register({
+                    email: email.trim(),
+                    name: name.trim(),
+                    role,
+                    bio,
+                    city,
+                    lat,
+                    lng,
+                    address: address || city,
+                    phone,
+                    gender,
+                    avatarUrl
+                } as any, freshToken)
+
+                if (apiError || !profile) {
+                    setIsWaitingForVerification(false)
+                    setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'))
+                    return
+                }
+
+                setAuth(refreshedUser, freshToken, profile as any)
+                setSignupSuccess(true)
+                setIsWaitingForVerification(false)
+                router.push('/dashboard')
+            }
+        } catch (err) {
+            console.error("Verification check failed:", err)
+        }
+    }
+
+    // Poll and listen for visibility/focus to check email verification status instantly
+    useEffect(() => {
+        if (!isWaitingForVerification) return
+
+        let active = true
+        let timer: NodeJS.Timeout
+
+        const poll = async () => {
+            if (!active) return
+            await checkVerification()
+            if (active && isWaitingForVerification) {
+                timer = setTimeout(poll, 3000)
+            }
+        }
+
+        // Start polling
+        timer = setTimeout(poll, 3000)
+
+        // Instantly check when user returns to the tab or focuses the window
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                checkVerification()
+            }
+        }
+        const handleFocus = () => {
+            checkVerification()
+        }
+
+        window.addEventListener('focus', handleFocus)
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+
+        return () => {
+            active = false
+            clearTimeout(timer)
+            window.removeEventListener('focus', handleFocus)
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
+        }
+    }, [
+        isWaitingForVerification, 
+        email, 
+        name, 
+        role, 
+        bio, 
+        city, 
+        lat, 
+        lng, 
+        address, 
+        phone, 
+        gender, 
+        avatarUrl
+    ])
+
     // ──────────── SIGN UP ────────────
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -386,60 +481,6 @@ function AuthFormContent() {
             setIsWaitingForVerification(true)
             setLoading(false)
 
-            let active = true;
-            const checkVerification = async () => {
-                if (!active) return;
-                try {
-                    const currentUser = auth.currentUser
-                    if (!currentUser) {
-                        if (active) setTimeout(checkVerification, 3000);
-                        return;
-                    }
-
-                    await currentUser.reload()
-                    if (currentUser.emailVerified) {
-                        active = false;
-                        
-                        // Force refresh the token so the JWT contains "email_verified: true" claim
-                        const freshToken = await currentUser.getIdToken(true)
-                        
-                        // 3. Register in Backend ONLY AFTER VERIFIED
-                        const { data: profile, error: apiError } = await usersApi.register({
-                            email: email.trim(),
-                            name: name.trim(),
-                            role,
-                            bio,
-                            city,
-                            lat,
-                            lng,
-                            address: address || city,
-                            phone,
-                            gender,
-                            avatarUrl
-                        } as any, freshToken)
-
-                        if (apiError || !profile) {
-                            setIsWaitingForVerification(false);
-                            setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'));
-                            return;
-                        }
-
-                        setAuth(currentUser, freshToken, profile as any)
-                        setSignupSuccess(true)
-                        setIsWaitingForVerification(false)
-                        router.push('/dashboard')
-                    } else {
-                        if (active) setTimeout(checkVerification, 3000);
-                    }
-                } catch (err) {
-                    console.error("Polling error:", err);
-                    if (active) setTimeout(checkVerification, 3000);
-                }
-            };
-
-            // Start polling
-            setTimeout(checkVerification, 3000);
-
             return;
         } catch (err: any) {
             setError(firebaseErrorMessage(err))
@@ -487,9 +528,31 @@ function AuthFormContent() {
                             We&apos;ve sent a verification link to <span className="text-white font-medium">{email}</span>. 
                             Please check your inbox (and spam folder) and click the link to continue.
                         </p>
-                        <div className="flex items-center gap-2 text-sm text-primary">
-                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                            Waiting for verification...
+                        <div className="flex flex-col items-center gap-4 w-full">
+                            <div className="flex items-center gap-2 text-sm text-primary">
+                                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                Waiting for verification...
+                            </div>
+                            
+                            <button
+                                type="button"
+                                disabled={manualChecking}
+                                onClick={async () => {
+                                    setManualChecking(true)
+                                    await checkVerification()
+                                    setManualChecking(false)
+                                }}
+                                className="w-full mt-2 bg-white text-black py-3 px-6 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-all disabled:opacity-50 text-sm"
+                            >
+                                {manualChecking ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                                        Checking status...
+                                    </>
+                                ) : (
+                                    'I have verified my email'
+                                )}
+                            </button>
                         </div>
                     </motion.div>
                 ) : (
