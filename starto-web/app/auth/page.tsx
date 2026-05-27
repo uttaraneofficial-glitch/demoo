@@ -9,7 +9,7 @@ import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuthStore } from '@/store/useAuthStore'
-import { useSignalStore } from '@/store/useSignalStore'
+
 import { usersApi } from '@/lib/apiClient'
 import { auth, firebaseConfigured } from '@/lib/firebase'
 import { 
