@@ -75,7 +75,8 @@ function AuthFormContent() {
     const [manualChecking, setManualChecking] = useState(false)
     const [resendingEmail, setResendingEmail] = useState(false)
     const [resendStatus, setResendStatus] = useState('')
-    const isCheckingRef = useRef(false)
+    const checkPromiseRef = useRef<Promise<any> | null>(null)
+    const isRegisteringRef = useRef(false)
 
     // Redirect authenticated users immediately to feed
     useEffect(() => {
@@ -327,52 +328,84 @@ function AuthFormContent() {
     }
 
     const checkVerification = async (isManual = false) => {
-        if (isCheckingRef.current) return
-        isCheckingRef.current = true
         if (isManual) {
             setError('')
             setResendStatus('')
         }
-        try {
-            const user = auth.currentUser
-            if (!user) {
-                isCheckingRef.current = false
-                return
+
+        if (isRegisteringRef.current) {
+            return
+        }
+
+        // If there is already a check in flight, wait for it
+        if (checkPromiseRef.current) {
+            try {
+                const result = await checkPromiseRef.current
+                if (isManual && !result) {
+                    setError('Email not verified yet. Please check your inbox and click the verification link.')
+                }
+            } catch (err) {
+                if (isManual) {
+                    setError('Failed to check verification status. Please try again.')
+                }
             }
+            return
+        }
+
+        const runCheck = async (): Promise<boolean> => {
+            const user = auth.currentUser
+            if (!user) return false
 
             await user.reload()
             const refreshedUser = auth.currentUser
             if (refreshedUser && refreshedUser.emailVerified) {
-                // Force refresh the token so the JWT contains "email_verified: true" claim
-                const freshToken = await refreshedUser.getIdToken(true)
-                
-                // Register in Backend ONLY AFTER VERIFIED
-                const { data: profile, error: apiError } = await usersApi.register({
-                    email: email.trim(),
-                    name: name.trim(),
-                    role,
-                    bio,
-                    city,
-                    lat,
-                    lng,
-                    address: address || city,
-                    phone,
-                    gender,
-                    avatarUrl
-                } as any, freshToken)
+                if (isRegisteringRef.current) return true
+                isRegisteringRef.current = true
 
-                if (apiError || !profile) {
+                try {
+                    // Force refresh the token so the JWT contains "email_verified: true" claim
+                    const freshToken = await refreshedUser.getIdToken(true)
+                    
+                    // Register in Backend ONLY AFTER VERIFIED
+                    const { data: profile, error: apiError } = await usersApi.register({
+                        email: email.trim(),
+                        name: name.trim(),
+                        role,
+                        bio,
+                        city,
+                        lat,
+                        lng,
+                        address: address || city,
+                        phone,
+                        gender,
+                        avatarUrl
+                    } as any, freshToken)
+
+                    if (apiError || !profile) {
+                        setIsWaitingForVerification(false)
+                        setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'))
+                        isRegisteringRef.current = false
+                        return true
+                    }
+
+                    setAuth(refreshedUser, freshToken, profile as any)
+                    setSignupSuccess(true)
                     setIsWaitingForVerification(false)
-                    setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'))
-                    isCheckingRef.current = false
-                    return
+                    router.push('/dashboard')
+                    return true
+                } catch (err) {
+                    isRegisteringRef.current = false
+                    throw err
                 }
+            }
+            return false
+        }
 
-                setAuth(refreshedUser, freshToken, profile as any)
-                setSignupSuccess(true)
-                setIsWaitingForVerification(false)
-                router.push('/dashboard')
-            } else if (isManual) {
+        checkPromiseRef.current = runCheck()
+
+        try {
+            const isVerified = await checkPromiseRef.current
+            if (isManual && !isVerified) {
                 setError('Email not verified yet. Please check your inbox and click the verification link.')
             }
         } catch (err) {
@@ -381,7 +414,7 @@ function AuthFormContent() {
                 setError('Failed to check verification status. Please try again.')
             }
         } finally {
-            isCheckingRef.current = false
+            checkPromiseRef.current = null
         }
     }
 
@@ -404,7 +437,7 @@ function AuthFormContent() {
         }
     }
 
-    // Poll and listen for visibility/focus to check email verification status instantly
+    // Poll and listen for visibility to check email verification status instantly
     useEffect(() => {
         if (!isWaitingForVerification) return
 
@@ -422,23 +455,18 @@ function AuthFormContent() {
         // Start polling
         timer = setTimeout(poll, 3000)
 
-        // Instantly check when user returns to the tab or focuses the window
+        // Instantly check when user returns to the tab
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
                 checkVerification()
             }
         }
-        const handleFocus = () => {
-            checkVerification()
-        }
 
-        window.addEventListener('focus', handleFocus)
         document.addEventListener('visibilitychange', handleVisibilityChange)
 
         return () => {
             active = false
             clearTimeout(timer)
-            window.removeEventListener('focus', handleFocus)
             document.removeEventListener('visibilitychange', handleVisibilityChange)
         }
     }, [
