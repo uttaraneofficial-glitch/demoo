@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mail, AlertCircle, ArrowRight, CheckCircle, Eye, EyeOff } from 'lucide-react'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
@@ -73,6 +73,7 @@ function AuthFormContent() {
 
     const [forgotSuccess, setForgotSuccess] = useState(false)
     const [manualChecking, setManualChecking] = useState(false)
+    const isCheckingRef = useRef(false)
 
     // Redirect authenticated users immediately to feed
     useEffect(() => {
@@ -324,9 +325,14 @@ function AuthFormContent() {
     }
 
     const checkVerification = async () => {
+        if (isCheckingRef.current) return
+        isCheckingRef.current = true
         try {
             const user = auth.currentUser
-            if (!user) return
+            if (!user) {
+                isCheckingRef.current = false
+                return
+            }
 
             await user.reload()
             const refreshedUser = auth.currentUser
@@ -352,6 +358,7 @@ function AuthFormContent() {
                 if (apiError || !profile) {
                     setIsWaitingForVerification(false)
                     setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'))
+                    isCheckingRef.current = false
                     return
                 }
 
@@ -362,6 +369,8 @@ function AuthFormContent() {
             }
         } catch (err) {
             console.error("Verification check failed:", err)
+        } finally {
+            isCheckingRef.current = false
         }
     }
 
