@@ -77,6 +77,7 @@ function AuthFormContent() {
     const [resendStatus, setResendStatus] = useState('')
     const checkPromiseRef = useRef<Promise<any> | null>(null)
     const isRegisteringRef = useRef(false)
+    const checkVerificationRef = useRef<((isManual?: boolean) => Promise<void>) | null>(null)
 
     // Redirect authenticated users immediately to feed
     useEffect(() => {
@@ -358,43 +359,60 @@ function AuthFormContent() {
             return
         }
 
-        const runCheck = async (): Promise<boolean> => {
+        const runCheck = async (isManual: boolean): Promise<boolean> => {
             const user = auth.currentUser
             if (!user) return false
 
-            // ── Authoritative backend verification ──
-            // We use the backend /api/auth/check-verification endpoint as the PRIMARY source.
-            // The backend uses Firebase Admin SDK's getUser() which ALWAYS returns the
-            // authoritative state — no client-side caching, no propagation delay.
+            // ── TWO-LAYER VERIFICATION CHECK ──
+            // Layer 1 (PRIMARY): user.reload() — calls Firebase's getAccountInfo endpoint
+            //   directly (NOT the Secure Token Service). This returns the latest emailVerified
+            //   status from Firebase Auth servers WITHOUT triggering token refresh rate limits.
+            //   Token force-refresh (getIdToken(true)) is only called ONCE later, after
+            //   verification succeeds, to get a fresh registration token.
+            // Layer 2 (FALLBACK): Backend /api/auth/check-verification using Firebase Admin
+            //   SDK's getUser(). Authoritative server-side check as backup.
             //
-            // IMPORTANT: We use getIdToken(false) here — cached token, NO force-refresh.
-            // Calling getIdToken(true) every 2 seconds causes Firebase rate limiting and
-            // stale token returns. The backend doesn't need a fresh token; it just needs
-            // a valid one for authentication. The actual verification check is done via
-            // Admin SDK's getUser() which queries Firebase directly.
-            //
-            // Client-side reload() is used ONLY as a fallback if the backend is unreachable.
+            // For manual checks only (isManual=true), also attempt getIdTokenResult(true) as
+            // a third layer since it's a single user-triggered action, not polling.
             let isVerified = false
 
-            // PRIMARY: Backend Admin SDK check (authoritative, no force-refresh needed)
+            // ── LAYER 1: Client-side reload (primary) ──
+            // Uses getAccountInfo endpoint — separate from token minting, so NOT rate-limited.
             try {
-                // Use cached token — NO force refresh during polling to avoid rate limiting
-                const { data } = await usersApi.checkVerification()
-                if (data && data.verified) {
+                await user.reload()
+                if (user.emailVerified) {
                     isVerified = true
-                    console.log('[Verification] Backend Admin SDK reports: VERIFIED')
+                    console.log('[Verification] reload() reports: VERIFIED')
                 }
             } catch (err) {
-                console.warn('[Verification] Backend check failed, falling back to client-side:', err)
-                // FALLBACK: Client-side reload (only if backend is unreachable)
+                console.warn('[Verification] reload() failed:', err)
+            }
+
+            // ── LAYER 2: Backend Admin SDK check (fallback) ──
+            if (!isVerified) {
                 try {
-                    await user.reload()
-                    if (user.emailVerified) {
+                    const { data } = await usersApi.checkVerification()
+                    if (data && data.verified) {
                         isVerified = true
-                        console.log('[Verification] Client reload fallback reports: VERIFIED')
+                        console.log('[Verification] Backend Admin SDK reports: VERIFIED')
                     }
-                } catch {
-                    console.warn('[Verification] Client fallback reload also failed')
+                } catch (err) {
+                    console.warn('[Verification] Backend check failed:', err)
+                }
+            }
+
+            // ── LAYER 3: Token force-refresh (manual check only) ──
+            // Only runs when user clicks "I have verified my email". Single action, so
+            // won't trigger rate limits like polling would.
+            if (!isVerified && isManual) {
+                try {
+                    const idTokenResult = await user.getIdTokenResult(true)
+                    if (idTokenResult.claims.email_verified === true) {
+                        isVerified = true
+                        console.log('[Verification] Manual token claims reports: VERIFIED')
+                    }
+                } catch (err) {
+                    console.warn('[Verification] Manual token claims check failed:', err)
                 }
             }
 
@@ -403,7 +421,7 @@ function AuthFormContent() {
                 isRegisteringRef.current = true
 
                 try {
-                    // Now force-refresh the token ONCE for registration (not during polling)
+                    // Force-refresh the token ONCE for registration
                     const freshToken = await user.getIdToken(true)
                     
                     const { data: profile, error: apiError } = await usersApi.register({
@@ -440,7 +458,7 @@ function AuthFormContent() {
             return false
         }
 
-        checkPromiseRef.current = runCheck()
+        checkPromiseRef.current = runCheck(isManual)
 
         try {
             const isVerified = await checkPromiseRef.current
@@ -456,6 +474,8 @@ function AuthFormContent() {
             checkPromiseRef.current = null
         }
     }
+    // Keep the ref in sync so the polling useEffect always has the latest function
+    checkVerificationRef.current = checkVerification
 
     const handleResendEmail = async () => {
         setResendingEmail(true)
@@ -482,6 +502,8 @@ function AuthFormContent() {
     // This tab detects it via the 'storage' event and triggers an immediate check.
 
     // Poll and listen for visibility/focus/storage to check email verification status instantly
+    // Uses checkVerificationRef to avoid stale closures — the effect only depends on
+    // isWaitingForVerification, and always calls the latest checkVerification via the ref.
     useEffect(() => {
         if (!isWaitingForVerification) return
 
@@ -490,9 +512,9 @@ function AuthFormContent() {
 
         const poll = async () => {
             if (!active) return
-            await checkVerification()
-            if (active && isWaitingForVerification) {
-                timer = setTimeout(poll, 10000)
+            await checkVerificationRef.current!()
+            if (active) {
+                timer = setTimeout(poll, 3000)
             }
         }
 
@@ -502,18 +524,18 @@ function AuthFormContent() {
         // Instantly check when user returns to the tab via visibility or focus
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
-                checkVerification()
+                checkVerificationRef.current!()
             }
         }
 
         const handleFocus = () => {
-            checkVerification()
+            checkVerificationRef.current!()
         }
 
         // Cross-tab communication: detect when another tab stores the verification flag
         const handleStorage = (e: StorageEvent) => {
             if (e.key === 'starto:email_verified') {
-                checkVerification()
+                checkVerificationRef.current!()
             }
         }
 
@@ -528,20 +550,7 @@ function AuthFormContent() {
             window.removeEventListener('focus', handleFocus)
             window.removeEventListener('storage', handleStorage)
         }
-    }, [
-        isWaitingForVerification, 
-        email, 
-        name, 
-        role, 
-        bio, 
-        city, 
-        lat, 
-        lng, 
-        address, 
-        phone, 
-        gender, 
-        avatarUrl
-    ])
+    }, [isWaitingForVerification])
 
     // ──────────── SIGN UP ────────────
     const handleSignup = async (e: React.FormEvent) => {
