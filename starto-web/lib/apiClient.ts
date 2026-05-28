@@ -336,6 +336,10 @@ export const usersApi = {
             body: JSON.stringify(payload),
         }, overrideToken),
 
+    /** GET /api/auth/check-verification — uses Firebase Admin SDK to definitively check email verification, bypassing client-side caching */
+    checkVerification: (overrideToken?: string) =>
+        apiFetch<{ verified: boolean }>('/api/auth/check-verification', {}, overrideToken),
+
     /** PUT /api/users/profile — requires auth */
     updateProfile: (payload: Partial<ApiUser>) =>
         apiFetch<ApiUser>('/api/users/profile', {

@@ -6,6 +6,9 @@ import com.starto.service.UserService;
 import com.starto.service.EmailService;
 import com.starto.service.PasswordResetService;
 import com.starto.repository.UserRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -114,6 +117,32 @@ public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         String firebaseUid = authentication.getPrincipal().toString();
         passwordResetService.updatePassword(firebaseUid, body.getNewPassword());
         return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+    }
+
+    /**
+     * GET /api/auth/check-verification
+     * Uses Firebase Admin SDK to definitively check if the user's email is verified.
+     * This bypasses any client-side Firebase SDK caching issues that can cause
+     * emailVerified to not update via reload() for minutes.
+     * The backend Admin SDK always returns the authoritative source of truth.
+     */
+    @GetMapping("/check-verification")
+    public ResponseEntity<?> checkVerification(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Unauthorized"));
+        }
+
+        String firebaseUid = authentication.getPrincipal().toString();
+
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().getUser(firebaseUid);
+            boolean verified = userRecord.isEmailVerified();
+            System.out.println("[VerificationCheck] UID: " + firebaseUid + " | Firebase Admin says: " + (verified ? "VERIFIED" : "NOT VERIFIED"));
+            return ResponseEntity.ok(Map.of("verified", verified));
+        } catch (FirebaseAuthException e) {
+            System.err.println("[VerificationCheck] Firebase Admin lookup failed for UID: " + firebaseUid + " | " + e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to check verification status"));
+        }
     }
 
     @GetMapping("/avatars")

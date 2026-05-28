@@ -122,6 +122,12 @@ function AuthFormContent() {
                             router.push('/dashboard')
                         }
                     } else {
+                        // Cross-tab notification: store a flag so the original signup tab
+                        // can detect the verification instantly via the 'storage' event.
+                        try {
+                            localStorage.setItem('starto:email_verified', Date.now().toString())
+                        } catch {}
+
                         setActionMessage({
                             type: 'success',
                             text: 'Your email has been verified successfully! Please log in to continue.'
@@ -356,29 +362,50 @@ function AuthFormContent() {
             const user = auth.currentUser
             if (!user) return false
 
+            // ── Authoritative backend verification ──
+            // We use the backend /api/auth/check-verification endpoint as the PRIMARY source.
+            // The backend uses Firebase Admin SDK's getUser() which ALWAYS returns the
+            // authoritative state — no client-side caching, no propagation delay.
+            //
+            // IMPORTANT: We use getIdToken(false) here — cached token, NO force-refresh.
+            // Calling getIdToken(true) every 2 seconds causes Firebase rate limiting and
+            // stale token returns. The backend doesn't need a fresh token; it just needs
+            // a valid one for authentication. The actual verification check is done via
+            // Admin SDK's getUser() which queries Firebase directly.
+            //
+            // Client-side reload() is used ONLY as a fallback if the backend is unreachable.
+            let isVerified = false
+
+            // PRIMARY: Backend Admin SDK check (authoritative, no force-refresh needed)
             try {
-                // FIX: Force a token refresh FIRST to bypass any Firebase token/user caches.
-                // This ensures the subsequent reload() queries the server with a fresh token
-                // and retrieves the absolute latest user data (including emailVerified).
-                await user.getIdToken(true)
-                // Now reload the user — the internal token is fresh, so the server
-                // response will reflect the most up-to-date verification state.
-                await user.reload()
-            } catch {
-                // Token refresh or reload failed — still try to check with the current state
-                console.warn('[Verification] Token refresh/reload failed, checking with current state')
+                // Use cached token — NO force refresh during polling to avoid rate limiting
+                const { data } = await usersApi.checkVerification()
+                if (data && data.verified) {
+                    isVerified = true
+                    console.log('[Verification] Backend Admin SDK reports: VERIFIED')
+                }
+            } catch (err) {
+                console.warn('[Verification] Backend check failed, falling back to client-side:', err)
+                // FALLBACK: Client-side reload (only if backend is unreachable)
+                try {
+                    await user.reload()
+                    if (user.emailVerified) {
+                        isVerified = true
+                        console.log('[Verification] Client reload fallback reports: VERIFIED')
+                    }
+                } catch {
+                    console.warn('[Verification] Client fallback reload also failed')
+                }
             }
 
-            const refreshedUser = auth.currentUser
-            if (refreshedUser && refreshedUser.emailVerified) {
+            if (isVerified) {
                 if (isRegisteringRef.current) return true
                 isRegisteringRef.current = true
 
                 try {
-                    // Force refresh the token so the JWT contains "email_verified: true" claim
-                    const freshToken = await refreshedUser.getIdToken(true)
+                    // Now force-refresh the token ONCE for registration (not during polling)
+                    const freshToken = await user.getIdToken(true)
                     
-                    // Register in Backend ONLY AFTER VERIFIED
                     const { data: profile, error: apiError } = await usersApi.register({
                         email: email.trim(),
                         name: name.trim(),
@@ -400,7 +427,7 @@ function AuthFormContent() {
                         return true
                     }
 
-                    setAuth(refreshedUser, freshToken, profile as any)
+                    setAuth(user, freshToken, profile as any)
                     setSignupSuccess(true)
                     setIsWaitingForVerification(false)
                     router.push('/dashboard')
@@ -447,7 +474,14 @@ function AuthFormContent() {
         } finally {
             setResendingEmail(false)
         }
-    }    // Poll and listen for visibility/focus to check email verification status instantly
+    }
+
+    // ─── Cross-tab localStorage communication ───
+    // When the email verification link opens in a new tab and successfully
+    // processes the verification, it stores a flag in localStorage.
+    // This tab detects it via the 'storage' event and triggers an immediate check.
+
+    // Poll and listen for visibility/focus/storage to check email verification status instantly
     useEffect(() => {
         if (!isWaitingForVerification) return
 
@@ -458,7 +492,7 @@ function AuthFormContent() {
             if (!active) return
             await checkVerification()
             if (active && isWaitingForVerification) {
-                timer = setTimeout(poll, 3000)
+                timer = setTimeout(poll, 10000)
             }
         }
 
@@ -476,14 +510,23 @@ function AuthFormContent() {
             checkVerification()
         }
 
+        // Cross-tab communication: detect when another tab stores the verification flag
+        const handleStorage = (e: StorageEvent) => {
+            if (e.key === 'starto:email_verified') {
+                checkVerification()
+            }
+        }
+
         document.addEventListener('visibilitychange', handleVisibilityChange)
         window.addEventListener('focus', handleFocus)
+        window.addEventListener('storage', handleStorage)
 
         return () => {
             active = false
             clearTimeout(timer)
             document.removeEventListener('visibilitychange', handleVisibilityChange)
             window.removeEventListener('focus', handleFocus)
+            window.removeEventListener('storage', handleStorage)
         }
     }, [
         isWaitingForVerification, 
