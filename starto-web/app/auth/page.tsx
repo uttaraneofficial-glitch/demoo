@@ -356,7 +356,19 @@ function AuthFormContent() {
             const user = auth.currentUser
             if (!user) return false
 
-            await user.reload()
+            try {
+                // FIX: Force a token refresh FIRST to bypass any Firebase token/user caches.
+                // This ensures the subsequent reload() queries the server with a fresh token
+                // and retrieves the absolute latest user data (including emailVerified).
+                await user.getIdToken(true)
+                // Now reload the user — the internal token is fresh, so the server
+                // response will reflect the most up-to-date verification state.
+                await user.reload()
+            } catch {
+                // Token refresh or reload failed — still try to check with the current state
+                console.warn('[Verification] Token refresh/reload failed, checking with current state')
+            }
+
             const refreshedUser = auth.currentUser
             if (refreshedUser && refreshedUser.emailVerified) {
                 if (isRegisteringRef.current) return true
@@ -435,9 +447,7 @@ function AuthFormContent() {
         } finally {
             setResendingEmail(false)
         }
-    }
-
-    // Poll and listen for visibility to check email verification status instantly
+    }    // Poll and listen for visibility/focus to check email verification status instantly
     useEffect(() => {
         if (!isWaitingForVerification) return
 
@@ -452,22 +462,28 @@ function AuthFormContent() {
             }
         }
 
-        // Start polling
-        timer = setTimeout(poll, 3000)
+        // Run an immediate check on mount, then start regular polling
+        poll()
 
-        // Instantly check when user returns to the tab
+        // Instantly check when user returns to the tab via visibility or focus
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
                 checkVerification()
             }
         }
 
+        const handleFocus = () => {
+            checkVerification()
+        }
+
         document.addEventListener('visibilitychange', handleVisibilityChange)
+        window.addEventListener('focus', handleFocus)
 
         return () => {
             active = false
             clearTimeout(timer)
             document.removeEventListener('visibilitychange', handleVisibilityChange)
+            window.removeEventListener('focus', handleFocus)
         }
     }, [
         isWaitingForVerification, 
