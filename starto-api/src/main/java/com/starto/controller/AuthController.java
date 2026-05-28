@@ -74,28 +74,29 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
 
-    if (authentication == null || authentication.getPrincipal() == null) {
-        return ResponseEntity.status(401)
-                .body(Map.of("error", "Unauthorized"));
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("error", "Unauthorized"));
+        }
+
+        String firebaseUid = authentication.getPrincipal().toString();
+
+        java.util.Optional<User> userOpt = userService.getUserByFirebaseUid(firebaseUid);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            userService.syncVerificationAndSendWelcome(user);
+            return ResponseEntity.ok(user);
+        } else {
+            // IMPORTANT FIX
+            return ResponseEntity.ok(Map.of(
+                    "pending", true,
+                    "message", "Profile still syncing"
+            ));
+        }
     }
 
-    String firebaseUid = authentication.getPrincipal().toString();
-
-    java.util.Optional<User> userOpt = userService.getUserByFirebaseUid(firebaseUid);
-    if (userOpt.isPresent()) {
-        User user = userOpt.get();
-        userService.syncVerificationAndSendWelcome(user);
-        return ResponseEntity.ok(user);
-    } else {
-        // IMPORTANT FIX
-        return ResponseEntity.ok(Map.of(
-                "pending", true,
-                "message", "Profile still syncing"
-        ));
-    }
-}
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest body) {
         passwordResetService.sendPasswordResetEmail(body.getEmail());
@@ -125,25 +126,31 @@ public ResponseEntity<?> getCurrentUser(Authentication authentication) {
      */
     @GetMapping("/check-verification")
     public ResponseEntity<?> checkVerification(Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "Unauthorized"));
-        }
-
-        String firebaseUid = authentication.getPrincipal().toString();
-        System.out.println("[VerificationCheck] Initiating lookup for UID: " + firebaseUid);
-
         try {
+            if (authentication == null || authentication.getPrincipal() == null) {
+                return ResponseEntity.status(401).body(Map.of("error", "Unauthorized"));
+            }
+
+            String firebaseUid = authentication.getPrincipal().toString();
+            System.out.println("[VerificationCheck] Checking UID: " + firebaseUid);
+            
+            // Firebase Admin SDK directly queries the Auth Server (Bypasses the 3-minute edge cache delay)
             UserRecord userRecord = FirebaseAuth.getInstance().getUser(firebaseUid);
             boolean verified = userRecord.isEmailVerified();
-            System.out.println("[VerificationCheck] UID: " + firebaseUid + " | Firebase Admin says: " + (verified ? "VERIFIED" : "NOT VERIFIED"));
             return ResponseEntity.ok(Map.of("verified", verified));
+            
         } catch (FirebaseAuthException e) {
-            System.err.println("[VerificationCheck] Firebase Admin lookup failed for UID: " + firebaseUid + " | " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("[VerificationCheck] Firebase Admin lookup failed: " + e.getMessage());
             return ResponseEntity.status(500).body(Map.of(
-                "error", "Failed to check verification status",
-                "details", e.getMessage(),
-                "errorCode", e.getErrorCode() != null ? e.getErrorCode() : "UNKNOWN"
+                "error", "Firebase lookup failed",
+                "details", e.getMessage()
+            ));
+        } catch (Throwable t) {
+            // Catches absolutely EVERYTHING (Exceptions, Errors, NullPointers) and sends it cleanly to the frontend
+            System.err.println("[VerificationCheck] CRASH: " + t.getClass().getName() + " - " + t.getMessage());
+            t.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                "error", "Crash: " + t.getClass().getSimpleName() + " - " + t.getMessage()
             ));
         }
     }
