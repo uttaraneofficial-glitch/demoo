@@ -109,3 +109,6 @@ backend*.log
 frontend*.log
 backend_tail*.txt
 backend_out*.log
+
+# ─── Temp / Local tooling ───────────────────────────────────────────────────
+.maven/
