@@ -83,21 +83,18 @@ public ResponseEntity<?> getCurrentUser(Authentication authentication) {
 
     String firebaseUid = authentication.getPrincipal().toString();
 
-    return userService.getUserByFirebaseUid(firebaseUid)
-            .map(user -> {
-
-                userService.syncVerificationAndSendWelcome(user);
-
-                return ResponseEntity.ok(user);
-            })
-            .orElseGet(() -> {
-
-                // IMPORTANT FIX
-                return ResponseEntity.ok(Map.of(
-                        "pending", true,
-                        "message", "Profile still syncing"
-                ));
-            });
+    java.util.Optional<User> userOpt = userService.getUserByFirebaseUid(firebaseUid);
+    if (userOpt.isPresent()) {
+        User user = userOpt.get();
+        userService.syncVerificationAndSendWelcome(user);
+        return ResponseEntity.ok(user);
+    } else {
+        // IMPORTANT FIX
+        return ResponseEntity.ok(Map.of(
+                "pending", true,
+                "message", "Profile still syncing"
+        ));
+    }
 }
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest body) {

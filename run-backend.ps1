@@ -7,21 +7,25 @@ $MAVEN_ZIP = "$MAVEN_DIR\apache-maven-$MAVEN_VERSION-bin.zip"
 $MAVEN_HOME = "$MAVEN_DIR\apache-maven-$MAVEN_VERSION"
 $MVN_BIN = "$MAVEN_HOME\bin\mvn.cmd"
 
-# Set JAVA_HOME (identified from previous research)
-$jdkPath = Get-ChildItem -Path "C:\Program Files\Java" -Filter "jdk*" -Directory -ErrorAction SilentlyContinue | Select-Object -First 1
-if ($jdkPath) {
-    $env:JAVA_HOME = $jdkPath.FullName
-} elseif (Test-Path "D:\Android\jbr\bin\java.exe") {
-    $env:JAVA_HOME = "D:\Android\jbr"
-} elseif (Test-Path "D:\bin\java.exe") {
-    $env:JAVA_HOME = "D:\"
-} elseif ($null -eq $env:JAVA_HOME -or $env:JAVA_HOME -eq "") {
-    $javaPath = where.exe java | Select-Object -First 1
-    if ($javaPath) {
-        $env:JAVA_HOME = [System.IO.Path]::GetDirectoryName([System.IO.Path]::GetDirectoryName($javaPath))
-    } else {
-        # Fallback — requires JDK 17+
-        $env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
+# Set JAVA_HOME (prioritize JDK 21 or highest available JDK version)
+if (Test-Path "D:\OpenJDK21U-jdk_x64_windows_hotspot_21.0.10_7\jdk-21.0.10+7") {
+    $env:JAVA_HOME = "D:\OpenJDK21U-jdk_x64_windows_hotspot_21.0.10_7\jdk-21.0.10+7"
+} else {
+    $jdkPath = Get-ChildItem -Path "C:\Program Files\Java" -Filter "jdk*" -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1
+    if ($jdkPath) {
+        $env:JAVA_HOME = $jdkPath.FullName
+    } elseif (Test-Path "D:\Android\jbr\bin\java.exe") {
+        $env:JAVA_HOME = "D:\Android\jbr"
+    } elseif (Test-Path "D:\bin\java.exe") {
+        $env:JAVA_HOME = "D:\"
+    } elseif ($null -eq $env:JAVA_HOME -or $env:JAVA_HOME -eq "") {
+        $javaPath = where.exe java | Select-Object -First 1
+        if ($javaPath) {
+            $env:JAVA_HOME = [System.IO.Path]::GetDirectoryName([System.IO.Path]::GetDirectoryName($javaPath))
+        } else {
+            # Fallback — requires JDK 17+
+            $env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
+        }
     }
 }
 $env:Path = "$env:JAVA_HOME\bin;" + $env:Path
