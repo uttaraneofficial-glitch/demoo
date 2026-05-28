@@ -78,6 +78,7 @@ function AuthFormContent() {
     const checkPromiseRef = useRef<Promise<any> | null>(null)
     const isRegisteringRef = useRef(false)
     const checkVerificationRef = useRef<((isManual?: boolean) => Promise<void>) | null>(null)
+    const crossTabVerifiedRef = useRef(false)
 
     // Redirect authenticated users immediately to feed
     useEffect(() => {
@@ -104,6 +105,16 @@ function AuthFormContent() {
                 if (modeParam === 'verifyEmail') {
                     // 1. Verify in Firebase
                     await applyActionCode(auth, oobCodeParam)
+
+                    // ✅ Email is now verified (Firebase confirmed it).
+                    // Broadcast this to ALL other tabs of this app immediately,
+                    // so the original signup tab can skip Firebase propagation delay
+                    // and proceed directly with registration.
+                    try {
+                        const bc = new BroadcastChannel('starto_auth')
+                        bc.postMessage({ type: 'EMAIL_VERIFIED' })
+                        bc.close()
+                    } catch {}
 
                     // 2. Refresh browser session if they are currently logged in
                     const currentUser = auth.currentUser
@@ -143,6 +154,18 @@ function AuthFormContent() {
                     setMode('reset_password')
                 }
             } catch (err: any) {
+                // If applyActionCode failed with 'auth/invalid-action-code' in verifyEmail mode
+                // and the user is not logged in, Firebase's default handler likely already
+                // processed the code (it calls applyActionCode BEFORE redirecting to our app).
+                // The email IS verified — notify the original signup tab via localStorage.
+                // We guard on the specific error code to avoid false positives from network
+                // errors or genuinely malformed codes.
+                if (modeParam === 'verifyEmail' && !auth.currentUser && err.code === 'auth/invalid-action-code') {
+                    try {
+                        localStorage.setItem('starto:email_verified', Date.now().toString())
+                    } catch {}
+                }
+
                 console.error("Firebase Action handling failed:", err)
                 setActionMessage({
                     type: 'error',
@@ -363,29 +386,37 @@ function AuthFormContent() {
             const user = auth.currentUser
             if (!user) return false
 
-            // ── TWO-LAYER VERIFICATION CHECK ──
-            // Layer 1 (PRIMARY): user.reload() — calls Firebase's getAccountInfo endpoint
-            //   directly (NOT the Secure Token Service). This returns the latest emailVerified
-            //   status from Firebase Auth servers WITHOUT triggering token refresh rate limits.
-            //   Token force-refresh (getIdToken(true)) is only called ONCE later, after
-            //   verification succeeds, to get a fresh registration token.
-            // Layer 2 (FALLBACK): Backend /api/auth/check-verification using Firebase Admin
-            //   SDK's getUser(). Authoritative server-side check as backup.
-            //
-            // For manual checks only (isManual=true), also attempt getIdTokenResult(true) as
-            // a third layer since it's a single user-triggered action, not polling.
+            // ── THREE-LAYER VERIFICATION CHECK ──
+            // Layer 0 (INSTANT): Cross-tab BroadcastChannel notification.
+            //   When applyActionCode succeeds in another tab, it broadcasts on
+            //   BroadcastChannel('starto_auth'). This tab receives the message and
+            //   sets crossTabVerifiedRef.current = true. This BYPASSES Firebase's
+            //   eventual consistency delay entirely.
+            // Layer 1 (PRIMARY): user.reload() — calls Firebase's getAccountInfo
+            //   endpoint directly. Returns latest emailVerified from Firebase Auth.
+            // Layer 2 (FALLBACK): Backend /api/auth/check-verification using Firebase
+            //   Admin SDK's getUser(). Authoritative server-side check as backup.
+            // Layer 3 (MANUAL ONLY): Token force-refresh getIdTokenResult(true).
             let isVerified = false
 
-            // ── LAYER 1: Client-side reload (primary) ──
-            // Uses getAccountInfo endpoint — separate from token minting, so NOT rate-limited.
-            try {
-                await user.reload()
-                if (user.emailVerified) {
-                    isVerified = true
-                    console.log('[Verification] reload() reports: VERIFIED')
+            // ── LAYER 0: Cross-tab BroadcastChannel (INSTANT, no Firebase delay) ──
+            if (crossTabVerifiedRef.current) {
+                crossTabVerifiedRef.current = false
+                isVerified = true
+                console.log('[Verification] Cross-tab BroadcastChannel: VERIFIED (instant)')
+            }
+
+            // ── LAYER 1: Client-side reload ──
+            if (!isVerified) {
+                try {
+                    await user.reload()
+                    if (user.emailVerified) {
+                        isVerified = true
+                        console.log('[Verification] reload() reports: VERIFIED')
+                    }
+                } catch (err) {
+                    console.warn('[Verification] reload() failed:', err)
                 }
-            } catch (err) {
-                console.warn('[Verification] reload() failed:', err)
             }
 
             // ── LAYER 2: Backend Admin SDK check (fallback) ──
@@ -402,8 +433,6 @@ function AuthFormContent() {
             }
 
             // ── LAYER 3: Token force-refresh (manual check only) ──
-            // Only runs when user clicks "I have verified my email". Single action, so
-            // won't trigger rate limits like polling would.
             if (!isVerified && isManual) {
                 try {
                     const idTokenResult = await user.getIdTokenResult(true)
@@ -501,7 +530,7 @@ function AuthFormContent() {
     // processes the verification, it stores a flag in localStorage.
     // This tab detects it via the 'storage' event and triggers an immediate check.
 
-    // Poll and listen for visibility/focus/storage to check email verification status instantly
+    // Poll and listen for visibility/focus/storage/BroadcastChannel to check email verification status instantly
     // Uses checkVerificationRef to avoid stale closures — the effect only depends on
     // isWaitingForVerification, and always calls the latest checkVerification via the ref.
     useEffect(() => {
@@ -532,9 +561,12 @@ function AuthFormContent() {
             checkVerificationRef.current!()
         }
 
-        // Cross-tab communication: detect when another tab stores the verification flag
+        // Cross-tab communication: detect when another tab stores the verification flag.
+        // Sets crossTabVerifiedRef so the next runCheck cycle uses Layer 0 (skip Firebase checks)
+        // instead of relying on reload() which may hit Firebase propagation delay.
         const handleStorage = (e: StorageEvent) => {
             if (e.key === 'starto:email_verified') {
+                crossTabVerifiedRef.current = true
                 checkVerificationRef.current!()
             }
         }
@@ -543,9 +575,29 @@ function AuthFormContent() {
         window.addEventListener('focus', handleFocus)
         window.addEventListener('storage', handleStorage)
 
+        // ── BroadcastChannel: INSTANT cross-tab verification ──
+        // When applyActionCode succeeds in another tab (email link opened there),
+        // it broadcasts 'EMAIL_VERIFIED' on the 'starto_auth' channel.
+        // We set crossTabVerifiedRef so the next poll cycle skips Firebase checks
+        // and proceeds directly with registration.
+        let broadcastChannel: BroadcastChannel | null = null
+        try {
+            broadcastChannel = new BroadcastChannel('starto_auth')
+            broadcastChannel.onmessage = (event) => {
+                if (event.data && event.data.type === 'EMAIL_VERIFIED') {
+                    console.log('[Verification] Received EMAIL_VERIFIED from BroadcastChannel')
+                    crossTabVerifiedRef.current = true
+                    checkVerificationRef.current!()
+                }
+            }
+        } catch (e) {
+            // BroadcastChannel not supported (older browsers) — no-op
+        }
+
         return () => {
             active = false
             clearTimeout(timer)
+            if (broadcastChannel) broadcastChannel.close()
             document.removeEventListener('visibilitychange', handleVisibilityChange)
             window.removeEventListener('focus', handleFocus)
             window.removeEventListener('storage', handleStorage)
@@ -613,6 +665,11 @@ function AuthFormContent() {
 
             // 2. Send Verification Email & Poll
             await sendEmailVerification(firebaseUser)
+            // Reset cross-tab verification flag on entering the verification flow.
+            // This prevents a stale BroadcastChannel message from a previous session
+            // (e.g., another tab from an earlier signup attempt) from falsely bypassing
+            // Firebase email verification checks.
+            crossTabVerifiedRef.current = false
             setIsWaitingForVerification(true)
             setLoading(false)
 
