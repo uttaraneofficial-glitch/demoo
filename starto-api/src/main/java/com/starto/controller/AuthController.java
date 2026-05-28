@@ -133,6 +133,7 @@ public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         }
 
         String firebaseUid = authentication.getPrincipal().toString();
+        System.out.println("[VerificationCheck] Initiating lookup for UID: " + firebaseUid);
 
         try {
             UserRecord userRecord = FirebaseAuth.getInstance().getUser(firebaseUid);
@@ -141,7 +142,12 @@ public ResponseEntity<?> getCurrentUser(Authentication authentication) {
             return ResponseEntity.ok(Map.of("verified", verified));
         } catch (FirebaseAuthException e) {
             System.err.println("[VerificationCheck] Firebase Admin lookup failed for UID: " + firebaseUid + " | " + e.getMessage());
-            return ResponseEntity.status(500).body(Map.of("error", "Failed to check verification status"));
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                "error", "Failed to check verification status",
+                "details", e.getMessage(),
+                "errorCode", e.getErrorCode() != null ? e.getErrorCode() : "UNKNOWN"
+            ));
         }
     }
 

@@ -422,13 +422,15 @@ function AuthFormContent() {
             // ── LAYER 2: Backend Admin SDK check (fallback) ──
             if (!isVerified) {
                 try {
-                    const { data } = await usersApi.checkVerification()
-                    if (data && data.verified) {
+                    const response = await usersApi.checkVerification()
+                    if (response.data && response.data.verified) {
                         isVerified = true
                         console.log('[Verification] Backend Admin SDK reports: VERIFIED')
+                    } else if (response.error) {
+                        console.error('[Verification] Backend check failed with status:', response.status, '| error:', response.error, '| response:', response);
                     }
                 } catch (err) {
-                    console.warn('[Verification] Backend check failed:', err)
+                    console.warn('[Verification] Backend check exception:', err)
                 }
             }
 
