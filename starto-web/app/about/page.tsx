@@ -26,6 +26,7 @@ export default function AboutPage() {
                     <img src="/logo.png" alt="Starto Logo" className="h-[56px] w-auto block dark:invert" />
                 </Link>
                 <ul className="hidden md:flex items-center gap-[36px] list-none m-0 p-0">
+                    <li><Link href="/" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Home</Link></li>
                     <li><Link href="/about" className="text-[11px] font-bold uppercase tracking-[2px] text-primary transition-all border-b-2 border-primary pb-1">About</Link></li>
                     <li><Link href="/feed" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Platform</Link></li>
                     <li><Link href="/subscription" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Pricing</Link></li>
