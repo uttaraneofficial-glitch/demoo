@@ -15,6 +15,10 @@ import { motion } from 'framer-motion'
 import StatusModal from '@/components/feed/StatusModal'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import NetworkModal from '@/components/feed/NetworkModal'
+import { useRef } from 'react'
+import html2canvas from 'html2canvas'
+import { ShareBadge } from '@/components/feed/ShareBadge'
+import { Loader2 } from 'lucide-react'
 
 export default function PublicProfile({ params }: { params: { username: string } }) {
     const { username: paramUsername } = params
@@ -64,13 +68,53 @@ export default function PublicProfile({ params }: { params: { username: string }
     const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false)
     const [userConnections, setUserConnections] = useState<any[]>([])
     const closeStatusModal = () => setStatusModal(prev => ({ ...prev, isOpen: false }))
-    
     const [isCopied, setIsCopied] = useState(false)
-    const handleShare = () => {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+    const [isGeneratingShare, setIsGeneratingShare] = useState(false)
+    const badgeRef = useRef<HTMLDivElement>(null)
+
+    const handleShare = async () => {
+        if (!badgeRef.current) return
+        setIsGeneratingShare(true)
+        try {
+            const canvas = await html2canvas(badgeRef.current, {
+                scale: 2,
+                backgroundColor: null,
+                useCORS: true
+            })
+            
+            canvas.toBlob(async (blob) => {
+                if (!blob) return
+                const file = new File([blob], 'starto_profile.png', { type: 'image/png' })
+                
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: `${displayName}'s Starto Profile`,
+                        text: 'Check out this profile on Starto Ecosystem!',
+                    })
+                } else {
+                    const url = URL.createObjectURL(blob)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = 'starto_profile.png'
+                    document.body.appendChild(a)
+                    a.click()
+                    document.body.removeChild(a)
+                    // We don't have showToast on public profile, just set copied state
+                }
+                setIsGeneratingShare(false)
+                setIsCopied(true)
+                setTimeout(() => setIsCopied(false), 2000)
+            }, 'image/png')
+        } catch (err) {
+            console.error(err)
+            setIsGeneratingShare(false)
+            // Error handling fallback
+            const url = window.location.href;
+            navigator.clipboard.writeText(url);
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        }
     }
     
     useEffect(() => {
@@ -380,9 +424,9 @@ export default function PublicProfile({ params }: { params: { username: string }
                                 }`}>
                                     {displaySubscription} Account
                                 </div>
-                                <button onClick={handleShare} className="mt-2 flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-border transition-all bg-surface hover:bg-surface-2 text-text-secondary shadow-sm">
-                                    {isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-                                    {isCopied ? 'Copied' : 'Share Profile'}
+                                <button onClick={handleShare} disabled={isGeneratingShare} className="mt-2 flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-border transition-all bg-surface hover:bg-surface-2 text-text-secondary shadow-sm disabled:opacity-50">
+                                    {isGeneratingShare ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                                    {isGeneratingShare ? 'Generating...' : isCopied ? 'Copied' : 'Share Profile'}
                                 </button>
                             </div>
                         </div>
@@ -736,8 +780,27 @@ export default function PublicProfile({ params }: { params: { username: string }
                 isOpen={isNetworkModalOpen}
                 onClose={() => setIsNetworkModalOpen(false)}
                 connections={userConnections}
-                currentUserId={fetchedUser?.id}
+                title={`${displayName}'s Network`}
             />
+
+            {/* Hidden container for rendering ShareBadge */}
+            <div className="absolute left-[-9999px] top-[-9999px]">
+                <ShareBadge 
+                    ref={badgeRef}
+                    type="profile"
+                    username={effectiveUsername}
+                    name={displayName}
+                    avatarUrl={displayAvatarUrl}
+                    plan={displaySubscription}
+                    role={displayRole}
+                    city={displayCity}
+                    stats={{
+                        signals: signalsCount,
+                        connections: connectionsCount,
+                        rating: avgRating
+                    }}
+                />
+            </div>
         </div>
     )
 }
