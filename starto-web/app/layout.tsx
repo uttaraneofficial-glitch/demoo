@@ -10,6 +10,12 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
     title: 'Starto V3',
     description: 'Unified Growth Ecosystem Platform',
+    icons: {
+        icon: [
+            { url: '/icon.png', type: 'image/png' },
+            { url: '/favicon.ico', type: 'image/x-icon' }
+        ]
+    }
 };
 
 export default function RootLayout({
