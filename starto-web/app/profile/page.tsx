@@ -7,6 +7,8 @@ import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeChec
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
+import { useState, useEffect, useRef } from 'react'
+import { useAuthStore } from '@/store/useAuthStore'
 import { useSignalStore, getSignalExpiration } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useRatingStore } from '@/store/useRatingStore'
@@ -20,6 +22,8 @@ import { signalsApi, subscriptionsApi, offersApi, connectionsApi, usersApi } fro
 import StatusModal from '@/components/feed/StatusModal'
 import Toast from '@/components/feed/Toast'
 import NetworkModal from '@/components/feed/NetworkModal'
+import html2canvas from 'html2canvas'
+import { ShareBadge } from '@/components/feed/ShareBadge'
 
 
 export default function UserProfile() {
@@ -92,12 +96,48 @@ export default function UserProfile() {
     const [isEditing, setIsEditing] = useState(false)
     const [isEditingSocial, setIsEditingSocial] = useState(false)
     const [isCopied, setIsCopied] = useState(false)
+    const [isGeneratingShare, setIsGeneratingShare] = useState(false)
+    const badgeRef = useRef<HTMLDivElement>(null)
 
-    const handleShare = () => {
-        const url = `${window.location.origin}/profile/${username}`;
-        navigator.clipboard.writeText(url);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+    const handleShare = async () => {
+        if (!badgeRef.current) return
+        setIsGeneratingShare(true)
+        try {
+            const canvas = await html2canvas(badgeRef.current, {
+                scale: 2,
+                backgroundColor: null,
+                useCORS: true
+            })
+            
+            canvas.toBlob(async (blob) => {
+                if (!blob) return
+                const file = new File([blob], 'starto_profile.png', { type: 'image/png' })
+                
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: `${name || username}'s Starto Profile`,
+                        text: 'Check out my profile on Starto Ecosystem!',
+                    })
+                } else {
+                    const url = URL.createObjectURL(blob)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = 'starto_profile.png'
+                    document.body.appendChild(a)
+                    a.click()
+                    document.body.removeChild(a)
+                    showToast('Badge downloaded! You can now post it.')
+                }
+                setIsGeneratingShare(false)
+                setIsCopied(true)
+                setTimeout(() => setIsCopied(false), 2000)
+            }, 'image/png')
+        } catch (err) {
+            console.error(err)
+            setIsGeneratingShare(false)
+            showToast('Failed to generate share image', 'error')
+        }
     }
     
     const [socialForm, setSocialForm] = useState({ linkedinUrl, twitterUrl, githubUrl })
@@ -732,9 +772,9 @@ export default function UserProfile() {
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
-                                            <button onClick={handleShare} className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2 text-text-primary transition-all">
-                                                {isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-                                                {isCopied ? 'Copied URL' : 'Share'}
+                                            <button onClick={handleShare} disabled={isGeneratingShare} className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2 text-text-primary transition-all">
+                                                {isGeneratingShare ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                                                {isGeneratingShare ? 'Generating...' : isCopied ? 'Shared!' : 'Share Badge'}
                                             </button>
                                         </div>
                                     </>
@@ -776,23 +816,23 @@ export default function UserProfile() {
                                     activeTab === 'payments' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-primary'
                                 }`}
                             >
-                                Payment History
+                                Payment History ({dbPayments.length})
                             </button>
                         </div>
 
-                        <div className="min-h-[300px]">
+                        <div className="space-y-6">
                             {/* ACTIVE SIGNALS TAB */}
                             {activeTab === 'active' && (
                                 isFetchingSignals ? (
                                     <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
                                 ) : myActiveSignals.length === 0 ? (
                                     <div className="flex flex-col items-center py-16 text-center text-text-muted">
-                                        <Signal className="w-10 h-10 mb-3 opacity-30" />
+                                        <Zap className="w-10 h-10 mb-3 opacity-30" />
                                         <p className="text-sm">No active signals. Raise one from the Home Feed!</p>
                                     </div>
                                 ) : (
                                     <>
-                                        {myActiveSignals.slice(0, showAllActiveSignals ? undefined : 3).map(signal => (
+                                        {(showAllActiveSignals ? myActiveSignals : myActiveSignals.slice(0, 3)).map(signal => (
                                             <div 
                                                 key={signal.id} 
                                                 onClick={() => router.push(`/signals/${signal.id}`)}
@@ -1169,6 +1209,25 @@ export default function UserProfile() {
                 type={toast.type}
                 onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
             />
+
+            {/* Hidden container for rendering ShareBadge */}
+            <div className="absolute left-[-9999px] top-[-9999px]">
+                <ShareBadge 
+                    ref={badgeRef}
+                    type="profile"
+                    username={username}
+                    name={name}
+                    avatarUrl={user.avatarUrl}
+                    plan={plan}
+                    role={role}
+                    city={city}
+                    stats={{
+                        signals: dbSignals.length,
+                        connections: dbConnections.length,
+                        rating: avgRating
+                    }}
+                />
+            </div>
         </div>
     )
 }
