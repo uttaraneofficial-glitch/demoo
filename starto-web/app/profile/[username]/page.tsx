@@ -1,7 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
-import { MapPin, Globe, Twitter, Linkedin, Github, Zap, Users, BadgeCheck, Star, CheckCheck, Building } from 'lucide-react'
+import { MapPin, Globe, Twitter, Linkedin, Github, Zap, Users, BadgeCheck, Star, CheckCheck, Building, Share2, Check } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -64,6 +64,14 @@ export default function PublicProfile({ params }: { params: { username: string }
     const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false)
     const [userConnections, setUserConnections] = useState<any[]>([])
     const closeStatusModal = () => setStatusModal(prev => ({ ...prev, isOpen: false }))
+    
+    const [isCopied, setIsCopied] = useState(false)
+    const handleShare = () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+    }
     
     useEffect(() => {
         setIsMounted(true)
@@ -372,6 +380,10 @@ export default function PublicProfile({ params }: { params: { username: string }
                                 }`}>
                                     {displaySubscription} Account
                                 </div>
+                                <button onClick={handleShare} className="mt-2 flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-border transition-all bg-surface hover:bg-surface-2 text-text-secondary shadow-sm">
+                                    {isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                                    {isCopied ? 'Copied' : 'Share Profile'}
+                                </button>
                             </div>
                         </div>
 
