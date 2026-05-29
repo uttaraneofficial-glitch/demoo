@@ -3,7 +3,7 @@
 import Sidebar from '@/components/feed/Sidebar'
 import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
-import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
+import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2, Share2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -91,6 +91,14 @@ export default function UserProfile() {
 
     const [isEditing, setIsEditing] = useState(false)
     const [isEditingSocial, setIsEditingSocial] = useState(false)
+    const [isCopied, setIsCopied] = useState(false)
+
+    const handleShare = () => {
+        const url = `${window.location.origin}/profile/${username}`;
+        navigator.clipboard.writeText(url);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+    }
     
     const [socialForm, setSocialForm] = useState({ linkedinUrl, twitterUrl, githubUrl })
     const [editForm, setEditForm] = useState({
@@ -717,13 +725,17 @@ export default function UserProfile() {
                                                 <p className="text-[10px] text-text-muted">{myRatings.length} reviews</p>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-wrap gap-2">
                                             <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-black text-white rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-90">
                                                 <Edit3 className="w-3.5 h-3.5" /> Edit Profile
                                             </button>
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
+                                            <button onClick={handleShare} className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2 text-text-primary transition-all">
+                                                {isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                                                {isCopied ? 'Copied URL' : 'Share'}
+                                            </button>
                                         </div>
                                     </>
                                 )}
@@ -764,23 +776,23 @@ export default function UserProfile() {
                                     activeTab === 'payments' ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-primary'
                                 }`}
                             >
-                                Payment History ({dbPayments.length})
+                                Payment History
                             </button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="min-h-[300px]">
                             {/* ACTIVE SIGNALS TAB */}
                             {activeTab === 'active' && (
                                 isFetchingSignals ? (
                                     <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
                                 ) : myActiveSignals.length === 0 ? (
                                     <div className="flex flex-col items-center py-16 text-center text-text-muted">
-                                        <Zap className="w-10 h-10 mb-3 opacity-30" />
+                                        <Signal className="w-10 h-10 mb-3 opacity-30" />
                                         <p className="text-sm">No active signals. Raise one from the Home Feed!</p>
                                     </div>
                                 ) : (
                                     <>
-                                        {(showAllActiveSignals ? myActiveSignals : myActiveSignals.slice(0, 3)).map(signal => (
+                                        {myActiveSignals.slice(0, showAllActiveSignals ? undefined : 3).map(signal => (
                                             <div 
                                                 key={signal.id} 
                                                 onClick={() => router.push(`/signals/${signal.id}`)}
