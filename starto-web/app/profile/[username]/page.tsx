@@ -16,7 +16,7 @@ import StatusModal from '@/components/feed/StatusModal'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import NetworkModal from '@/components/feed/NetworkModal'
 import { useRef } from 'react'
-import html2canvas from 'html2canvas'
+import * as htmlToImage from 'html-to-image'
 import { ShareBadge } from '@/components/feed/ShareBadge'
 import { Loader2 } from 'lucide-react'
 
@@ -76,36 +76,36 @@ export default function PublicProfile({ params }: { params: { username: string }
         if (!badgeRef.current) return
         setIsGeneratingShare(true)
         try {
-            const canvas = await html2canvas(badgeRef.current, {
-                scale: 2,
-                backgroundColor: null,
-                useCORS: true
+            // Use html-to-image to handle modern CSS like oklch natively
+            const dataUrl = await htmlToImage.toPng(badgeRef.current, {
+                pixelRatio: 2,
+                cacheBust: true,
+                style: { transform: 'scale(1)', transformOrigin: 'top left' }
             })
             
-            canvas.toBlob(async (blob) => {
-                if (!blob) return
-                const file = new File([blob], 'starto_profile.png', { type: 'image/png' })
-                
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file],
-                        title: `${displayName}'s Starto Profile`,
-                        text: 'Check out this profile on Starto Ecosystem!',
-                    })
-                } else {
-                    const url = URL.createObjectURL(blob)
-                    const a = document.createElement('a')
-                    a.href = url
-                    a.download = 'starto_profile.png'
-                    document.body.appendChild(a)
-                    a.click()
-                    document.body.removeChild(a)
-                    // We don't have showToast on public profile, just set copied state
-                }
-                setIsGeneratingShare(false)
-                setIsCopied(true)
-                setTimeout(() => setIsCopied(false), 2000)
-            }, 'image/png')
+            const res = await fetch(dataUrl)
+            const blob = await res.blob()
+            const file = new File([blob], 'starto_profile.png', { type: 'image/png' })
+            
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: `${displayName}'s Starto Profile`,
+                    text: 'Check out my profile on Starto Ecosystem!',
+                })
+            } else {
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'starto_profile.png'
+                document.body.appendChild(a)
+                a.click()
+                document.body.removeChild(a)
+                alert('Badge downloaded! You can now post it.')
+            }
+            setIsGeneratingShare(false)
+            setIsCopied(true)
+            setTimeout(() => setIsCopied(false), 2000)
         } catch (err) {
             console.error(err)
             setIsGeneratingShare(false)
