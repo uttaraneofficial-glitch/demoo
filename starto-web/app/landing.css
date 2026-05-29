@@ -610,16 +610,16 @@ background: rgba(0,0,0,0.06); pointer-events: none;
 }
 .cta-eyebrow {
 font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-color: rgba(255,255,255,0.5); letter-spacing: 0.25em; text-transform: uppercase;
+color: var(--bg); opacity: 0.6; letter-spacing: 0.25em; text-transform: uppercase;
 margin-bottom: 20px;
 }
 .cta-title {
 font-family: var(--font-display); font-weight: 800;
 font-size: clamp(40px, 5vw, 72px); line-height: 0.95;
 letter-spacing: -0.03em; text-transform: uppercase;
-color: #fff; margin-bottom: 20px;
+color: var(--bg); margin-bottom: 20px;
 }
-.cta-sub { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 500px; margin: 0 auto 48px; line-height: 1.6; font-weight: 300; }
+.cta-sub { font-size: 18px; color: var(--bg); opacity: 0.8; max-width: 500px; margin: 0 auto 48px; line-height: 1.6; font-weight: 300; }
 .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 .btn-cta-dark {
 display: inline-flex; align-items: center; gap: 10px;
@@ -636,10 +636,10 @@ padding: 16px 40px; border-radius: 100px;
 background: transparent; color: var(--bg);
 font-family: var(--font-display); font-size: 14px; font-weight: 700;
 letter-spacing: 0.1em; text-transform: uppercase;
-text-decoration: none; border: 2px solid rgba(255,255,255,0.25);
+text-decoration: none; border: 2px solid var(--bg);
 transition: all var(--transition);
 }
-.btn-cta-ghost:hover { background: rgba(255,255,255,0.07); }
+.btn-cta-ghost:hover { background: var(--bg); color: var(--text); }
 
 /* ── FOOTER ────────────────────────────────── */
 footer.landing-footer {
