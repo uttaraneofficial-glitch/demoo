@@ -60,7 +60,7 @@ backdrop-filter: blur(20px);
 border-bottom: 1px solid var(--border);
 transition: var(--transition);
 }
-nav.landing-nav.scrolled { background: #FFFFFF; border-color: var(--border-hi); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+nav.landing-nav.scrolled { background: var(--bg); border-color: var(--border-hi); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
 .nav-logo {
 display: flex; align-items: center; gap: 10px;
 text-decoration: none;
@@ -762,4 +762,20 @@ nav.landing-nav .nav-links { display: none; }
 .team-grid { grid-template-columns: repeat(2, 1fr); }
 .footer-grid { grid-template-columns: 1fr; }
 .cta-inner { padding: 60px 28px; }
+}
+
+.dark {
+--bg: #0A0A0A;
+--bg2: #1A1A1A;
+--bg3: #2A2A2A;
+--surface: #1A1A1A;
+--surface2: #2A2A2A;
+--border: rgba(255,255,255,0.1);
+--border-hi: rgba(255,255,255,0.2);
+--accent: #F5F4F0;
+--accent-dim: rgba(255,255,255,0.05);
+--accent-glow: rgba(255,255,255,0.1);
+--text: #F5F4F0;
+--text-muted: #AAAAAA;
+--text-dim: #777777;
 }
