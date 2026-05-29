@@ -20,7 +20,7 @@ import { signalsApi, subscriptionsApi, offersApi, connectionsApi, usersApi } fro
 import StatusModal from '@/components/feed/StatusModal'
 import Toast from '@/components/feed/Toast'
 import NetworkModal from '@/components/feed/NetworkModal'
-import html2canvas from 'html2canvas'
+import * as htmlToImage from 'html-to-image'
 import { ShareBadge } from '@/components/feed/ShareBadge'
 
 
@@ -101,14 +101,15 @@ export default function UserProfile() {
         if (!badgeRef.current) return
         setIsGeneratingShare(true)
         try {
-            const canvas = await html2canvas(badgeRef.current, {
-                scale: 2,
-                backgroundColor: null,
-                useCORS: true
-            })
-            
-            canvas.toBlob(async (blob) => {
-                if (!blob) return
+                // Use html-to-image to handle modern CSS like oklch natively
+                const dataUrl = await htmlToImage.toPng(badgeRef.current, {
+                    pixelRatio: 2,
+                    cacheBust: true,
+                    style: { transform: 'scale(1)', transformOrigin: 'top left' }
+                })
+                
+                const res = await fetch(dataUrl)
+                const blob = await res.blob()
                 const file = new File([blob], 'starto_profile.png', { type: 'image/png' })
                 
                 if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -130,7 +131,7 @@ export default function UserProfile() {
                 setIsGeneratingShare(false)
                 setIsCopied(true)
                 setTimeout(() => setIsCopied(false), 2000)
-            }, 'image/png')
+
         } catch (err) {
             console.error(err)
             setIsGeneratingShare(false)
