@@ -622,7 +622,7 @@ export default function UserProfile() {
                                             <input value={editForm.handleBase} onChange={(e) => setEditForm({ ...editForm, handleBase: e.target.value })} className="w-full bg-surface border border-primary/30 p-2 rounded-md font-mono text-sm focus:ring-1 focus:ring-primary outline-none text-text-primary" placeholder="e.g. krishna_k88" />
                                             <p className="text-[10px] text-text-muted mt-1 font-mono">
                                                 Preview: <span className="text-primary font-bold">
-                                                    @{editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || 'â€¦'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
+                                                    @{editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || 'Ã¢â‚¬Â¦'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
                                                 </span>
                                             </p>
                                         </div>
@@ -682,7 +682,7 @@ export default function UserProfile() {
                                             )}
                                         </div>
                                         <p className="text-text-secondary text-sm font-medium mb-1 flex items-center gap-2">
-                                            {role} â€¢ {city}
+                                            {role} | {city}
                                             {displayPlan.toLowerCase() !== 'explorer' && (
                                                 <>
                                                     <span className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -698,7 +698,7 @@ export default function UserProfile() {
                                         {bio ? (
                                             <p className="text-sm text-text-secondary leading-relaxed mb-3 max-w-md">{bio}</p>
                                         ) : (
-                                            <p className="text-sm text-text-muted italic mb-3">No bio yet â€” click Edit Profile to add one.</p>
+                                            <p className="text-sm text-text-muted italic mb-3">No bio yet Ã¢â‚¬â€ click Edit Profile to add one.</p>
                                         )}
 
                                         {/* Social Nodes */}
@@ -731,21 +731,21 @@ export default function UserProfile() {
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">Signals Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.signalsLeft ?? 'â€”'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.signalsLeft ?? '-'}</p>
                                                 </div>
                                             </div>
                                             <div className="w-px h-8 bg-border hidden sm:block self-center" />
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">Offers Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.offersLeft ?? 'â€”'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.offersLeft ?? '-'}</p>
                                                 </div>
                                             </div>
                                             <div className="w-px h-8 bg-border hidden sm:block self-center" />
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">AI Calls Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.aiLeft ?? 'â€”'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.aiLeft ?? '-'}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -761,7 +761,7 @@ export default function UserProfile() {
                                             </div>
                                             <div>
                                                 <p className="text-[10px] uppercase font-bold text-text-muted">Rating</p>
-                                                <div className="flex items-center gap-1"><p className="text-xl font-mono font-bold">{avgRating > 0 ? avgRating.toFixed(1) : 'â€”'}</p>{avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}</div>
+                                                <div className="flex items-center gap-1"><p className="text-xl font-mono font-bold">{avgRating > 0 ? avgRating.toFixed(1) : '-'}</p>{avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}</div>
                                                 <p className="text-[10px] text-text-muted">{myRatings.length} reviews</p>
                                             </div>
                                         </div>
@@ -840,7 +840,7 @@ export default function UserProfile() {
                                             >
                                                 <div className="flex justify-between items-start mb-4">
                                                     <span className="text-[10px] px-2 py-0.5 bg-black text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
-                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">? Active</span>
+                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">● Active</span>
                                                 </div>
                                                 <h3 className="text-xl font-display mb-2 group-hover:text-primary transition-colors">{signal.title}</h3>
                                                 <p className="text-sm text-text-secondary line-clamp-2">{signal.description}</p>
@@ -883,7 +883,7 @@ export default function UserProfile() {
                                             <div className="flex justify-between items-start mb-4">
                                                 <span className="text-[10px] px-2 py-0.5 bg-text-muted text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
                                                 {signal.status === 'Solved' ? (
-                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">? Completed</span>
+                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">✓ Completed</span>
                                                 ) : (
                                                     <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Expired</span>
                                                 )}
@@ -1159,7 +1159,7 @@ export default function UserProfile() {
                                 onClick={() => router.push('/subscription')}
                                 className="w-full bg-background text-primary py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:opacity-90 transition-colors"
                             >
-                                {displayPlan === 'Free' ? 'Upgrade Now ?' : 'View Plan ?'}
+                                {displayPlan === 'Free' ? 'Upgrade Now ->' : 'View Plan ->'}
                             </button>
                         </div>
                         <Signal className="absolute -bottom-10 -right-10 w-48 h-48 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-1000" />
@@ -1232,5 +1232,6 @@ export default function UserProfile() {
         </div>
     )
 }
+
 
 
