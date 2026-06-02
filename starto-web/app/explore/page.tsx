@@ -5,9 +5,10 @@ import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { MapPin, Search, BarChart4, TrendingUp, AlertTriangle, Briefcase, FileText, CheckCircle2, Crown, Sparkles } from 'lucide-react'
+import { MapPin, Search, BarChart4, TrendingUp, AlertTriangle, Briefcase, FileText, CheckCircle2, Crown, Sparkles, Lock } from 'lucide-react'
 import { exploreApi, ApiExploreResponse } from '@/lib/apiClient'
 import { useAuthStore } from '@/store/useAuthStore'
+import { MOCK_TEASER_DATA } from './mockTeaser'
 import CityAutocomplete from '@/components/CityAutocomplete'
 import { useRouter } from 'next/navigation'
 
@@ -17,6 +18,7 @@ export default function StartoAIExplore() {
     const [analyzing, setAnalyzing] = useState(false)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [showResults, setShowResults] = useState(false)
+    const [isTeaserMode, setIsTeaserMode] = useState(false)
     const [loadingMessage, setLoadingMessage] = useState('Analyzing Market...')
     const [results, setResults] = useState<ApiExploreResponse | null>(null)
     const [usage, setUsage] = useState<{ used: number; limit: number; remaining: number } | null>(null)
@@ -74,12 +76,26 @@ export default function StartoAIExplore() {
         }
         
         if (usage && usage.remaining <= 0) {
-            setShowUpgradeModal(true);
+            setIsTeaserMode(true);
+            setAnalyzing(true);
+            
+            // Simulate AI Loading for teaser
+            let msgIndex = 0
+            const interval = setInterval(() => {
+                msgIndex = (msgIndex + 1) % loadingMessages.length
+                setLoadingMessage(loadingMessages[msgIndex])
+            }, 2000)
+
+            setTimeout(() => {
+                clearInterval(interval)
+                setResults(MOCK_TEASER_DATA)
+                setAnalyzing(false)
+                setShowResults(true)
+            }, 6000)
             return;
         }
 
-        if (!location || !industry) return;
-        
+        setIsTeaserMode(false);
         setAnalyzing(true)
         let msgIndex = 0
         const interval = setInterval(() => {
@@ -456,11 +472,11 @@ export default function StartoAIExplore() {
                                 </div>
                             </motion.section>
 
-                            <aside className="space-y-6 report-sidebar">
+                            <aside className={`space-y-6 report-sidebar relative ${isTeaserMode ? 'overflow-hidden' : ''}`}>
                                 <div className="bg-primary text-background p-8 rounded-2xl overflow-hidden relative print:bg-white print:text-black print:border print:border-border">
                                     <FileText className="w-12 h-12 text-white/10 absolute -top-2 -right-2 print:hidden" />
                                     <h4 className="text-lg font-display mb-4">90-Day Execution Plan</h4>
-                                    <div className="space-y-6 relative text-background">
+                                    <div className={`space-y-6 relative text-background ${isTeaserMode ? 'blur-md opacity-50 select-none' : ''}`}>
                                         {(results?.actionPlan?.map((phase, pIdx) => (
                                             <div key={pIdx} className="space-y-3">
                                                 <span className="text-[10px] uppercase text-background/60 block print:text-text-muted">{phase.range}</span>
@@ -505,6 +521,21 @@ export default function StartoAIExplore() {
                                         Upgrade Plan
                                     </Link>
                                 </div>
+                                
+                                {isTeaserMode && (
+                                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-8 text-center bg-background/20 backdrop-blur-[2px] rounded-2xl mt-0">
+                                        <div className="bg-surface p-6 rounded-2xl border border-border shadow-2xl max-w-[280px]">
+                                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <Lock className="w-6 h-6 text-primary" />
+                                            </div>
+                                            <h3 className="font-display text-lg mb-2">Premium Strategy Locked</h3>
+                                            <p className="text-xs text-text-secondary mb-6">Upgrade to your plan to reveal the full execution strategy, risk analysis, and competitor data.</p>
+                                            <Link href="/subscription" className="bg-primary text-background w-full py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors">
+                                                <Crown className="w-4 h-4" /> Unlock Full Report
+                                            </Link>
+                                        </div>
+                                    </div>
+                                )}
                             </aside>
                         </div>
                     )}
