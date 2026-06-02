@@ -1196,7 +1196,7 @@ export default function UserProfile() {
                     type="profile"
                     username={username}
                     name={name}
-                    avatarUrl={user.avatarUrl}
+                    avatarUrl={avatarUrl}
                     plan={plan}
                     role={role}
                     city={city}
