@@ -20,7 +20,6 @@ import { signalsApi, subscriptionsApi, offersApi, connectionsApi, usersApi } fro
 import StatusModal from '@/components/feed/StatusModal'
 import Toast from '@/components/feed/Toast'
 import NetworkModal from '@/components/feed/NetworkModal'
-import * as htmlToImage from 'html-to-image'
 import { ShareBadge } from '@/components/feed/ShareBadge'
 
 
@@ -95,47 +94,28 @@ export default function UserProfile() {
     const [isEditingSocial, setIsEditingSocial] = useState(false)
     const [isCopied, setIsCopied] = useState(false)
     const [isGeneratingShare, setIsGeneratingShare] = useState(false)
-    const badgeRef = useRef<HTMLDivElement>(null)
 
     const handleShare = async () => {
-        if (!badgeRef.current) return
         setIsGeneratingShare(true)
+        const url = `${window.location.origin}/profile/${username}`
         try {
-                // Use html-to-image to handle modern CSS like oklch natively
-                const dataUrl = await htmlToImage.toPng(badgeRef.current, {
-                    pixelRatio: 2,
-                    cacheBust: true,
-                    style: { transform: 'scale(1)', transformOrigin: 'top left' }
+            if (navigator.share && navigator.canShare) {
+                await navigator.share({
+                    title: `${name || username}'s Starto Profile`,
+                    text: 'Check out my profile on Starto Ecosystem!',
+                    url: url,
                 })
-                
-                const res = await fetch(dataUrl)
-                const blob = await res.blob()
-                const file = new File([blob], 'starto_profile.png', { type: 'image/png' })
-                
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        files: [file],
-                        title: `${name || username}'s Starto Profile`,
-                        text: 'Check out my profile on Starto Ecosystem!',
-                    })
-                } else {
-                    const url = URL.createObjectURL(blob)
-                    const a = document.createElement('a')
-                    a.href = url
-                    a.download = 'starto_profile.png'
-                    document.body.appendChild(a)
-                    a.click()
-                    document.body.removeChild(a)
-                    showToast('Badge downloaded! You can now post it.')
-                }
-                setIsGeneratingShare(false)
-                setIsCopied(true)
-                setTimeout(() => setIsCopied(false), 2000)
-
+            } else {
+                await navigator.clipboard.writeText(url)
+                showToast('Profile link copied to clipboard!')
+            }
+            setIsCopied(true)
+            setTimeout(() => setIsCopied(false), 2000)
         } catch (err) {
             console.error(err)
+            showToast('Failed to share profile', 'error')
+        } finally {
             setIsGeneratingShare(false)
-            showToast('Failed to generate share image', 'error')
         }
     }
     
@@ -528,7 +508,7 @@ export default function UserProfile() {
 
                 <main className="flex-1 w-full max-w-[680px] md:border-r border-border min-h-screen p-0">
 
-                    {/* ── Clean Profile Header (no cover) ── */}
+                    {/* -- Clean Profile Header (no cover) -- */}
                     <div className="px-8 pt-8 pb-6 border-b border-border">
                         <div className="flex items-start gap-6">
                             {/* Avatar */}
@@ -839,7 +819,7 @@ export default function UserProfile() {
                                             >
                                                 <div className="flex justify-between items-start mb-4">
                                                     <span className="text-[10px] px-2 py-0.5 bg-black text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
-                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">● Active</span>
+                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">? Active</span>
                                                 </div>
                                                 <h3 className="text-xl font-display mb-2 group-hover:text-primary transition-colors">{signal.title}</h3>
                                                 <p className="text-sm text-text-secondary line-clamp-2">{signal.description}</p>
@@ -882,7 +862,7 @@ export default function UserProfile() {
                                             <div className="flex justify-between items-start mb-4">
                                                 <span className="text-[10px] px-2 py-0.5 bg-text-muted text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
                                                 {signal.status === 'Solved' ? (
-                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">✓ Completed</span>
+                                                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">? Completed</span>
                                                 ) : (
                                                     <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Expired</span>
                                                 )}
@@ -972,7 +952,7 @@ export default function UserProfile() {
                             )}
                         </div>
                     </div>
-                    {/* ── Logout & Delete Account ── */}
+                    {/* -- Logout & Delete Account -- */}
                     <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
                         <button
                             onClick={() => { useAuthStore.getState().clearAuth(); router.push('/auth') }}
@@ -1158,7 +1138,7 @@ export default function UserProfile() {
                                 onClick={() => router.push('/subscription')}
                                 className="w-full bg-background text-primary py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:opacity-90 transition-colors"
                             >
-                                {displayPlan === 'Free' ? 'Upgrade Now →' : 'View Plan →'}
+                                {displayPlan === 'Free' ? 'Upgrade Now ?' : 'View Plan ?'}
                             </button>
                         </div>
                         <Signal className="absolute -bottom-10 -right-10 w-48 h-48 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-1000" />
@@ -1220,6 +1200,7 @@ export default function UserProfile() {
                     plan={plan}
                     role={role}
                     city={city}
+                    bio={bio}
                     stats={{
                         signals: dbSignals.length,
                         connections: dbConnections.length,
@@ -1230,3 +1211,4 @@ export default function UserProfile() {
         </div>
     )
 }
+
