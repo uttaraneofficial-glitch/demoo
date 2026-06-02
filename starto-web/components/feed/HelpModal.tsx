@@ -7,6 +7,7 @@ import { useSignalStore } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useRouter } from 'next/navigation'
+import StatusModal from '@/components/feed/StatusModal'
 
 interface HelpModalProps {
     isOpen: boolean
@@ -26,6 +27,12 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
     const [message, setMessage] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [error, setError] = useState('')
+    const [statusModal, setStatusModal] = useState<{isOpen: boolean, type: 'success' | 'error' | 'upgrade', title: string, message: string}>({
+        isOpen: false,
+        type: 'error',
+        title: '',
+        message: ''
+    })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -56,11 +63,12 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
             }, 2000)
         } catch (err: any) {
             if (err.status === 403) {
-                setError(`🚫 Limit reached! Your ${user?.plan || 'Explorer'} plan limit is exceeded. Redirecting to upgrade...`)
-                setTimeout(() => {
-                    router.push('/subscription')
-                    onClose()
-                }, 2500)
+                setStatusModal({
+                    isOpen: true,
+                    type: 'upgrade',
+                    title: 'Upgrade Required',
+                    message: `Limit reached! Your ${user?.plan || 'Explorer'} plan limit is exceeded.`
+                })
             } else {
                 setError(err.message || 'Failed to send offer. Please try again.')
             }
@@ -160,6 +168,20 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                     </motion.div>
                 </div>
             )}
+            
+            <StatusModal
+                isOpen={statusModal.isOpen}
+                onClose={() => {
+                    setStatusModal(prev => ({...prev, isOpen: false}))
+                    if (statusModal.type === 'upgrade') {
+                        onClose()
+                        router.push('/subscription')
+                    }
+                }}
+                type={statusModal.type}
+                title={statusModal.title}
+                message={statusModal.message}
+            />
         </AnimatePresence>
     )
 }
