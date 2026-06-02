@@ -417,16 +417,16 @@ export default function SubscriptionPage() {
                         </section>
 
                         {/* Captains Program Section */}
-                        <section className="p-10 lg:p-16 bg-black rounded-[2.5rem] relative overflow-hidden text-white mb-20">
-                            <div className="absolute top-0 right-0 p-20 bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
+                        <section className="p-10 lg:p-16 bg-surface-2 rounded-[2.5rem] relative overflow-hidden mb-20 border border-border">
+                            <div className="absolute top-0 right-0 p-20 bg-primary/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
                             <div className="relative z-10 flex flex-col lg:flex-row gap-16 items-center">
                                 <div className="max-w-md">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full border border-white/10 mb-6 text-[#F5F4F0]">
-                                        <Crown className="w-4 h-4" />
-                                        <span className="text-[10px] font-bold uppercase tracking-widest">Captain Priority</span>
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface rounded-full border border-border mb-6">
+                                        <Crown className="w-4 h-4 text-primary" />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-text-primary">Captain Priority</span>
                                     </div>
-                                    <h2 className="text-4xl lg:text-5xl font-display mb-6">Captains Program</h2>
-                                    <p className="text-gray-400 text-lg leading-relaxed mb-8">
+                                    <h2 className="text-4xl lg:text-5xl font-display mb-6 text-text-primary">Captains Program</h2>
+                                    <p className="text-text-secondary text-lg leading-relaxed mb-8">
                                         Become a pillar of the community. Lead your own hub, manage localized signals,
                                         and get exclusive administrative control over node networks.
                                     </p>
@@ -435,42 +435,42 @@ export default function SubscriptionPage() {
                                             <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-primary">
                                                 <Check className="w-4 h-4" />
                                             </div>
-                                            <span className="text-gray-300 font-medium font-mono text-sm underline decoration-primary/30">Community Governance</span>
+                                            <span className="text-text-primary font-medium font-mono text-sm underline decoration-primary/30">Community Governance</span>
                                         </div>
                                         <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-primary">
+                                            <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                                 <Check className="w-4 h-4" />
                                             </div>
-                                            <span className="text-gray-300 font-medium font-mono text-sm underline decoration-primary/30">Admin Dashboards</span>
+                                            <span className="text-text-primary font-medium font-mono text-sm underline decoration-primary/30">Admin Dashboards</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:w-auto shrink-0">
                                     {mergedCaptainPlans.map((plan, idx) => (
-                                        <div key={plan.name} className={`p-8 rounded-[2rem] border transition-all duration-500 hover:scale-105 ${plan.highlight ? 'bg-primary text-background border-primary shadow-2xl' : 'bg-white/5 border-white/10 hover:border-white/30'} flex flex-col`}>
+                                        <div key={plan.name} className={`p-8 rounded-[2rem] border transition-all duration-500 hover:scale-105 ${plan.highlight ? 'bg-primary text-background border-primary shadow-2xl' : 'bg-surface border-border hover:border-text-primary/30'} flex flex-col`}>
                                             <div className="mb-6">
-                                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${plan.highlight ? 'bg-background text-primary' : 'bg-primary/20 text-primary'}`}>
+                                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${plan.highlight ? 'bg-background text-primary' : 'bg-primary/10 text-primary'}`}>
                                                     <plan.icon className="w-6 h-6" />
                                                 </div>
-                                                <h3 className="text-2xl font-display mb-1">{plan.name}</h3>
+                                                <h3 className={`text-2xl font-display mb-1 ${plan.highlight ? 'text-background' : 'text-text-primary'}`}>{plan.name}</h3>
                                                 <div className="flex items-baseline gap-1 mb-2">
                                                     <span className="text-3xl font-mono font-bold">₹{plan.price}</span>
-                                                    <span className={`text-sm ${plan.highlight ? 'text-background/70' : 'text-gray-400'}`}>/month</span>
+                                                    <span className={`text-sm ${plan.highlight ? 'text-background/70' : 'text-text-secondary'}`}>/month</span>
                                                 </div>
                                             </div>
                                             <div className="flex-1 space-y-2.5 mb-8">
                                                 {plan.features.map((f: string) => (
                                                     <div key={f} className="flex items-center gap-2">
                                                         <Check className="w-3.5 h-3.5 text-primary opacity-60" />
-                                                        <span className={`text-[12px] leading-tight ${plan.highlight ? 'text-background/70' : 'text-gray-300'}`}>{f}</span>
+                                                        <span className={`text-[12px] leading-tight ${plan.highlight ? 'text-background/90' : 'text-text-secondary'}`}>{f}</span>
                                                     </div>
                                                 ))}
                                             </div>
                                             <button
                                                 onClick={() => handleUpgradeClick(plan.name)}
                                                 disabled={plan.name === 'Explorer'}
-                                                className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all ${subscription?.toUpperCase() === plan.id?.toUpperCase() ? 'bg-accent-green text-white shadow-lg shadow-accent-green/20' : plan.highlight ? 'bg-black text-white hover:bg-black/90' : 'bg-primary text-background hover:bg-primary/90'} disabled:opacity-50`}
+                                                className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all ${subscription?.toUpperCase() === plan.id?.toUpperCase() ? 'bg-accent-green text-white shadow-lg shadow-accent-green/20' : 'bg-primary text-background hover:bg-primary/90'} disabled:opacity-50`}
                                             >
                                                 {subscription?.toUpperCase() === plan.id?.toUpperCase() ? 'Renew Program' : `Join Program`}
                                             </button>
