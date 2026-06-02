@@ -1,13 +1,15 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
-import { MapPin, Globe, Twitter, Linkedin, Github, Zap, Users, BadgeCheck, Star, CheckCheck, Building, Share2, Check } from 'lucide-react'
+import { MapPin, Globe, Twitter, Linkedin, Github, Zap, Users, BadgeCheck, Star, CheckCheck, Building } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useSignalStore } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useRatingStore } from '@/store/useRatingStore'
+import { formatDistanceToNow } from 'date-fns'
+import { hasWhatsappAccess } from '@/lib/planUtils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { usersApi, connectionsApi, signalsApi, ApiUser, ApiSignal } from '@/lib/apiClient'
@@ -15,10 +17,6 @@ import { motion } from 'framer-motion'
 import StatusModal from '@/components/feed/StatusModal'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import NetworkModal from '@/components/feed/NetworkModal'
-import { useRef } from 'react'
-import * as htmlToImage from 'html-to-image'
-import { ShareBadge } from '@/components/feed/ShareBadge'
-import { Loader2 } from 'lucide-react'
 
 export default function PublicProfile({ params }: { params: { username: string } }) {
     const { username: paramUsername } = params
@@ -68,54 +66,6 @@ export default function PublicProfile({ params }: { params: { username: string }
     const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false)
     const [userConnections, setUserConnections] = useState<any[]>([])
     const closeStatusModal = () => setStatusModal(prev => ({ ...prev, isOpen: false }))
-    const [isCopied, setIsCopied] = useState(false)
-    const [isGeneratingShare, setIsGeneratingShare] = useState(false)
-    const badgeRef = useRef<HTMLDivElement>(null)
-
-    const handleShare = async () => {
-        if (!badgeRef.current) return
-        setIsGeneratingShare(true)
-        try {
-            // Use html-to-image to handle modern CSS like oklch natively
-            const dataUrl = await htmlToImage.toPng(badgeRef.current, {
-                pixelRatio: 2,
-                cacheBust: true,
-                style: { transform: 'scale(1)', transformOrigin: 'top left' }
-            })
-            
-            const res = await fetch(dataUrl)
-            const blob = await res.blob()
-            const file = new File([blob], 'starto_profile.png', { type: 'image/png' })
-            
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: `${displayName}'s Starto Profile`,
-                    text: 'Check out my profile on Starto Ecosystem!',
-                })
-            } else {
-                const url = URL.createObjectURL(blob)
-                const a = document.createElement('a')
-                a.href = url
-                a.download = 'starto_profile.png'
-                document.body.appendChild(a)
-                a.click()
-                document.body.removeChild(a)
-                alert('Badge downloaded! You can now post it.')
-            }
-            setIsGeneratingShare(false)
-            setIsCopied(true)
-            setTimeout(() => setIsCopied(false), 2000)
-        } catch (err) {
-            console.error(err)
-            setIsGeneratingShare(false)
-            // Error handling fallback
-            const url = window.location.href;
-            navigator.clipboard.writeText(url);
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000);
-        }
-    }
     
     useEffect(() => {
         setIsMounted(true)
@@ -294,6 +244,17 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                             c.receiverId === paramUsername
                                                         );
                                                         if (!conn) return;
+
+                                                        if (!hasWhatsappAccess(user?.plan)) {
+                                                            setStatusModal({
+                                                                isOpen: true,
+                                                                type: 'upgrade',
+                                                                title: 'Upgrade Required',
+                                                                message: 'Your current plan does not include WhatsApp direct access. Please upgrade to unlock.'
+                                                            });
+                                                            return;
+                                                        }
+
                                                         const { data, error } = await connectionsApi.getWhatsappLink(conn.id);
                                                         if (data?.whatsappUrl) {
                                                             window.open(data.whatsappUrl, '_blank');
@@ -424,10 +385,6 @@ export default function PublicProfile({ params }: { params: { username: string }
                                 }`}>
                                     {displaySubscription} Account
                                 </div>
-                                <button onClick={handleShare} disabled={isGeneratingShare} className="mt-2 flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-border transition-all bg-surface hover:bg-surface-2 text-text-secondary shadow-sm disabled:opacity-50">
-                                    {isGeneratingShare ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-                                    {isGeneratingShare ? 'Generating...' : isCopied ? 'Copied' : 'Share Profile'}
-                                </button>
                             </div>
                         </div>
 
@@ -780,27 +737,8 @@ export default function PublicProfile({ params }: { params: { username: string }
                 isOpen={isNetworkModalOpen}
                 onClose={() => setIsNetworkModalOpen(false)}
                 connections={userConnections}
-                title={`${displayName}'s Network`}
+                currentUserId={fetchedUser?.id}
             />
-
-            {/* Hidden container for rendering ShareBadge */}
-            <div className="absolute left-[-9999px] top-[-9999px]">
-                <ShareBadge 
-                    ref={badgeRef}
-                    type="profile"
-                    username={effectiveUsername}
-                    name={displayName}
-                    avatarUrl={displayAvatarUrl}
-                    plan={displaySubscription}
-                    role={displayRole}
-                    city={displayCity}
-                    stats={{
-                        signals: signalsCount,
-                        connections: connectionsCount,
-                        rating: avgRating
-                    }}
-                />
-            </div>
         </div>
     )
 }
