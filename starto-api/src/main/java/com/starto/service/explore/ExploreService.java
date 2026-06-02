@@ -128,15 +128,15 @@ public class ExploreService {
                 "CRITICAL INSTRUCTION: Your insights MUST be senior-level, extremely valuable, and highly strategic to justify a premium subscription. " +
                 "HOWEVER, you must write in incredibly simple, crystal-clear, jargon-free English (8th-grade reading level) so that absolutely anyone, from uneducated to highly educated, can perfectly understand and execute your plan. Be brutally honest, avoid generic advice, and provide highly specific, actionable, and viral-worthy insights.\n\n" +
                 "IMPORTANT: Provide REAL and VALID government schemes, subsidies, or policies available for this specific industry and location. Do not hallucinate.\n\n" +
-                "Return ONLY a valid JSON object with the following structure (no other text, no markdown):\n" +
+                "Return ONLY a valid JSON object with EXACTLY the following structure (do not add any comments or markdown):\n" +
                 "{\n" +
                 "  \"marketDemand\": {\n" +
-                "    \"score\": 8, // Integer between 1-10. Must be dynamic and brutally realistic based on actual data, do not always output 7\n" +
-                "    \"marketSummary\": \"A clear, simple, senior-level strategic summary of why the demand is high or low (written like a brilliant mentor talking to a founder in plain English)\",\n" +
+                "    \"score\": 8,\n" +
+                "    \"marketSummary\": \"Write a deeply analytical, 3-paragraph strategic summary. Break down the core opportunity, the immediate threat, and the unfair advantage the founder needs to build. Use punchy, highly readable language (8th-grade level) that feels like an elite mentor speaking.\",\n" +
                 "    \"drivers\": [\"driver1\", \"driver2\"],\n" +
                 "    \"sources\": [\"source1\", \"source2\"]\n" +
                 "  },\n" +
-                "  \"competitors\": [], // Leave empty. Competitors are fetched from real-time data.\n" +
+                "  \"competitors\": [],\n" +
                 "  \"risks\": [{\"title\": \"\", \"description\": \"\", \"severity\": \"LOW|MEDIUM|HIGH\", \"mitigation\": \"\"}],\n" +
                 "  \"budgetFeasibility\": {\"canBuild\": [\"item1\", \"item2\"], \"actualNeed\": [\"item1\", \"item2\"], \"verdict\": \"Feasible|Tight|Infeasible\"},\n" +
                 "  \"governmentSchemes\": [{\"name\": \"Name of scheme\", \"body\": \"Governing body\", \"benefits\": \"Detailed benefits\", \"eligibility\": \"Who can apply\", \"applyUrl\": \"Official link if known\"}],\n" +
