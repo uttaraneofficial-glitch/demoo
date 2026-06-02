@@ -26,6 +26,8 @@ public class UnifiedPostDTO {
     private Integer viewCount;
     private Integer responseCount;
     private Integer offerCount;
+    private String signalStrength;
+    private OffsetDateTime expiresAt;
     
     // Space specific
     private String spaceType;
