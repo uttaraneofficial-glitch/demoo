@@ -72,6 +72,12 @@ export default function StartoAIExplore() {
             router.push('/auth')
             return
         }
+        
+        if (usage && usage.remaining <= 0) {
+            setShowUpgradeModal(true);
+            return;
+        }
+
         if (!location || !industry) return;
         
         setAnalyzing(true)
