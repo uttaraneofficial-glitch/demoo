@@ -184,7 +184,7 @@ export default function StartoAIExplore() {
                     <header className="mb-12">
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                             <div className="inline-flex items-center gap-2 bg-primary text-background px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                                Powered by GPT-4o + Gemini
+                                Powered by Starto AI
                             </div>
                             {usage && (
                                 <div className="inline-flex items-center gap-2 bg-surface-2 border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-text-primary">
