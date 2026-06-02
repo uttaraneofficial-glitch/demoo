@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { signalsApi } from '@/lib/apiClient'
 import { canPostSignal, getSignalLimit } from '@/lib/planUtils'
 import CityAutocomplete from '@/components/CityAutocomplete'
+import StatusModal from '@/components/feed/StatusModal'
 
 interface RaiseSignalModalProps {
     isOpen: boolean;
@@ -32,6 +33,12 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
     const [coords, setCoords] = useState<{lat?: number, lng?: number}>({});
     const [submitting, setSubmitting] = useState(false);
     const [toast, setToast] = useState<{ type: 'success' | 'warn'; msg: string } | null>(null);
+    const [statusModal, setStatusModal] = useState<{isOpen: boolean, type: 'success' | 'error' | 'upgrade', title: string, message: string}>({
+        isOpen: false,
+        type: 'error',
+        title: '',
+        message: ''
+    });
 
     useEffect(() => {
         if (isOpen && editSignal) {
@@ -106,15 +113,23 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
         const currentCount = user?.signalCount || 0;
         const limit = getSignalLimit(user?.plan);
         if (!canPostSignal(user?.plan, currentCount) && !editSignal) {
-            setToast({ type: 'warn', msg: `🚫 Limit reached! Your ${user?.plan || 'Explorer'} plan allows only ${limit} signals.` });
-            setTimeout(() => { router.push('/subscription'); onClose(); }, 2500);
+            setStatusModal({
+                isOpen: true,
+                type: 'upgrade',
+                title: 'Upgrade Required',
+                message: `🚫 Limit reached! Your ${user?.plan || 'Explorer'} plan allows only ${limit} signals.`
+            });
             return;
         }
 
         const isExplorer = !user?.plan || user.plan.toUpperCase() === 'EXPLORER';
         if (duration > 7 && isExplorer) {
-            setToast({ type: 'warn', msg: '🚫 StarPro Feature: Explorer plan allows max 7 days. Please upgrade.' });
-            setTimeout(() => { router.push('/subscription'); onClose(); }, 2500);
+            setStatusModal({
+                isOpen: true,
+                type: 'upgrade',
+                title: 'Upgrade Required',
+                message: '🚫 StarPro Feature: Explorer plan allows max 7 days. Please upgrade.'
+            });
             return;
         }
 
@@ -178,8 +193,6 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 type: signalType,
                 seeking: category,
                 stage: stage,
-                seeking: category,
-                stage: stage,
                 city: cityInfo.city || address || 'Global',
                 state: cityInfo.state || 'Global',
                 address: address,
@@ -220,12 +233,14 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
             setToast({ type: 'warn', msg: '⚠ Session expired. Please login again.' });
             setTimeout(() => { onClose(); }, 1500);
         } else if (status === 403) {
-            // 🚫 Limit reached or Forbidden
+            // Limits reached
             const errMsg = error || 'Signal limit reached for your plan.';
-            setToast({ type: 'warn', msg: `🚫 ${errMsg}` });
-            if (errMsg.toLowerCase().includes('limit')) {
-                setTimeout(() => { router.push('/subscription'); onClose(); }, 2000);
-            }
+            setStatusModal({
+                isOpen: true,
+                type: 'upgrade',
+                title: 'Upgrade Required',
+                message: errMsg
+            });
         } else {
             // Network error or other — fall back to local
             addSignal({
@@ -464,6 +479,20 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                         </button>
                     </div>
                 </motion.div>
+
+                <StatusModal
+                    isOpen={statusModal.isOpen}
+                    onClose={() => {
+                        setStatusModal(prev => ({...prev, isOpen: false}));
+                        if (statusModal.type === 'upgrade') {
+                            onClose(); // close the RaiseSignal modal
+                            router.push('/subscription');
+                        }
+                    }}
+                    type={statusModal.type}
+                    title={statusModal.title}
+                    message={statusModal.message}
+                />
             </div>
         </AnimatePresence>
     )
