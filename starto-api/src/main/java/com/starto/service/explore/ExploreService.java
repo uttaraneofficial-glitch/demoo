@@ -137,7 +137,11 @@ public class ExploreService {
                 "    \"drivers\": [\"driver1\", \"driver2\"],\n" +
                 "    \"sources\": [\"source1\", \"source2\"]\n" +
                 "  },\n" +
-                "  \"competitors\": [{\"name\": \"Competitor 1\", \"location\": \"General Area\", \"threatLevel\": \"HIGH\", \"description\": \"Provide a realistic threat analysis\"}],\n" +
+                "  \"competitors\": [\n" +
+                "    {\"name\": \"Competitor Name\", \"location\": \"Local Area\", \"threatLevel\": \"HIGH\", \"description\": \"Detailed threat analysis\"},\n" +
+                "    {\"name\": \"Another Competitor\", \"location\": \"Nearby\", \"threatLevel\": \"MEDIUM\", \"description\": \"Detailed threat analysis\"},\n" +
+                "    {\"name\": \"Third Competitor\", \"location\": \"Region\", \"threatLevel\": \"LOW\", \"description\": \"Detailed threat analysis\"}\n" +
+                "  ],\n" +
                 "  \"risks\": [{\"title\": \"Specific Local Risk\", \"description\": \"CITE REAL WORLD DATA: Mention specific local supply chain issues, exact competitor saturation levels, or verified demographic/purchasing power constraints.\", \"severity\": \"LOW|MEDIUM|HIGH\", \"mitigation\": \"Actionable mitigation strategy\"}],\n" +
                 "  \"budgetFeasibility\": {\"canBuild\": [\"item1\", \"item2\"], \"actualNeed\": [\"item1\", \"item2\"], \"verdict\": \"Feasible|Tight|Infeasible\"},\n" +
                 "  \"governmentSchemes\": [{\"name\": \"Name of scheme\", \"body\": \"Governing body\", \"benefits\": \"Detailed benefits\", \"eligibility\": \"Who can apply\", \"applyUrl\": \"Official link if known\"}],\n" +
