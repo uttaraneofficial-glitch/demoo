@@ -119,19 +119,20 @@ public class ExploreService {
     }
 
     private String buildGptPrompt(ExploreRequest req, String locationData) {
-        return "You are a market analysis expert. Analyze the market for a " + req.getIndustry() +
+        return "You are an elite, senior-level market analyst and startup advisor. Analyze the market for a " + req.getIndustry() +
                 " startup in " + req.getLocation() +
                 " with a budget of " + req.getBudget() +
                 " at " + req.getStage() + " stage. " +
                 "Target customer: " + req.getTargetCustomer() + ". " +
                 "Location context: " + locationData + ".\n\n" +
-                "IMPORTANT: Use very simple English. It should be understandable by a 12-year-old. Avoid complex words and business jargon. Explain things simply.\n" +
+                "CRITICAL INSTRUCTION: Your insights MUST be senior-level, extremely valuable, and highly strategic to justify a premium subscription. " +
+                "HOWEVER, you must write in incredibly simple, crystal-clear, jargon-free English (8th-grade reading level) so that absolutely anyone, from uneducated to highly educated, can perfectly understand and execute your plan. Be brutally honest, avoid generic advice, and provide highly specific, actionable, and viral-worthy insights.\n\n" +
                 "IMPORTANT: Provide REAL and VALID government schemes, subsidies, or policies available for this specific industry and location. Do not hallucinate.\n\n" +
                 "Return ONLY a valid JSON object with the following structure (no other text, no markdown):\n" +
                 "{\n" +
                 "  \"marketDemand\": {\n" +
-                "    \"score\": <1-10>,\n" +
-                "    \"marketSummary\": \"A clear, simple summary of why the demand is high or low (written like a person talking to a founder)\",\n" +
+                "    \"score\": 8, // Integer between 1-10. Must be dynamic and brutally realistic based on actual data, do not always output 7\n" +
+                "    \"marketSummary\": \"A clear, simple, senior-level strategic summary of why the demand is high or low (written like a brilliant mentor talking to a founder in plain English)\",\n" +
                 "    \"drivers\": [\"driver1\", \"driver2\"],\n" +
                 "    \"sources\": [\"source1\", \"source2\"]\n" +
                 "  },\n" +
