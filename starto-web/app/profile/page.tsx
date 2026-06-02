@@ -6,6 +6,7 @@ import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2, Share2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
+import { toPng } from 'html-to-image'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useSignalStore, getSignalExpiration } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
@@ -94,26 +95,46 @@ export default function UserProfile() {
     const [isEditingSocial, setIsEditingSocial] = useState(false)
     const [isCopied, setIsCopied] = useState(false)
     const [isGeneratingShare, setIsGeneratingShare] = useState(false)
+    const badgeRef = useRef<HTMLDivElement>(null)
 
-    const handleShare = async () => {
+        const handleShare = async () => {
         setIsGeneratingShare(true)
-        const url = `${window.location.origin}/profile/${username}`
         try {
-            if (navigator.share && navigator.canShare) {
-                await navigator.share({
-                    title: `${name || username}'s Starto Profile`,
-                    text: 'Check out my profile on Starto Ecosystem!',
-                    url: url,
-                })
-            } else {
-                await navigator.clipboard.writeText(url)
-                showToast('Profile link copied to clipboard!')
+            if (badgeRef.current === null) {
+                throw new Error('Badge ref not found')
             }
+            
+            // Temporarily make the badge visible for rendering
+            const badgeContainer = badgeRef.current.parentElement
+            if (badgeContainer) {
+                badgeContainer.style.position = 'fixed'
+                badgeContainer.style.left = '0px'
+                badgeContainer.style.top = '0px'
+                badgeContainer.style.zIndex = '-9999'
+                badgeContainer.style.opacity = '1'
+            }
+
+            const dataUrl = await toPng(badgeRef.current, { cacheBust: true, pixelRatio: 2 })
+            
+            // Hide it again
+            if (badgeContainer) {
+                badgeContainer.style.position = 'absolute'
+                badgeContainer.style.left = '-9999px'
+                badgeContainer.style.top = '-9999px'
+            }
+
+            // Create download link
+            const link = document.createElement('a')
+            link.download = `@${username}_starto_card.png`
+            link.href = dataUrl
+            link.click()
+
+            showToast('Premium badge downloaded successfully!')
             setIsCopied(true)
             setTimeout(() => setIsCopied(false), 2000)
         } catch (err) {
-            console.error(err)
-            showToast('Failed to share profile', 'error')
+            console.error('Failed to generate image', err)
+            showToast('Failed to generate premium badge', 'error')
         } finally {
             setIsGeneratingShare(false)
         }
@@ -601,7 +622,7 @@ export default function UserProfile() {
                                             <input value={editForm.handleBase} onChange={(e) => setEditForm({ ...editForm, handleBase: e.target.value })} className="w-full bg-surface border border-primary/30 p-2 rounded-md font-mono text-sm focus:ring-1 focus:ring-primary outline-none text-text-primary" placeholder="e.g. krishna_k88" />
                                             <p className="text-[10px] text-text-muted mt-1 font-mono">
                                                 Preview: <span className="text-primary font-bold">
-                                                    @{editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || '…'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
+                                                    @{editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || 'â€¦'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
                                                 </span>
                                             </p>
                                         </div>
@@ -661,7 +682,7 @@ export default function UserProfile() {
                                             )}
                                         </div>
                                         <p className="text-text-secondary text-sm font-medium mb-1 flex items-center gap-2">
-                                            {role} • {city}
+                                            {role} â€¢ {city}
                                             {displayPlan.toLowerCase() !== 'explorer' && (
                                                 <>
                                                     <span className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -677,7 +698,7 @@ export default function UserProfile() {
                                         {bio ? (
                                             <p className="text-sm text-text-secondary leading-relaxed mb-3 max-w-md">{bio}</p>
                                         ) : (
-                                            <p className="text-sm text-text-muted italic mb-3">No bio yet — click Edit Profile to add one.</p>
+                                            <p className="text-sm text-text-muted italic mb-3">No bio yet â€” click Edit Profile to add one.</p>
                                         )}
 
                                         {/* Social Nodes */}
@@ -710,21 +731,21 @@ export default function UserProfile() {
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">Signals Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.signalsLeft ?? '—'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.signalsLeft ?? 'â€”'}</p>
                                                 </div>
                                             </div>
                                             <div className="w-px h-8 bg-border hidden sm:block self-center" />
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">Offers Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.offersLeft ?? '—'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.offersLeft ?? 'â€”'}</p>
                                                 </div>
                                             </div>
                                             <div className="w-px h-8 bg-border hidden sm:block self-center" />
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">AI Calls Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.aiLeft ?? '—'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.aiLeft ?? 'â€”'}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -740,7 +761,7 @@ export default function UserProfile() {
                                             </div>
                                             <div>
                                                 <p className="text-[10px] uppercase font-bold text-text-muted">Rating</p>
-                                                <div className="flex items-center gap-1"><p className="text-xl font-mono font-bold">{avgRating > 0 ? avgRating.toFixed(1) : '—'}</p>{avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}</div>
+                                                <div className="flex items-center gap-1"><p className="text-xl font-mono font-bold">{avgRating > 0 ? avgRating.toFixed(1) : 'â€”'}</p>{avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}</div>
                                                 <p className="text-[10px] text-text-muted">{myRatings.length} reviews</p>
                                             </div>
                                         </div>
@@ -1211,4 +1232,5 @@ export default function UserProfile() {
         </div>
     )
 }
+
 
