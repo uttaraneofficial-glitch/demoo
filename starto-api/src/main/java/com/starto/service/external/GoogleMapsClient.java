@@ -40,8 +40,15 @@ public class GoogleMapsClient {
     }
 
     public java.util.List<com.starto.dto.ExploreResponse.Competitor> fetchCompetitors(String industry, String location) {
+        String encodedQuery = "";
+        try {
+            encodedQuery = java.net.URLEncoder.encode(industry + " in " + location, java.nio.charset.StandardCharsets.UTF_8.toString());
+        } catch (Exception e) {
+            encodedQuery = (industry + " in " + location).replace(" ", "%20");
+        }
+        
         String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
-                + (industry + " " + location).replace(" ", "%20") + "&key=" + apiKey;
+                + encodedQuery + "&key=" + apiKey;
                 
         System.out.println("[GoogleMapsClient] Fetching competitors with URL: " + url.replace(apiKey, "HIDDEN"));
 
