@@ -147,8 +147,25 @@ export default function StartoAIExplore() {
         }
     }
 
-    const handleDownloadReport = () => {
-        window.print()
+    const handleDownloadReport = async () => {
+        try {
+            const html2pdf = (await import('html2pdf.js')).default;
+            const element = document.getElementById('report-content');
+            if (!element) return;
+            
+            const opt = {
+                margin:       0.3,
+                filename:     'Starto_Market_Intelligence_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(element).save();
+        } catch (e) {
+            console.error('PDF generation failed:', e);
+            window.print();
+        }
     }
 
     return (
@@ -329,7 +346,7 @@ export default function StartoAIExplore() {
                     )}
 
                     {showResults && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div id="report-content" className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="md:col-span-2 space-y-6">
                                 <div className="bg-surface border border-border p-8 rounded-2xl">
                                     <div className="flex items-center justify-between mb-8">
