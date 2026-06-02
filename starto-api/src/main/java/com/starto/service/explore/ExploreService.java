@@ -77,7 +77,8 @@ public class ExploreService {
                     response.setCompetitors(realCompetitors);
                     System.out.println("INJECTED " + realCompetitors.size() + " REAL COMPETITORS FROM GOOGLE MAPS");
                 } else {
-                    response.setCompetitors(new java.util.ArrayList<>());
+                    System.out.println("GOOGLE MAPS RETURNED 0 COMPETITORS. USING AI PREDICTED FALLBACK.");
+                    // response.setCompetitors(new java.util.ArrayList<>()); // REMOVED to keep AI competitors
                 }
             } catch (Exception e) {
                 log.warn("Failed to inject real competitors", e);
@@ -136,8 +137,8 @@ public class ExploreService {
                 "    \"drivers\": [\"driver1\", \"driver2\"],\n" +
                 "    \"sources\": [\"source1\", \"source2\"]\n" +
                 "  },\n" +
-                "  \"competitors\": [],\n" +
-                "  \"risks\": [{\"title\": \"\", \"description\": \"\", \"severity\": \"LOW|MEDIUM|HIGH\", \"mitigation\": \"\"}],\n" +
+                "  \"competitors\": [{\"name\": \"Competitor 1\", \"location\": \"General Area\", \"threatLevel\": \"HIGH\", \"description\": \"Provide a realistic threat analysis\"}],\n" +
+                "  \"risks\": [{\"title\": \"Specific Local Risk\", \"description\": \"CITE REAL WORLD DATA: Mention specific local supply chain issues, exact competitor saturation levels, or verified demographic/purchasing power constraints.\", \"severity\": \"LOW|MEDIUM|HIGH\", \"mitigation\": \"Actionable mitigation strategy\"}],\n" +
                 "  \"budgetFeasibility\": {\"canBuild\": [\"item1\", \"item2\"], \"actualNeed\": [\"item1\", \"item2\"], \"verdict\": \"Feasible|Tight|Infeasible\"},\n" +
                 "  \"governmentSchemes\": [{\"name\": \"Name of scheme\", \"body\": \"Governing body\", \"benefits\": \"Detailed benefits\", \"eligibility\": \"Who can apply\", \"applyUrl\": \"Official link if known\"}],\n" +
                 "  \"actionPlan\": [\n" +
