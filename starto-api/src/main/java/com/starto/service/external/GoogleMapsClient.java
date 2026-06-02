@@ -40,40 +40,9 @@ public class GoogleMapsClient {
     }
 
     public java.util.List<com.starto.dto.ExploreResponse.Competitor> fetchCompetitors(String industry, String location) {
-        String latLng = "";
-        try {
-            String locUrl = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
-                    + location.replace(" ", "%20") + "&key=" + apiKey;
-            String locResponse = webClient.get()
-                    .uri(locUrl)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .timeout(Duration.ofSeconds(5))
-                    .block();
-
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(locResponse);
-            if (root.has("results") && root.get("results").size() > 0) {
-                com.fasterxml.jackson.databind.JsonNode loc = root.get("results").get(0).get("geometry").get("location");
-                latLng = loc.get("lat").asText() + "," + loc.get("lng").asText();
-                System.out.println("[GoogleMapsClient] Resolved location coordinates: " + latLng);
-            }
-        } catch (Exception e) {
-            log.warn("Failed to get location coordinates for biasing", e);
-        }
-
-        String query = industry;
-        String url = "";
-        
-        if (!latLng.isEmpty()) {
-            url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
-                    + latLng + "&radius=20000&keyword=" + query.replace(" ", "%20") + "&key=" + apiKey;
-        } else {
-            // Fallback to text query combining both
-            url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
+        String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
                 + (industry + " " + location).replace(" ", "%20") + "&key=" + apiKey;
-        }
-        
+                
         System.out.println("[GoogleMapsClient] Fetching competitors with URL: " + url.replace(apiKey, "HIDDEN"));
 
         java.util.List<com.starto.dto.ExploreResponse.Competitor> competitors = new java.util.ArrayList<>();
