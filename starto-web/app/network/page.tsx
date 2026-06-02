@@ -8,12 +8,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useAuthStore } from '@/store/useAuthStore'
+import { useLocalUserStore } from '@/store/useLocalUserStore'
 import { useRatingStore } from '@/store/useRatingStore'
+import { connectionsApi, offersApi } from '@/lib/apiClient'
+import { hasWhatsappAccess } from '@/lib/planUtils'
 import { Check, X, Users, UserCheck, MessageSquare, Zap, Link as LinkIcon, UserPlus, CheckCheck } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import StatusModal from '@/components/feed/StatusModal'
-import { connectionsApi } from '@/lib/apiClient'
 
 export default function NetworkPage() {
     const router = useRouter()
@@ -35,6 +37,16 @@ export default function NetworkPage() {
     const closeStatusModal = () => setStatusModal(prev => ({ ...prev, isOpen: false }))
     
     const handleWhatsappClick = async (connectionId: string) => {
+        if (!hasWhatsappAccess(user?.plan)) {
+            setStatusModal({
+                isOpen: true,
+                type: 'upgrade',
+                title: 'Upgrade Required',
+                message: 'Your current plan does not include WhatsApp direct access. Please upgrade to unlock.'
+            });
+            return;
+        }
+        
         try {
             const { data, error } = await connectionsApi.getWhatsappLink(connectionId);
             if (data?.whatsappUrl) {
