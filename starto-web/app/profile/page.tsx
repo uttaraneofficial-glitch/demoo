@@ -3,10 +3,9 @@
 import Sidebar from '@/components/feed/Sidebar'
 import MobileNavigation from '@/components/feed/MobileNavigation'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
-import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2, Share2 } from 'lucide-react'
+import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import { useState, useEffect, useRef } from 'react'
-import { toPng } from 'html-to-image'
+import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useSignalStore, getSignalExpiration } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
@@ -21,7 +20,6 @@ import { signalsApi, subscriptionsApi, offersApi, connectionsApi, usersApi } fro
 import StatusModal from '@/components/feed/StatusModal'
 import Toast from '@/components/feed/Toast'
 import NetworkModal from '@/components/feed/NetworkModal'
-import { ShareBadge } from '@/components/feed/ShareBadge'
 
 
 export default function UserProfile() {
@@ -93,52 +91,6 @@ export default function UserProfile() {
 
     const [isEditing, setIsEditing] = useState(false)
     const [isEditingSocial, setIsEditingSocial] = useState(false)
-    const [isCopied, setIsCopied] = useState(false)
-    const [isGeneratingShare, setIsGeneratingShare] = useState(false)
-    const badgeRef = useRef<HTMLDivElement>(null)
-
-        const handleShare = async () => {
-        setIsGeneratingShare(true)
-        try {
-            if (badgeRef.current === null) {
-                throw new Error('Badge ref not found')
-            }
-            
-            // Temporarily make the badge visible for rendering
-            const badgeContainer = badgeRef.current.parentElement
-            if (badgeContainer) {
-                badgeContainer.style.position = 'fixed'
-                badgeContainer.style.left = '0px'
-                badgeContainer.style.top = '0px'
-                badgeContainer.style.zIndex = '-9999'
-                badgeContainer.style.opacity = '1'
-            }
-
-            const dataUrl = await toPng(badgeRef.current, { cacheBust: true, pixelRatio: 2 })
-            
-            // Hide it again
-            if (badgeContainer) {
-                badgeContainer.style.position = 'absolute'
-                badgeContainer.style.left = '-9999px'
-                badgeContainer.style.top = '-9999px'
-            }
-
-            // Create download link
-            const link = document.createElement('a')
-            link.download = `@${username}_starto_card.png`
-            link.href = dataUrl
-            link.click()
-
-            showToast('Premium badge downloaded successfully!')
-            setIsCopied(true)
-            setTimeout(() => setIsCopied(false), 2000)
-        } catch (err) {
-            console.error('Failed to generate image', err)
-            showToast('Failed to generate premium badge', 'error')
-        } finally {
-            setIsGeneratingShare(false)
-        }
-    }
     
     const [socialForm, setSocialForm] = useState({ linkedinUrl, twitterUrl, githubUrl })
     const [editForm, setEditForm] = useState({
@@ -155,8 +107,8 @@ export default function UserProfile() {
         lat: user?.lat || null,
         lng: user?.lng || null,
         handleBase: username
-            ? username.split('_').slice(0, -1).join('_')
-            : (name ? name.split(' ')[0].toLowerCase() : '')
+            ? (username || '').split('_').slice(0, -1).join('_')
+            : (name ? (name || '').split(' ')[0].toLowerCase() : '')
     })
 
     const [statusModal, setStatusModal] = useState<{
@@ -205,7 +157,7 @@ export default function UserProfile() {
                 avatarUrl: user.avatarUrl || null,
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user.name.split(' ')[0]?.toLowerCase() || ''
+                handleBase: user.username ? user.(username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || ''
             })
             // Fetch ratings for self
             if (user.id) {
@@ -336,7 +288,7 @@ export default function UserProfile() {
             return
         }
         const formattedRole = editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '')
-        const formattedBase = editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '')
+        const formattedBase = (editForm.handleBase || '').toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '')
         const newUsername = `${formattedBase}_${formattedRole}`
 
         const updatedProfile = { 
@@ -390,7 +342,7 @@ export default function UserProfile() {
                 coverUrl: user.coverUrl || null, 
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user.name.split(' ')[0]?.toLowerCase() || '' 
+                handleBase: user.username ? user.(username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || '' 
             })
         }
         setIsEditing(false)
@@ -530,7 +482,7 @@ export default function UserProfile() {
 
                 <main className="flex-1 w-full max-w-[680px] md:border-r border-border min-h-screen p-0">
 
-                    {/* -- Clean Profile Header (no cover) -- */}
+                    {/* ── Clean Profile Header (no cover) ── */}
                     <div className="px-8 pt-8 pb-6 border-b border-border">
                         <div className="flex items-start gap-6">
                             {/* Avatar */}
@@ -623,7 +575,7 @@ export default function UserProfile() {
                                             <input value={editForm.handleBase} onChange={(e) => setEditForm({ ...editForm, handleBase: e.target.value })} className="w-full bg-surface border border-primary/30 p-2 rounded-md font-mono text-sm focus:ring-1 focus:ring-primary outline-none text-text-primary" placeholder="e.g. krishna_k88" />
                                             <p className="text-[10px] text-text-muted mt-1 font-mono">
                                                 Preview: <span className="text-primary font-bold">
-                                                    @{editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || 'Ã¢â‚¬Â¦'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
+                                                    @{(editForm.handleBase || '').toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || '…'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
                                                 </span>
                                             </p>
                                         </div>
@@ -683,7 +635,7 @@ export default function UserProfile() {
                                             )}
                                         </div>
                                         <p className="text-text-secondary text-sm font-medium mb-1 flex items-center gap-2">
-                                            {role} | {city}
+                                            {role} • {city}
                                             {displayPlan.toLowerCase() !== 'explorer' && (
                                                 <>
                                                     <span className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -699,7 +651,7 @@ export default function UserProfile() {
                                         {bio ? (
                                             <p className="text-sm text-text-secondary leading-relaxed mb-3 max-w-md">{bio}</p>
                                         ) : (
-                                            <p className="text-sm text-text-muted italic mb-3">No bio yet Ã¢â‚¬â€ click Edit Profile to add one.</p>
+                                            <p className="text-sm text-text-muted italic mb-3">No bio yet — click Edit Profile to add one.</p>
                                         )}
 
                                         {/* Social Nodes */}
@@ -732,21 +684,21 @@ export default function UserProfile() {
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">Signals Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.signalsLeft ?? '-'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.signalsLeft ?? '—'}</p>
                                                 </div>
                                             </div>
                                             <div className="w-px h-8 bg-border hidden sm:block self-center" />
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">Offers Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.offersLeft ?? '-'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.offersLeft ?? '—'}</p>
                                                 </div>
                                             </div>
                                             <div className="w-px h-8 bg-border hidden sm:block self-center" />
                                             <div>
                                                 <p className="text-[9px] uppercase font-bold text-text-muted mb-1">AI Calls Left</p>
                                                 <div className="flex items-baseline gap-1">
-                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.aiLeft ?? '-'}</p>
+                                                    <p className="text-lg font-mono font-bold text-primary">{usage?.aiLeft ?? '—'}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -762,21 +714,17 @@ export default function UserProfile() {
                                             </div>
                                             <div>
                                                 <p className="text-[10px] uppercase font-bold text-text-muted">Rating</p>
-                                                <div className="flex items-center gap-1"><p className="text-xl font-mono font-bold">{avgRating > 0 ? avgRating.toFixed(1) : '-'}</p>{avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}</div>
+                                                <div className="flex items-center gap-1"><p className="text-xl font-mono font-bold">{avgRating > 0 ? avgRating.toFixed(1) : '—'}</p>{avgRating > 0 && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}</div>
                                                 <p className="text-[10px] text-text-muted">{myRatings.length} reviews</p>
                                             </div>
                                         </div>
-                                        <div className="flex flex-wrap gap-2">
+                                        <div className="flex gap-2">
                                             <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-black text-white rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-90">
                                                 <Edit3 className="w-3.5 h-3.5" /> Edit Profile
                                             </button>
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
-                                            <button onClick={handleShare} disabled={isGeneratingShare} className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2 text-text-primary transition-all">
-                                                {isGeneratingShare ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isCopied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Share2 className="w-3.5 h-3.5" />}
-                                                {isGeneratingShare ? 'Generating...' : isCopied ? 'Shared!' : 'Share Badge'}
-                                            </button>
                                         </div>
                                     </>
                                 )}
@@ -974,7 +922,7 @@ export default function UserProfile() {
                             )}
                         </div>
                     </div>
-                    {/* -- Logout & Delete Account -- */}
+                    {/* ── Logout & Delete Account ── */}
                     <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
                         <button
                             onClick={() => { useAuthStore.getState().clearAuth(); router.push('/auth') }}
@@ -1160,7 +1108,7 @@ export default function UserProfile() {
                                 onClick={() => router.push('/subscription')}
                                 className="w-full bg-background text-primary py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:opacity-90 transition-colors"
                             >
-                                {displayPlan === 'Free' ? 'Upgrade Now ->' : 'View Plan ->'}
+                                {displayPlan === 'Free' ? 'Upgrade Now →' : 'View Plan →'}
                             </button>
                         </div>
                         <Signal className="absolute -bottom-10 -right-10 w-48 h-48 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-1000" />
@@ -1210,31 +1158,6 @@ export default function UserProfile() {
                 type={toast.type}
                 onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
             />
-
-            {/* Hidden container for rendering ShareBadge */}
-            <div className="absolute left-[-9999px] top-[-9999px]">
-                <ShareBadge 
-                    ref={badgeRef}
-                    type="profile"
-                    username={username}
-                    name={name}
-                    avatarUrl={avatarUrl}
-                    plan={plan}
-                    role={role}
-                    city={city}
-                    bio={bio}
-                    stats={{
-                        signals: dbSignals.length,
-                        connections: dbConnections.length,
-                        rating: avgRating
-                    }}
-                />
-            </div>
         </div>
     )
 }
-
-
-
-
-
