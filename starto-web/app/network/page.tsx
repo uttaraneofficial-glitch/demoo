@@ -1,21 +1,19 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useAuthStore } from '@/store/useAuthStore'
-import { useLocalUserStore } from '@/store/useLocalUserStore'
 import { useRatingStore } from '@/store/useRatingStore'
-import { connectionsApi, offersApi } from '@/lib/apiClient'
-import { hasWhatsappAccess } from '@/lib/planUtils'
 import { Check, X, Users, UserCheck, MessageSquare, Zap, Link as LinkIcon, UserPlus, CheckCheck } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import StatusModal from '@/components/feed/StatusModal'
+import { connectionsApi } from '@/lib/apiClient'
 
 export default function NetworkPage() {
     const router = useRouter()
@@ -37,16 +35,6 @@ export default function NetworkPage() {
     const closeStatusModal = () => setStatusModal(prev => ({ ...prev, isOpen: false }))
     
     const handleWhatsappClick = async (connectionId: string) => {
-        if (!hasWhatsappAccess(user?.plan)) {
-            setStatusModal({
-                isOpen: true,
-                type: 'upgrade',
-                title: 'Upgrade Required',
-                message: 'Your current plan does not include WhatsApp direct access. Please upgrade to unlock.'
-            });
-            return;
-        }
-        
         try {
             const { data, error } = await connectionsApi.getWhatsappLink(connectionId);
             if (data?.whatsappUrl) {
@@ -107,6 +95,7 @@ export default function NetworkPage() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
+                <MobileNavigation title="My Network" />
                 <Sidebar />
 
                 <main className="flex-1 w-full max-w-[680px] md:border-r border-border min-h-screen">
@@ -449,7 +438,7 @@ export default function NetworkPage() {
                         </button>
                     </div>
                 </aside>
-                <MobileBottomNav />
+                
             </div>
             <StatusModal 
                 isOpen={statusModal.isOpen} 
