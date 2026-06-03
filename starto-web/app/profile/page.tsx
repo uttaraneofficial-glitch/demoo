@@ -157,7 +157,7 @@ export default function UserProfile() {
                 avatarUrl: user.avatarUrl || null,
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? user.(username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || ''
+                handleBase: user.username ? (user.username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || ''
             })
             // Fetch ratings for self
             if (user.id) {
@@ -342,7 +342,7 @@ export default function UserProfile() {
                 coverUrl: user.coverUrl || null, 
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? user.(username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || '' 
+                handleBase: user.username ? (user.username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || '' 
             })
         }
         setIsEditing(false)
