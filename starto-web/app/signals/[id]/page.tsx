@@ -22,7 +22,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { signalsApi, ApiSignal, usersApi, ApiUser, commentsApi, ApiComment } from '@/lib/apiClient'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -184,6 +184,7 @@ export default function SignalDetailPage() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
+                <MobileNavigation title="Signal Details" />
                 <Sidebar />
 
                 <main className="flex-1 w-full max-w-[900px] md:border-r border-border min-h-screen p-4 md:p-8">
@@ -536,7 +537,7 @@ export default function SignalDetailPage() {
                         </div>
                     </div>
                 </main>
-                <MobileBottomNav />
+                
             </div>
             
             <Toast 
