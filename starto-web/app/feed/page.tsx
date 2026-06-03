@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
-import SignalCardSkeleton from '@/components/feed/SignalCardSkeleton'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import SignalCard from '@/components/feed/SignalCard'
 import { Plus, Search, Loader2, WifiOff, Bell, X, Building } from 'lucide-react'
 import RaiseSignalModal from '@/components/feed/RaiseSignalModal'
@@ -185,6 +184,7 @@ export default function HomeFeed() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row mb-16 md:mb-0">
+                <MobileNavigation title="Signals Feed" />
                 <Sidebar />
 
                 {/* Signals Feed */}
@@ -265,10 +265,9 @@ export default function HomeFeed() {
 
                     {/* Signal list */}
                     {loading ? (
-                        <div className="space-y-4">
-                            <SignalCardSkeleton />
-                            <SignalCardSkeleton />
-                            <SignalCardSkeleton />
+                        <div className="flex flex-col items-center justify-center py-24 gap-3 text-text-muted">
+                            <Loader2 className="w-8 h-8 animate-spin" />
+                            <p className="text-sm">Loading signals from backend…</p>
                         </div>
                     ) : displaySignals.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3 text-text-muted">
@@ -332,7 +331,7 @@ export default function HomeFeed() {
                         setRefreshKey(k => k + 1)
                     }}
                 />
-                <MobileBottomNav />
+                
             </div>
         </div>
     )
