@@ -1,7 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2, Share2 } from 'lucide-react'
 import Image from 'next/image'
@@ -523,6 +523,7 @@ export default function UserProfile() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
+                <MobileNavigation title="Professional Network" />
                 <Sidebar />
 
 
@@ -1182,7 +1183,7 @@ export default function UserProfile() {
                         </button>
                     </div>
                 </aside>
-                <MobileBottomNav />
+                
             </div>
 
             <NetworkModal 
@@ -1232,6 +1233,8 @@ export default function UserProfile() {
         </div>
     )
 }
+
+
 
 
 
