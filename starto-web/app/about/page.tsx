@@ -26,8 +26,7 @@ export default function AboutPage() {
                     <img src="/logo.png" alt="Starto Logo" className="h-[56px] w-auto block dark:invert" />
                 </Link>
                 <ul className="hidden md:flex items-center gap-[36px] list-none m-0 p-0">
-                    <li><Link href="/" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Home</Link></li>
-                    <li><Link href="/about" className="text-[11px] font-bold uppercase tracking-[2px] text-primary transition-all border-b-2 border-primary pb-1">About</Link></li>
+                    <li><Link href="/about" className="text-[11px] font-bold uppercase tracking-[2px] text-primary transition-all border-b-2 border-black pb-1">About</Link></li>
                     <li><Link href="/feed" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Platform</Link></li>
                     <li><Link href="/subscription" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Pricing</Link></li>
                     <li><Link href="/careers" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Careers</Link></li>
@@ -47,7 +46,7 @@ export default function AboutPage() {
                     ) : (
                         <>
                             <Link href="/auth" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Sign In</Link>
-                            <Link href="/auth" className="bg-primary text-background px-5 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-[1px] hover:opacity-80 transition-all">
+                            <Link href="/auth" className="bg-primary text-background px-5 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-[1px] hover:bg-primary/80 transition-all">
                                 Get Started →
                             </Link>
                         </>
@@ -69,13 +68,14 @@ export default function AboutPage() {
                             Innovation is not about an idea.<br />
                             It's about the <span className="text-text-muted">Ecosystem.</span>
                         </h2>
-                        <div className="w-24 h-px bg-border mx-auto mb-12" />
+                        <div className="w-24 h-px bg-primary/10 mx-auto mb-12" />
                         <p className="text-text-secondary text-xl max-w-3xl mx-auto italic leading-relaxed">
                             "Starto was built on the belief that the next generation of Indian giants will emerge 
                             from Tier-2 and Tier-3 cities. We don't just provide networking; we provide the ground 
                             where vision actually finds its way to work."
                         </p>
                     </motion.div>
+                    <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/[0.02] blur-[120px] rounded-full -z-10" />
                 </section>
 
                 {/* Team Grid */}
@@ -93,7 +93,7 @@ export default function AboutPage() {
                                 transition={{ delay: idx * 0.1 }}
                                 className="flex flex-col group"
                             >
-                                <div className="rounded-[2.5rem] bg-white overflow-hidden shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
+                                <div className="rounded-[2.5rem] bg-surface overflow-hidden shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
                                     <div className="w-full aspect-[4/5] relative">
                                         <Image 
                                             src={member.image} 
@@ -114,7 +114,7 @@ export default function AboutPage() {
                 </section>
 
                 {/* Closing Vision Section */}
-                <section className="py-40 border-t border-border text-center">
+                <section className="py-40 border-t border-black/5 text-center">
                     <Zap className="w-12 h-12 text-primary fill-primary mx-auto mb-10" />
                     <h3 className="text-3xl md:text-5xl font-display uppercase tracking-tight mb-8">
                         Building for the <br /> 500 Million.
@@ -124,7 +124,7 @@ export default function AboutPage() {
                         We are bridging the intelligence gap for founders who are 
                         building the future of Bharat.
                     </p>
-                    <Link href="/feed" className="inline-flex items-center gap-3 bg-primary text-background px-12 py-5 rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-primary/10">
+                    <Link href="/feed" className="inline-flex items-center gap-3 bg-primary text-background px-12 py-5 rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-black/10">
                         Join the Ecosystem <ArrowRight className="w-4 h-4" />
                     </Link>
                 </section>
@@ -132,7 +132,7 @@ export default function AboutPage() {
             </main>
 
             {/* Comprehensive Footer */}
-            <footer className="bg-surface-2 pt-24 pb-12 px-6 md:px-12 border-t border-border">
+            <footer className="bg-surface-2 pt-24 pb-12 px-6 md:px-12 border-t border-black/5">
                 <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center gap-3 mb-8">
@@ -144,14 +144,14 @@ export default function AboutPage() {
                         </p>
                         <div className="flex gap-6">
                             <a href="https://x.com/Startoindia" target="_blank" rel="noopener noreferrer">
-                                <Twitter className="w-5 h-5 text-text-muted hover:text-primary cursor-pointer transition-colors" />
+                                <Twitter className="w-5 h-5 text-text-muted hover:text-text-primary cursor-pointer transition-colors" />
                             </a>
                             <a href="https://www.linkedin.com/company/startoindia/" target="_blank" rel="noopener noreferrer">
-                                <Linkedin className="w-5 h-5 text-text-muted hover:text-primary cursor-pointer transition-colors" />
+                                <Linkedin className="w-5 h-5 text-text-muted hover:text-text-primary cursor-pointer transition-colors" />
                             </a>
-                            <Github className="w-5 h-5 text-text-muted hover:text-primary cursor-pointer transition-colors" />
+                            <Github className="w-5 h-5 text-text-muted hover:text-text-primary cursor-pointer transition-colors" />
                             <a href="mailto:startoindiaofficial@gmail.com">
-                                <Mail className="w-5 h-5 text-text-muted hover:text-primary cursor-pointer transition-colors" />
+                                <Mail className="w-5 h-5 text-text-muted hover:text-text-primary cursor-pointer transition-colors" />
                             </a>
                         </div>
                     </div>
@@ -159,26 +159,26 @@ export default function AboutPage() {
                     <div>
                         <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.4em] mb-10">Ecosystem</h4>
                         <ul className="space-y-4 text-text-secondary text-sm font-medium">
-                            <li className="hover:text-primary transition-colors cursor-pointer">Real-time Signals</li>
-                            <li className="hover:text-primary transition-colors cursor-pointer">AI Market Explore</li>
-                            <li className="hover:text-primary transition-colors cursor-pointer">Geospatial Nodes</li>
-                            <li className="hover:text-primary transition-colors cursor-pointer">Verified Connections</li>
+                            <li className="hover:text-text-primary transition-colors cursor-pointer">Real-time Signals</li>
+                            <li className="hover:text-text-primary transition-colors cursor-pointer">AI Market Explore</li>
+                            <li className="hover:text-text-primary transition-colors cursor-pointer">Geospatial Nodes</li>
+                            <li className="hover:text-text-primary transition-colors cursor-pointer">Verified Connections</li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.4em] mb-10">Company</h4>
                         <ul className="space-y-4 text-text-secondary text-sm font-medium">
-                            <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-                            <li><Link href="/careers" className="hover:text-primary transition-colors">Careers</Link></li>
-                            <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-                            <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-                            <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                            <li><Link href="/about" className="hover:text-text-primary transition-colors">About Us</Link></li>
+                            <li><Link href="/careers" className="hover:text-text-primary transition-colors">Careers</Link></li>
+                            <li><Link href="/contact" className="hover:text-text-primary transition-colors">Contact</Link></li>
+                            <li><Link href="/terms" className="hover:text-text-primary transition-colors">Terms of Service</Link></li>
+                            <li><Link href="/privacy" className="hover:text-text-primary transition-colors">Privacy Policy</Link></li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center border-t border-border pt-12 gap-6">
+                <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center border-t border-black/5 pt-12 gap-6">
                     <p className="text-text-muted font-mono text-[9px] tracking-[0.3em] uppercase">
                         &copy; 2026 STARTO ECOSYSTEM PVT LTD. ALL RIGHTS RESERVED.
                     </p>
