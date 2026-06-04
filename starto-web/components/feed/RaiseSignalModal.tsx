@@ -203,7 +203,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 userPlan: user?.subscription || user?.plan || 'Free',
             }, data.id);
             updateUser({ signalCount: (user?.signalCount || 0) + 1 });
-            setToast({ type: 'success', msg: '✓ Signal broadcast to backend DB!' });
+            setToast({ type: 'success', msg: '✓ Signal successfully broadcasted!' });
             setTimeout(() => { onClose(); }, 1200);
         } else if (status === 401) {
             // ⚠️ Authentication Issue
