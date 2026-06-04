@@ -76,14 +76,14 @@ export default function VerifiedAvatar({
             {/* Avatar circle */}
             <span className={`${size} rounded-full border border-border overflow-hidden relative flex items-center justify-center select-none ${shouldShowImage ? 'bg-surface-2' : `${bgColor} text-white`}`}>
                 {shouldShowImage ? (
-                    <img
+                    <img crossOrigin="anonymous"
                         src={avatarUrl}
                         alt={username}
                         className="w-full h-full object-cover"
                         onError={() => setImageError(true)}
                     />
                 ) : (
-                    <span className="text-[45%] tracking-tighter uppercase font-bold">{initials}</span>
+                    <span className="text-lg tracking-tighter uppercase font-bold" style={{ fontSize: "clamp(12px, 40%, 40px)" }}>{initials}</span>
                 )}
             </span>
 
