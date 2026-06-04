@@ -214,7 +214,7 @@ export default function CityAutocomplete({
                     onChange={handleInputChange}
                     onFocus={() => query.length > 0 && setIsOpen(true)}
                     placeholder={placeholder}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border border-border outline-none focus:border-black text-sm shadow-sm transition-all ${inputClassName || 'bg-white text-black'}`}
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border border-border outline-none focus:border-black text-sm shadow-sm transition-all ${inputClassName || 'bg-surface text-text-primary'}`}
                 />
                 {loading && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -225,7 +225,7 @@ export default function CityAutocomplete({
 
             <AnimatePresence>
                 {isOpen && suggestions.length > 0 && (
-                    <div className="absolute z-[100] mt-2 w-full bg-white border border-border rounded-2xl shadow-2xl overflow-hidden max-h-60 overflow-y-auto">
+                    <div className="absolute z-[100] mt-2 w-full bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden max-h-60 overflow-y-auto">
                         {suggestions.map((item) => (
                             <button
                                 key={item.place_id}
@@ -238,7 +238,7 @@ export default function CityAutocomplete({
                                     <MapPin className="w-4 h-4 mt-0.5 text-text-muted shrink-0" />
                                 )}
                                 <div>
-                                    <p className="text-sm font-medium text-black">{item.isBackend ? item.structured_formatting.main_text : item.description}</p>
+                                    <p className="text-sm font-medium text-text-primary">{item.isBackend ? item.structured_formatting.main_text : item.description}</p>
                                     <p className="text-[10px] text-text-muted">{item.structured_formatting.secondary_text}</p>
                                 </div>
                             </button>
