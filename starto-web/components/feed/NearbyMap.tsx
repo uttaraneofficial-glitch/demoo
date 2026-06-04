@@ -238,11 +238,11 @@ export default function NearbyMap({ center, users, signals, spaces, radius }: Ne
     }, [map, users, signals, spaces, center])
 
     return (
-        <div className="w-full h-full rounded-[2.5rem] overflow-hidden border border-border relative bg-white shadow-inner">
+        <div className="w-full h-full rounded-[2.5rem] overflow-hidden border border-border relative bg-surface shadow-inner">
             <div ref={mapRef} className="w-full h-full" />
             
             {/* Legend Overlay */}
-            <div className="absolute bottom-8 left-8 bg-white/95 backdrop-blur-md border border-border p-5 rounded-2xl flex flex-col gap-4 shadow-2xl">
+            <div className="absolute bottom-8 left-8 bg-surface/95 backdrop-blur-md border border-border p-5 rounded-2xl flex flex-col gap-4 shadow-2xl">
                 <div className="flex items-center gap-3">
                     <div className="w-3.5 h-3.5 rounded-full bg-[#FFD700] border border-black/10 shadow-sm" />
                     <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Ecosystem Nodes</span>
