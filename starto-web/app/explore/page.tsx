@@ -262,7 +262,7 @@ export default function StartoAIExplore() {
                                     setShowResults(false)
                                     setResults(null)
                                 }}
-                                className="text-sm font-bold text-text-muted hover:text-black flex items-center gap-2 transition-colors"
+                                className="text-sm font-bold text-text-muted hover:text-text-primary flex items-center gap-2 transition-colors"
                             >
                                 ← Run New Analysis
                             </button>
@@ -281,10 +281,10 @@ export default function StartoAIExplore() {
                                     <div 
                                         key={report.id}
                                         onClick={() => handleViewReport(report)}
-                                        className="bg-white border border-border p-5 rounded-2xl hover:border-primary hover:shadow-lg transition-all cursor-pointer group"
+                                        className="bg-surface border border-border p-5 rounded-2xl hover:border-primary hover:shadow-lg transition-all cursor-pointer group"
                                     >
                                         <div className="flex justify-between items-start mb-4">
-                                            <div className="bg-primary/5 text-primary p-2 rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">
+                                            <div className="bg-primary/5 text-primary p-2 rounded-lg group-hover:bg-primary group-hover:text-background transition-colors">
                                                 <FileText className="w-5 h-5" />
                                             </div>
                                             <span className="text-[10px] text-text-muted font-mono">
@@ -451,11 +451,11 @@ export default function StartoAIExplore() {
                             </motion.section>
 
                             <aside className="space-y-6 report-sidebar">
-                                <div className="bg-primary text-background p-8 rounded-2xl relative print:bg-white print:text-black print:border print:border-border overflow-hidden group">
-                                    <FileText className="w-48 h-48 text-white/5 absolute -top-10 -right-10 print:hidden transition-transform group-hover:scale-110 duration-700" />
+                                <div className="bg-primary text-background p-8 rounded-2xl relative print:bg-surface print:text-text-primary print:border print:border-border overflow-hidden group">
+                                    <FileText className="w-48 h-48 text-background/5 absolute -top-10 -right-10 print:hidden transition-transform group-hover:scale-110 duration-700" />
                                     <h4 className="text-xl font-display mb-8 relative flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                                            <FileText className="w-4 h-4 text-white" />
+                                        <div className="w-8 h-8 rounded-full bg-surface/10 flex items-center justify-center shrink-0">
+                                            <FileText className="w-4 h-4 text-background" />
                                         </div>
                                         90-Day Execution Plan
                                     </h4>
@@ -463,29 +463,29 @@ export default function StartoAIExplore() {
                                         {(results?.actionPlan?.map((phase, pIdx) => (
                                             <div key={pIdx} className="space-y-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="px-3 py-1 bg-white/10 text-white text-[10px] uppercase font-bold tracking-widest rounded-full print:bg-black/10 print:text-black">
+                                                    <div className="px-3 py-1 bg-surface/10 text-background text-[10px] uppercase font-bold tracking-widest rounded-full print:bg-primary/10 print:text-text-primary">
                                                         {phase.range}
                                                     </div>
                                                 </div>
                                                 
                                                 <div className="border-l-2 border-white/20 ml-[15px] pl-6 py-2 space-y-4 print:border-border">
                                                     {(phase.estimatedBudget || phase.goal) && (
-                                                        <div className="bg-white/5 p-4 rounded-xl border border-white/10 space-y-2 mb-4 backdrop-blur-sm print:border-border">
+                                                        <div className="bg-surface/5 p-4 rounded-xl border border-white/10 space-y-2 mb-4 backdrop-blur-sm print:border-border">
                                                             {phase.estimatedBudget && (
                                                                 <div className="flex items-start gap-2 text-xs">
-                                                                    <span className="shrink-0 text-text-muted mt-0.5"><Briefcase className="w-3 h-3 text-white/50" /></span>
+                                                                    <span className="shrink-0 text-text-muted mt-0.5"><Briefcase className="w-3 h-3 text-background/50" /></span>
                                                                     <div>
-                                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Est. Budget</span>
+                                                                        <span className="text-background/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Est. Budget</span>
                                                                         <span className="font-mono">{phase.estimatedBudget}</span>
                                                                     </div>
                                                                 </div>
                                                             )}
                                                             {phase.goal && (
                                                                 <div className="flex items-start gap-2 text-xs">
-                                                                    <span className="shrink-0 text-text-muted mt-0.5"><AlertTriangle className="w-3 h-3 text-white/50" /></span>
+                                                                    <span className="shrink-0 text-text-muted mt-0.5"><AlertTriangle className="w-3 h-3 text-background/50" /></span>
                                                                     <div>
-                                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Primary Goal</span>
-                                                                        <span className="text-white/90">{phase.goal}</span>
+                                                                        <span className="text-background/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Primary Goal</span>
+                                                                        <span className="text-background/90">{phase.goal}</span>
                                                                     </div>
                                                                 </div>
                                                             )}
@@ -493,13 +493,13 @@ export default function StartoAIExplore() {
                                                     )}
                                                     
                                                     <div className="space-y-3">
-                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest print:text-text-muted border-b border-white/10 pb-1 inline-block mb-2">Action Items</span>
+                                                        <span className="text-background/60 font-bold uppercase text-[9px] tracking-widest print:text-text-muted border-b border-white/10 pb-1 inline-block mb-2">Action Items</span>
                                                         {phase.tasks.map((task, tIdx) => (
                                                             <div key={tIdx} className="flex items-start gap-3 group/task">
                                                                 <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center shrink-0 mt-0.5 group-hover/task:bg-accent-green group-hover/task:border-accent-green transition-colors print:border-border">
                                                                     <CheckCircle2 className="w-3 h-3 text-transparent group-hover/task:text-primary transition-colors" />
                                                                 </div>
-                                                                <p className="text-sm text-white/80 group-hover/task:text-white transition-colors leading-relaxed print:text-black">{task}</p>
+                                                                <p className="text-sm text-background/80 group-hover/task:text-background transition-colors leading-relaxed print:text-text-primary">{task}</p>
                                                             </div>
                                                         ))}
                                                     </div>
@@ -513,7 +513,7 @@ export default function StartoAIExplore() {
                                     </div>
                                     <button 
                                         onClick={handleDownloadReport}
-                                        className="w-full mt-10 border border-white/20 py-4 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-primary transition-all no-print flex items-center justify-center gap-2"
+                                        className="w-full mt-10 border border-white/20 py-4 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-surface hover:text-primary transition-all no-print flex items-center justify-center gap-2"
                                     >
                                         <FileText className="w-4 h-4" /> Download Full Report
                                     </button>
@@ -547,14 +547,14 @@ export default function StartoAIExplore() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-primary/80 backdrop-blur-md z-[100] flex items-center justify-center p-4"
                         onClick={() => setShowUpgradeModal(false)}
                     >
                         <motion.div
                             initial={{ scale: 0.95, opacity: 0, y: 30 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.95, opacity: 0, y: 30 }}
-                            className="bg-white rounded-[2rem] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden"
+                            className="bg-surface rounded-[2rem] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden"
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="absolute top-0 right-0 p-20 bg-primary/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
@@ -564,7 +564,7 @@ export default function StartoAIExplore() {
                                     <Crown className="w-7 h-7 text-primary" />
                                 </div>
                                 <div className="relative z-10">
-                                    <h3 className="text-2xl font-display tracking-tight text-black">AI Limit Reached</h3>
+                                    <h3 className="text-2xl font-display tracking-tight text-text-primary">AI Limit Reached</h3>
                                     <p className="text-sm text-text-muted">Upgrade to unlock more market intelligence</p>
                                 </div>
                             </div>
@@ -583,7 +583,7 @@ export default function StartoAIExplore() {
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => setShowUpgradeModal(false)}
-                                    className="flex-1 border border-border py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-surface-2 transition-colors text-black"
+                                    className="flex-1 border border-border py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-surface-2 transition-colors text-text-primary"
                                 >
                                     Dismiss
                                 </button>
