@@ -146,9 +146,9 @@ public class ExploreService {
                 "  \"budgetFeasibility\": {\"canBuild\": [\"item1\", \"item2\"], \"actualNeed\": [\"item1\", \"item2\"], \"verdict\": \"Feasible|Tight|Infeasible\"},\n" +
                 "  \"governmentSchemes\": [{\"name\": \"Name of scheme\", \"body\": \"Governing body\", \"benefits\": \"Detailed benefits\", \"eligibility\": \"Who can apply\", \"applyUrl\": \"Official link if known\"}],\n" +
                 "  \"actionPlan\": [\n" +
-                "    {\"range\": \"Month 1: Foundation\", \"tasks\": [\"task1\", \"task2\"]},\n" +
-                "    {\"range\": \"Month 2: Execution\", \"tasks\": [\"task3\", \"task4\"]},\n" +
-                "    {\"range\": \"Month 3: Launch\", \"tasks\": [\"task5\", \"task6\"]}\n" +
+                "    {\"range\": \"Month 1: Foundation\", \"estimatedBudget\": \"₹15,000 - ₹25,000\", \"goal\": \"Secure 3 reliable wholesale vendors\", \"tasks\": [\"task1\", \"task2\"]},\n" +
+                "    {\"range\": \"Month 2: Execution\", \"estimatedBudget\": \"₹5,000 - ₹10,000\", \"goal\": \"Set up shop\", \"tasks\": [\"task3\", \"task4\"]},\n" +
+                "    {\"range\": \"Month 3: Launch\", \"estimatedBudget\": \"₹0 - ₹5,000\", \"goal\": \"Host grand opening\", \"tasks\": [\"task5\", \"task6\"]}\n" +
                 "  ]\n" +
                 "}";
     }
