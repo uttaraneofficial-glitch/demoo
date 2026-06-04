@@ -120,20 +120,19 @@ public class ExploreService {
     }
 
     private String buildGptPrompt(ExploreRequest req, String locationData) {
-        return "You are an elite, senior-level market analyst and startup advisor. Analyze the market for a " + req.getIndustry() +
+        return "You are an elite, senior-level market analyst and startup advisor at a top-tier management consulting firm (e.g., McKinsey, BCG). Produce a comprehensive, institutional-grade market analysis for a " + req.getIndustry() +
                 " startup in " + req.getLocation() +
                 " with a budget of " + req.getBudget() +
                 " at " + req.getStage() + " stage. " +
                 "Target customer: " + req.getTargetCustomer() + ". " +
                 "Location context: " + locationData + ".\n\n" +
-                "CRITICAL INSTRUCTION: Your insights MUST be senior-level, extremely valuable, and highly strategic to justify a premium subscription. " +
-                "HOWEVER, you must write in incredibly simple, crystal-clear, jargon-free English (8th-grade reading level) so that absolutely anyone, from uneducated to highly educated, can perfectly understand and execute your plan. Be brutally honest, avoid generic advice, and provide highly specific, actionable, and viral-worthy insights.\n\n" +
+                "CRITICAL INSTRUCTIONS: Your insights MUST be senior-level, extremely valuable, and highly strategic. Write in a highly professional, authoritative, and analytical tone. Do NOT use emojis. Avoid generic advice; provide highly specific, actionable, and data-driven insights. Structure your language as if you are presenting to a board of directors or institutional investors.\n\n" +
                 "IMPORTANT: Provide REAL and VALID government schemes, subsidies, or policies available for this specific industry and location. Do not hallucinate.\n\n" +
                 "Return ONLY a valid JSON object with EXACTLY the following structure (do not add any comments or markdown):\n" +
                 "{\n" +
                 "  \"marketDemand\": {\n" +
                 "    \"score\": 8,\n" +
-                "    \"marketSummary\": \"Write a deeply analytical, 3-paragraph strategic summary. Break down the core opportunity, the immediate threat, and the unfair advantage the founder needs to build. Use punchy, highly readable language (8th-grade level) that feels like an elite mentor speaking.\",\n" +
+                "    \"marketSummary\": \"Write a deeply analytical, 3-paragraph strategic executive summary. Detail the macroeconomic opportunity, immediate localized threats, and the sustainable competitive advantage required. Use sophisticated, precise business terminology.\",\n" +
                 "    \"drivers\": [\"driver1\", \"driver2\"],\n" +
                 "    \"sources\": [\"source1\", \"source2\"]\n" +
                 "  },\n" +
