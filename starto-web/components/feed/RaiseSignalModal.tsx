@@ -248,7 +248,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/60 backdrop-blur-sm">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -273,7 +273,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                                     <button 
                                         key={s} 
                                         onClick={() => setStage(s)}
-                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${stage === s ? 'bg-primary text-background border-primary font-medium' : 'border-border text-text-secondary hover:border-black hover:text-black'}`}
+                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${stage === s ? 'bg-primary text-background border-primary font-medium' : 'border-border text-text-secondary hover:border-black hover:text-text-primary'}`}
                                     >
                                         {s}
                                     </button>
@@ -289,7 +289,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                                     <button 
                                         key={cat} 
                                         onClick={() => setCategory(cat)}
-                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${category === cat ? 'bg-black text-white border-black font-medium text-sm' : 'border-border text-text-secondary hover:border-black text-sm hover:text-black'}`}
+                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${category === cat ? 'bg-primary text-background border-black font-medium text-sm' : 'border-border text-text-secondary hover:border-black text-sm hover:text-text-primary'}`}
                                     >
                                         {cat}
                                     </button>
@@ -450,16 +450,16 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                         <button 
                             onClick={handleBroadcast}
                             disabled={!headline || !details || duration === 0 || submitting}
-                            className={`w-full text-white px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase ${(duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? 'bg-orange-500 hover:bg-orange-600' : 'bg-black hover:bg-black/90'}`}
+                            className={`w-full text-background px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase ${(duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary hover:bg-primary/90'}`}
                         >
                             {submitting ? (
-                                <><Zap className="w-4 h-4 fill-white text-white animate-pulse" /> Broadcasting…</>
+                                <><Zap className="w-4 h-4 fill-white text-background animate-pulse" /> Broadcasting…</>
                             ) : duration === 0 ? (
                                 <>Select Duration to Broadcast</>
                             ) : (duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? (
-                                <><Zap className="w-4 h-4 fill-white text-white" /> Upgrade to Pro → Subscription</>
+                                <><Zap className="w-4 h-4 fill-white text-background" /> Upgrade to Pro → Subscription</>
                             ) : (
-                                <><Zap className="w-4 h-4 fill-white text-white" /> Broadcast to Network</>
+                                <><Zap className="w-4 h-4 fill-white text-background" /> Broadcast to Network</>
                             )}
                         </button>
                     </div>
