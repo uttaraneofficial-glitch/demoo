@@ -226,9 +226,6 @@ public Connection sendRequest(User sender,
         Connection connection = connectionRepository.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection not found"));
 
-        if (!"ACCEPTED".equalsIgnoreCase(connection.getStatus())) {
-            throw new RuntimeException("Connection not accepted yet");
-        }
 
         if (!connection.getRequester().getId().equals(requester.getId()) &&
             !connection.getReceiver().getId().equals(requester.getId())) {
