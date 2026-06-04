@@ -72,7 +72,7 @@ export default function VerifiedAvatar({
     const shouldShowImage = avatarUrl && !imageError;
 
     return (
-        <span className={`relative inline-flex shrink-0 ${size} ${className}`}>
+        <span className={`relative inline-flex shrink-0 ${size} ${className} ${className.includes("text-") ? "" : "text-base"}`}>
             {/* Avatar circle */}
             <span className={`${size} rounded-full border border-border overflow-hidden relative flex items-center justify-center select-none ${shouldShowImage ? 'bg-surface-2' : `${bgColor} text-white`}`}>
                 {shouldShowImage ? (
@@ -83,7 +83,7 @@ export default function VerifiedAvatar({
                         onError={() => setImageError(true)}
                     />
                 ) : (
-                    <span className="text-lg tracking-tighter uppercase font-bold" style={{ fontSize: "clamp(12px, 40%, 40px)" }}>{initials}</span>
+                    <span className="tracking-tighter uppercase font-bold">{initials}</span>
                 )}
             </span>
 
