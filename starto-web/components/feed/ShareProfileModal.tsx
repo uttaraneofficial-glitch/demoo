@@ -25,7 +25,7 @@ export default function ShareProfileModal({ isOpen, onClose, user, dbSignals, db
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
-                    className="fixed inset-0 bg-black/80 backdrop-blur-md pointer-events-auto"
+                    className="fixed inset-0 bg-primary/80 backdrop-blur-md pointer-events-auto"
                 />
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -103,7 +103,7 @@ export default function ShareProfileModal({ isOpen, onClose, user, dbSignals, db
                                 const text = `Check out my Starto Ecosystem Member profile!\n\n`;
                                 window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
                             }}
-                            className="w-full py-3 bg-[#1DA1F2] text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:opacity-90 flex items-center justify-center gap-2"
+                            className="w-full py-3 bg-[#1DA1F2] text-background font-bold text-xs uppercase tracking-widest rounded-xl hover:opacity-90 flex items-center justify-center gap-2"
                         >
                             <Twitter className="w-4 h-4" /> Share
                         </button>
@@ -113,7 +113,7 @@ export default function ShareProfileModal({ isOpen, onClose, user, dbSignals, db
                                 const url = `https://demoo-production-f047.up.railway.app/profile/${user?.username}`;
                                 window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
                             }}
-                            className="w-full py-3 bg-[#0A66C2] text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:opacity-90 flex items-center justify-center gap-2"
+                            className="w-full py-3 bg-[#0A66C2] text-background font-bold text-xs uppercase tracking-widest rounded-xl hover:opacity-90 flex items-center justify-center gap-2"
                         >
                             <Linkedin className="w-4 h-4" /> Share
                         </button>
