@@ -181,10 +181,6 @@ public Offer sendOffer(User talent, OfferRequestDTO dto) {
         Offer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new RuntimeException("Offer not found"));
 
-        if (!"ACCEPTED".equalsIgnoreCase(offer.getStatus())) {
-            throw new RuntimeException("Offer not accepted yet");
-        }
-
         // verify user is part of this offer
         if (!offer.getRequesterId().equals(user.getId()) &&
             !offer.getReceiverId().equals(user.getId())) {
