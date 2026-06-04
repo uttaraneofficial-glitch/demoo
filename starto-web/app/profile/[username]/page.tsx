@@ -15,6 +15,7 @@ import { motion } from 'framer-motion'
 import StatusModal from '@/components/feed/StatusModal'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import NetworkModal from '@/components/feed/NetworkModal'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 
 export default function PublicProfile({ params }: { params: { username: string } }) {
     const { username: paramUsername } = params
@@ -170,7 +171,6 @@ export default function PublicProfile({ params }: { params: { username: string }
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex">
-                <MobileNavigation title="User Profile" />
                 <Sidebar />
 
                 <main className="flex-1 max-w-[680px] border-r border-border min-h-screen p-0">
