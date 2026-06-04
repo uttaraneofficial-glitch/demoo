@@ -132,7 +132,7 @@ export default function HomeFeed() {
         signalsApi.getAll().then(({ data, error }) => {
             if (cancelled) return
             if (error || data === null) {
-                setBackendError(error || 'Could not reach backend')
+                setBackendError(error || 'Connection failed')
             } else {
                 console.log('[DEBUG] API Signals:', data);
                 setApiSignals(Array.isArray(data) ? data : [])
@@ -254,8 +254,7 @@ export default function HomeFeed() {
                                     </>
                                 ) : (
                                     <>
-                                        <strong>Backend unreachable:</strong> {backendError}. Showing local signals only.
-                                        Make sure the Spring Boot server is running at <code className="font-mono bg-orange-100 px-1 rounded">localhost:8080</code>.
+                                        <strong>Unable to connect:</strong> {backendError}. Showing local signals only.
                                     </>
                                 )}
                             </span>
