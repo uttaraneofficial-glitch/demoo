@@ -91,7 +91,7 @@ export const ShareBadge = forwardRef<HTMLDivElement, ShareBadgeProps>(({
                     {type === 'profile' ? (
                         /* PROFILE CARD CONTENT */
                         <div className="text-center space-y-6 w-full mt-28 relative z-10">
-                            <h1 className="text-7xl font-display font-black tracking-tighter text-text-primary leading-none">{name || username}</h1>
+                            <h1 className="text-6xl font-display font-black tracking-tight text-text-primary leading-tight">{name || username}</h1>
                             <p className="text-3xl text-text-secondary font-mono tracking-widest uppercase">@{username}</p>
                             
                             <div className="flex items-center justify-center gap-6 text-2xl text-text-muted mt-6 font-medium">
@@ -102,15 +102,15 @@ export const ShareBadge = forwardRef<HTMLDivElement, ShareBadgeProps>(({
 
                             {/* Bio Section */}
                             {bio && (
-                                <div className="mt-8 px-12 py-8 bg-surface-2 border border-border rounded-3xl relative max-w-[800px] mx-auto text-left shadow-inner">
+                                <div className="mt-6 px-10 py-6 bg-surface-2 border border-border rounded-3xl relative max-w-[800px] mx-auto text-left shadow-inner">
                                     <Quote className="absolute top-6 left-6 w-8 h-8 text-border rotate-180" />
-                                    <p className="text-2xl text-text-secondary italic leading-relaxed text-center px-12 font-display">{bio}</p>
+                                    <p className="text-xl text-text-secondary italic leading-relaxed text-center px-8 font-sans font-medium">{bio}</p>
                                     <Quote className="absolute bottom-6 right-6 w-8 h-8 text-border" />
                                 </div>
                             )}
 
                             {/* Stats Row */}
-                            <div className="grid grid-cols-3 gap-6 mt-12 w-full max-w-[900px] mx-auto">
+                            <div className="grid grid-cols-3 gap-6 mt-10 w-full max-w-[900px] mx-auto">
                                 <div className="bg-surface-2 border border-border rounded-3xl p-8 text-center flex flex-col justify-center">
                                     <p className="text-6xl font-black text-text-primary mb-2 font-display">{stats?.signals || 0}</p>
                                     <p className="text-lg text-text-muted uppercase tracking-[0.2em] font-bold">Signals</p>
@@ -121,7 +121,7 @@ export const ShareBadge = forwardRef<HTMLDivElement, ShareBadgeProps>(({
                                 </div>
                                 <div className="bg-surface-2 border border-border rounded-3xl p-8 text-center flex flex-col justify-center">
                                     <p className="text-6xl font-black text-text-primary flex items-center justify-center gap-2 mb-2 font-display">
-                                        {stats?.rating && stats.rating > 0 ? stats.rating.toFixed(1) : '�'}
+                                        {stats?.rating && stats.rating > 0 ? stats.rating.toFixed(1) : '0'}
                                         <Star className={`w-10 h-10 ${(stats?.rating && stats.rating > 0) ? 'fill-yellow-500 text-yellow-500' : 'text-text-muted'}`} />
                                     </p>
                                     <p className="text-lg text-text-muted uppercase tracking-[0.2em] font-bold">Rating</p>
