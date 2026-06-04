@@ -39,7 +39,7 @@ export default function MobileBottomNav() {
                         <div className="relative">
                             <Icon className="w-5 h-5 mb-1" />
                             {item.label === 'Network' && hasViews && (
-                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-black border-2 border-background" />
+                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background" />
                             )}
                         </div>
                         <span className="text-[9px] font-bold tracking-tight">{item.label}</span>
