@@ -93,6 +93,25 @@ public class ExploreController {
                 });
     }
 
+    @GetMapping("/usage")
+    public ResponseEntity<Object> getUsage(Authentication authentication) {
+        User user = getUser(authentication);
+        if (user == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Unauthorized"));
+        }
+        
+        Plan plan = user.getPlan();
+        int usedToday = exploreService.getTodayUsage(user.getId());
+        int limit = planService.getAiLimit(plan);
+        int remaining = Math.max(0, limit - usedToday);
+        
+        return ResponseEntity.ok(Map.of(
+            "used", usedToday,
+            "limit", limit,
+            "remaining", remaining
+        ));
+    }
+
     @GetMapping("/reports")
     public ResponseEntity<Object> getReports(Authentication authentication) {
         User user = getUser(authentication);
