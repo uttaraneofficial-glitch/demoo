@@ -39,18 +39,18 @@ export default function Toast({
                     exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                     className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] min-w-[320px] max-w-[90vw]"
                 >
-                    <div className="bg-black/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between gap-4">
+                    <div className="bg-primary/90 backdrop-blur-md text-background px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                            {type === 'success' && <CheckCircle2 className="w-5 h-5 text-white" />}
+                            {type === 'success' && <CheckCircle2 className="w-5 h-5 text-background" />}
                             {type === 'error' && <XCircle className="w-5 h-5 text-red-400" />}
                             {type === 'info' && <Info className="w-5 h-5 text-blue-400" />}
                             <p className="text-sm font-medium tracking-wide">{message}</p>
                         </div>
                         <button 
                             onClick={onClose}
-                            className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                            className="p-1 hover:bg-surface/10 rounded-full transition-colors"
                         >
-                            <X className="w-4 h-4 text-white/40" />
+                            <X className="w-4 h-4 text-background/40" />
                         </button>
                     </div>
                 </motion.div>
