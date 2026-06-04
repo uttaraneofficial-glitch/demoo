@@ -153,10 +153,10 @@ export default function Sidebar() {
                                 <span className="text-sm font-medium">{item.label}</span>
                             </div>
                             {item.label === 'My Network' && hasNetworkNotifications && (
-                                <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-white' : 'bg-black'}`} title="New requests or offers" />
+                                <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-surface' : 'bg-primary'}`} title="New requests or offers" />
                             )}
                             {item.label === 'Notifications' && unreadNotifCount > 0 && (
-                                <div className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${isActive ? 'bg-white text-black' : 'bg-black text-white'}`}>
+                                <div className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${isActive ? 'bg-surface text-text-primary' : 'bg-primary text-background'}`}>
                                     {unreadNotifCount}
                                 </div>
                             )}
