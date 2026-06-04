@@ -8,8 +8,6 @@ import { useAuthStore } from '@/store/useAuthStore'
 import { useSignalStore } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useRatingStore } from '@/store/useRatingStore'
-import { formatDistanceToNow } from 'date-fns'
-import { hasWhatsappAccess } from '@/lib/planUtils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { usersApi, connectionsApi, signalsApi, ApiUser, ApiSignal } from '@/lib/apiClient'
@@ -172,6 +170,7 @@ export default function PublicProfile({ params }: { params: { username: string }
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex">
+                <MobileNavigation title="User Profile" />
                 <Sidebar />
 
                 <main className="flex-1 max-w-[680px] border-r border-border min-h-screen p-0">
@@ -244,17 +243,6 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                             c.receiverId === paramUsername
                                                         );
                                                         if (!conn) return;
-
-                                                        if (!hasWhatsappAccess(user?.plan)) {
-                                                            setStatusModal({
-                                                                isOpen: true,
-                                                                type: 'upgrade',
-                                                                title: 'Upgrade Required',
-                                                                message: 'Your current plan does not include WhatsApp direct access. Please upgrade to unlock.'
-                                                            });
-                                                            return;
-                                                        }
-
                                                         const { data, error } = await connectionsApi.getWhatsappLink(conn.id);
                                                         if (data?.whatsappUrl) {
                                                             window.open(data.whatsappUrl, '_blank');
