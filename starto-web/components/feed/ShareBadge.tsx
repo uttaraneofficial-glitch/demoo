@@ -117,7 +117,7 @@ export const ShareBadge = forwardRef<HTMLDivElement, ShareBadgeProps>(({
                                 </div>
                                 <div className="bg-primary border border-primary rounded-3xl p-8 text-center flex flex-col justify-center shadow-lg transform scale-105">
                                     <p className="text-6xl font-black text-background mb-2 font-display">{stats?.connections || 0}</p>
-                                    <p className="text-lg text-background/80 uppercase tracking-[0.2em] font-bold">Network</p>
+                                    <p className="text-lg text-background opacity-80 uppercase tracking-[0.2em] font-bold">Network</p>
                                 </div>
                                 <div className="bg-surface-2 border border-border rounded-3xl p-8 text-center flex flex-col justify-center">
                                     <p className="text-6xl font-black text-text-primary flex items-center justify-center gap-2 mb-2 font-display">
