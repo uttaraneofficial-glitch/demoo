@@ -160,7 +160,7 @@ export default function PricingPage() {
                                         className={`p-8 rounded-2xl flex flex-col transition-all border ${
                                             isPro 
                                             ? 'bg-primary text-background shadow-2xl shadow-primary/20 border-transparent' 
-                                            : 'bg-white border-border hover:border-text-muted'
+                                            : 'bg-surface border-border hover:border-text-muted'
                                         }`}
                                     >
                                         <div className="mb-6">
@@ -168,14 +168,14 @@ export default function PricingPage() {
                                                 <h3 className="text-xl font-display">{p.plan.replace('_', ' ')}</h3>
                                                 {getPlanIcon(p.plan)}
                                             </div>
-                                            <p className={`${isPro ? 'text-white/60' : 'text-text-secondary'} text-sm h-10`}>
+                                            <p className={`${isPro ? 'text-background/60' : 'text-text-secondary'} text-sm h-10`}>
                                                 Optimized for {p.durationDays === 365 ? 'long-term' : 'rapid'} ecosystem growth.
                                             </p>
                                         </div>
 
                                         <div className="mb-8">
                                             <span className="text-4xl font-mono">₹{p.amountRupees.toLocaleString()}</span>
-                                            <span className={`${isPro ? 'text-white/40' : 'text-text-muted'} text-xs ml-2`}>
+                                            <span className={`${isPro ? 'text-background/40' : 'text-text-muted'} text-xs ml-2`}>
                                                 / {p.durationDays} days
                                             </span>
                                         </div>
@@ -194,9 +194,9 @@ export default function PricingPage() {
                                             disabled={purchasing === p.plan}
                                             className={`w-full py-4 rounded-md font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-all ${
                                                 isCurrent 
-                                                ? 'bg-accent-green text-white hover:bg-accent-green/90 shadow-lg shadow-accent-green/20' 
+                                                ? 'bg-accent-green text-background hover:bg-accent-green/90 shadow-lg shadow-accent-green/20' 
                                                 : isPro 
-                                                ? 'bg-white text-primary hover:bg-white/90' 
+                                                ? 'bg-surface text-primary hover:bg-surface/90' 
                                                 : 'bg-primary text-background hover:bg-primary/90'
                                             }`}
                                         >
