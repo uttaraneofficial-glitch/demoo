@@ -638,7 +638,7 @@ export default function UserProfile() {
                                             <h1 className="text-2xl font-display">{name}</h1>
                                             {(isVerified || displayPlan === 'Pro' || displayPlan === 'Founder' || displayPlan === 'TRIAL') && !displayPlan.toLowerCase().includes('explorer') && (
                                                 <span title={`${displayPlan} Verified`} className="relative inline-flex items-center justify-center">
-                                                    <BadgeCheck className="w-6 h-6 fill-black text-white" />
+                                                    <BadgeCheck className="w-6 h-6 fill-black text-background" />
                                                 </span>
                                             )}
                                         </div>
@@ -727,7 +727,7 @@ export default function UserProfile() {
                                             </div>
                                         </div>
                                         <div className="flex gap-2">
-                                            <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-black text-white rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-90">
+                                            <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-primary text-background rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-90">
                                                 <Edit3 className="w-3.5 h-3.5" /> Edit Profile
                                             </button>
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
@@ -799,7 +799,7 @@ export default function UserProfile() {
                                                 className="p-6 bg-surface-2 rounded-2xl border border-border group hover:border-primary transition-all mb-4 cursor-pointer"
                                             >
                                                 <div className="flex justify-between items-start mb-4">
-                                                    <span className="text-[10px] px-2 py-0.5 bg-black text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
+                                                    <span className="text-[10px] px-2 py-0.5 bg-primary text-background rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
                                                     <span className="text-[10px] font-bold text-primary uppercase tracking-widest">● Active</span>
                                                 </div>
                                                 <h3 className="text-xl font-display mb-2 group-hover:text-primary transition-colors">{signal.title}</h3>
@@ -815,7 +815,7 @@ export default function UserProfile() {
                                         {myActiveSignals.length > 3 && (
                                             <button
                                                 onClick={() => setShowAllActiveSignals(!showAllActiveSignals)}
-                                                className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-black"
+                                                className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-text-primary"
                                             >
                                                 {showAllActiveSignals ? 'View Less' : `View All ${myActiveSignals.length} Signals`}
                                             </button>
@@ -841,7 +841,7 @@ export default function UserProfile() {
                                             className="p-6 bg-surface-2 rounded-2xl border border-border group hover:border-primary transition-all mb-4 cursor-pointer opacity-80"
                                         >
                                             <div className="flex justify-between items-start mb-4">
-                                                <span className="text-[10px] px-2 py-0.5 bg-text-muted text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
+                                                <span className="text-[10px] px-2 py-0.5 bg-text-muted text-background rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
                                                 {signal.status === 'Solved' ? (
                                                     <span className="text-[10px] font-bold text-primary uppercase tracking-widest">✓ Completed</span>
                                                 ) : (
@@ -1054,12 +1054,12 @@ export default function UserProfile() {
                             <div className="space-y-6">
                                 {linkedinUrl ? (
                                     <Link href={formatURL(linkedinUrl)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-white transition-all text-black">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
                                             <Linkedin className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">LinkedIn</p>
-                                            <p className="text-sm font-bold truncate text-black">{extractHandle(linkedinUrl, '')}</p>
+                                            <p className="text-sm font-bold truncate text-text-primary">{extractHandle(linkedinUrl, '')}</p>
                                         </div>
                                     </Link>
                                 ) : (
@@ -1070,12 +1070,12 @@ export default function UserProfile() {
                                 )}
                                 {twitterUrl ? (
                                     <Link href={formatURL(twitterUrl.startsWith('http') ? twitterUrl : `twitter.com/${twitterUrl.replace('@', '')}`)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-black group-hover:text-white transition-all text-black">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
                                             <Twitter className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">Twitter</p>
-                                            <p className="text-sm font-bold truncate text-black">{twitterUrl.startsWith('http') ? extractHandle(twitterUrl) : (twitterUrl.startsWith('@') ? twitterUrl : `@${twitterUrl}`)}</p>
+                                            <p className="text-sm font-bold truncate text-text-primary">{twitterUrl.startsWith('http') ? extractHandle(twitterUrl) : (twitterUrl.startsWith('@') ? twitterUrl : `@${twitterUrl}`)}</p>
                                         </div>
                                     </Link>
                                 ) : (
@@ -1086,12 +1086,12 @@ export default function UserProfile() {
                                 )}
                                 {githubUrl ? (
                                     <Link href={formatURL(githubUrl)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-black group-hover:text-white transition-all text-black">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
                                             <Github className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">GitHub</p>
-                                            <p className="text-sm font-bold truncate text-black">{extractHandle(githubUrl, '')}</p>
+                                            <p className="text-sm font-bold truncate text-text-primary">{extractHandle(githubUrl, '')}</p>
                                         </div>
                                     </Link>
                                 ) : (
