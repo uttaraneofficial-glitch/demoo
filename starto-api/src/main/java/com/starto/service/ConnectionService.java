@@ -21,14 +21,14 @@ import java.util.UUID;
 public class ConnectionService {
 
     private final ConnectionRepository connectionRepository;
-    private final UserRepository userRepository;
     private final SignalRepository signalRepository;
     private final NearbySpaceRepository nearbySpaceRepository;
+    private final UserRepository userRepository;
     private final NotificationService notificationService;
-    
 
-    // SEND REQUEST
-  @Transactional
+    // SIGNAL BASED REQUEST
+
+    @Transactional
 public Connection sendRequest(User sender,
                               UUID receiverId,
                               UUID signalId,
@@ -225,6 +225,7 @@ public Connection sendRequest(User sender,
 
         Connection connection = connectionRepository.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection not found"));
+
 
         if (!connection.getRequester().getId().equals(requester.getId()) &&
             !connection.getReceiver().getId().equals(requester.getId())) {
