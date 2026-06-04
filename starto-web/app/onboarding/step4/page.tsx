@@ -95,8 +95,8 @@ export default function OnboardingStep4() {
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] uppercase font-bold tracking-widest mb-4">
                             Step 04 / 05
                         </div>
-                        <h2 className="text-3xl font-display text-white mb-3">Where are you based?</h2>
-                        <p className="text-gray-400 text-sm leading-relaxed">
+                        <h2 className="text-3xl font-display text-background mb-3">Where are you based?</h2>
+                        <p className="text-text-muted text-sm leading-relaxed">
                             Providing your specific address helps us show you nearby ecosystem nodes, local founders, and regional opportunities.
                         </p>
                     </div>
@@ -104,7 +104,7 @@ export default function OnboardingStep4() {
                     <div className="space-y-6 mb-10">
                         <div className="relative group">
                             <div className="relative">
-                                <NavIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <NavIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
                                 <input
                                     type="text"
                                     value={searchQuery}
@@ -114,7 +114,7 @@ export default function OnboardingStep4() {
                                     }}
                                     onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                                     placeholder="Enter your address or city..."
-                                    className="w-full bg-white/5 pl-12 pr-4 py-4 rounded-xl outline-none border border-white/5 focus:border-primary/50 focus:bg-white/10 transition-all text-white text-sm"
+                                    className="w-full bg-surface/5 pl-12 pr-4 py-4 rounded-xl outline-none border border-white/5 focus:border-primary/50 focus:bg-surface/10 transition-all text-background text-sm"
                                 />
                             </div>
 
@@ -130,10 +130,10 @@ export default function OnboardingStep4() {
                                             <button
                                                 key={idx}
                                                 onClick={() => handleSelectSuggestion(feat)}
-                                                className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                                                className="w-full text-left px-4 py-3 text-sm text-text-muted hover:bg-surface/5 transition-colors border-b border-white/5 last:border-0"
                                             >
-                                                <p className="font-bold text-white">{feat.properties.name}</p>
-                                                <p className="text-[10px] text-gray-500">
+                                                <p className="font-bold text-background">{feat.properties.name}</p>
+                                                <p className="text-[10px] text-text-secondary">
                                                     {[feat.properties.city, feat.properties.state, feat.properties.country].filter(Boolean).join(', ')}
                                                 </p>
                                             </button>
@@ -146,15 +146,15 @@ export default function OnboardingStep4() {
                         <button 
                             onClick={handleUseCurrentLocation}
                             disabled={isDetecting}
-                            className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest hover:text-white transition-colors group disabled:opacity-50"
+                            className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest hover:text-background transition-colors group disabled:opacity-50"
                         >
                             <NavIcon className={`w-3.5 h-3.5 group-hover:rotate-45 transition-transform ${isDetecting ? 'animate-spin' : ''}`} />
                             {isDetecting ? 'Detecting Location...' : 'Use my current location'}
                         </button>
                     </div>
 
-                    <div className="bg-white/5 border border-white/5 p-4 rounded-xl mb-10 backdrop-blur-sm">
-                        <p className="text-[11px] text-gray-400 leading-relaxed italic">
+                    <div className="bg-surface/5 border border-white/5 p-4 rounded-xl mb-10 backdrop-blur-sm">
+                        <p className="text-[11px] text-text-muted leading-relaxed italic">
                             "Starto uses precise geospatial data to bridge the gap between digital networking and real-world local collaboration."
                         </p>
                     </div>
@@ -164,8 +164,8 @@ export default function OnboardingStep4() {
                         disabled={(!city && !address) || !lat || !lng}
                         className={`w-full py-4 rounded-xl font-bold uppercase tracking-[0.2em] text-xs transition-all flex items-center justify-center gap-3 shadow-xl ${
                             (city || address) && lat && lng 
-                            ? 'bg-white text-black hover:scale-[1.02] active:scale-[0.98]' 
-                            : 'bg-white/5 text-gray-600 cursor-not-allowed'
+                            ? 'bg-surface text-text-primary hover:scale-[1.02] active:scale-[0.98]' 
+                            : 'bg-surface/5 text-text-secondary cursor-not-allowed'
                         }`}
                     >
                         Continue
