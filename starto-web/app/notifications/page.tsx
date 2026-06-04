@@ -10,7 +10,15 @@ import { formatDistanceToNow, isToday, isYesterday, format } from 'date-fns'
 import toast from 'react-hot-toast'
 
 export default function NotificationsPage() {
-    const [notifications, setNotifications] = useState<any[]>([])
+    const [notifications, setNotifications] = useState<any[]>(() => {
+        if (typeof window !== 'undefined') {
+            try {
+                const cached = localStorage.getItem('starto_notifs_cache');
+                if (cached) return JSON.parse(cached);
+            } catch (e) {}
+        }
+        return [];
+    })
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 
@@ -29,6 +37,9 @@ export default function NotificationsPage() {
                     .filter((n: any) => new Date(n.createdAt).getTime() >= sevenDaysAgo)
                     .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setNotifications(filtered);
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('starto_notifs_cache', JSON.stringify(filtered));
+                }
             }
         } catch (err) {
             console.error("Failed to fetch notifications", err);
