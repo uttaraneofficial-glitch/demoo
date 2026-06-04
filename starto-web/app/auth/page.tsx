@@ -125,7 +125,7 @@ function AuthFormContent() {
                         // Sync with backend API
                         const { data: profile, error: apiError } = await usersApi.getMe(token)
 
-                        if (apiError || !profile) {
+                        if (apiError || !profile || (profile as any).pending) {
                             setIsCompletingRegistration(true)
                             setMode('signup')
                             setError('Your email is verified. Please complete your registration below.')
@@ -340,7 +340,7 @@ function AuthFormContent() {
             // 2. Fetch Profile from Backend
             const { data: profile, error: apiError } = await usersApi.getMe(token)
 
-            if (apiError || !profile) {
+            if (apiError || !profile || (profile as any).pending) {
                 setIsCompletingRegistration(true)
                 setMode('signup')
                 setError('Your email is verified. Please complete your registration below.')
@@ -469,7 +469,7 @@ function AuthFormContent() {
                         avatarUrl
                     } as any, freshToken)
 
-                    if (apiError || !profile) {
+                    if (apiError || !profile || (profile as any).pending) {
                         setIsWaitingForVerification(false)
                         setError(formatBackendError(apiError || 'Account verified, but failed to sync with our servers.'))
                         isRegisteringRef.current = false
@@ -641,7 +641,7 @@ function AuthFormContent() {
                     avatarUrl
                 } as any, token)
 
-                if (apiError || !profile) {
+                if (apiError || !profile || (profile as any).pending) {
                     setError(formatBackendError(apiError || 'Failed to save profile.'));
                     setLoading(false);
                     return;
@@ -1165,3 +1165,4 @@ export default function AuthPage() {
         </Suspense>
     )
 }
+
