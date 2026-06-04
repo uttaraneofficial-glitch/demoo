@@ -53,7 +53,7 @@ export function ReplyInput({ placeholder, onSubmit, onCancel, value, onChange }:
                         onSubmit(val);
                         if (!onChange) setVal('');
                     }}
-                    className="px-3 py-1.5 text-[10px] font-bold bg-black text-white rounded-md hover:bg-primary transition-colors disabled:opacity-50"
+                    className="px-3 py-1.5 text-[10px] font-bold bg-primary text-background rounded-md hover:bg-primary transition-colors disabled:opacity-50"
                 >
                     Post Reply
                 </button>
