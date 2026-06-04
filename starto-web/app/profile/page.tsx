@@ -4,9 +4,10 @@ import Sidebar from '@/components/feed/Sidebar'
 import MobileNavigation from '@/components/feed/MobileNavigation'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { ShareBadge } from '@/components/feed/ShareBadge'
-import { Share2, MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
+import { Download, Share2, MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import html2canvas from 'html2canvas'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useSignalStore, getSignalExpiration } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
@@ -132,6 +133,8 @@ export default function UserProfile() {
     })
     const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false)
     const [showShareModal, setShowShareModal] = useState(false)
+    const [badgeImage, setBadgeImage] = useState<string | null>(null)
+    const [isGenerating, setIsGenerating] = useState(false)
 
     const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
         setToast({ isVisible: true, message, type })
@@ -278,6 +281,33 @@ export default function UserProfile() {
     const myActiveSignals = dbSignals.filter(s => (s.status === 'Active' || s.status === 'open') && !getSignalExpiration(s).isExpired)
     const myPastSignals = dbSignals.filter(s => s.status === 'Solved' || s.status === 'EXPIRED' || getSignalExpiration(s).isExpired)
 
+
+    
+    const generateShareBadge = () => {
+        setShowShareModal(true);
+        setBadgeImage(null);
+        setIsGenerating(true);
+        
+        setTimeout(async () => {
+            const node = document.getElementById('share-badge-node');
+            if (node) {
+                try {
+                    const canvas = await html2canvas(node, {
+                        scale: 2, // High quality
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#050505'
+                    });
+                    setBadgeImage(canvas.toDataURL('image/png'));
+                } catch (err) {
+                    console.error('Failed to generate badge', err);
+                    showToast('Failed to generate preview', 'error');
+                } finally {
+                    setIsGenerating(false);
+                }
+            }
+        }, 300); // Give it a moment to render off-screen
+    };
 
     const handleSave = async () => {
         if (editForm.websiteUrl && !editForm.websiteUrl.includes('.')) {
@@ -727,7 +757,7 @@ export default function UserProfile() {
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
-                                            <button onClick={() => setShowShareModal(true)} className="px-4 py-2 border border-primary text-primary rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary/10">
+                                            <button onClick={generateShareBadge} className="px-4 py-2 border border-primary text-primary rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary/10">
                                                 <Share2 className="w-3.5 h-3.5" /> Share Profile
                                             </button>
                                         </div>
@@ -1164,6 +1194,24 @@ export default function UserProfile() {
                 onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
             />
 
+            
+            {/* Hidden Node for html2canvas */}
+            <div style={{ position: 'fixed', left: '-9999px', top: 0, zIndex: -1 }}>
+                <div id="share-badge-node" style={{ width: '1080px', height: '1350px' }}>
+                    <ShareBadge 
+                        type="profile"
+                        username={user?.username || ''}
+                        name={user?.name || ''}
+                        avatarUrl={user?.avatarUrl}
+                        plan={user?.plan}
+                        role={user?.role || ''}
+                        city={user?.city || ''}
+                        bio={user?.bio || ''}
+                        stats={{ signals: dbSignals.length, connections: dbConnections.length, rating: avgRating }}
+                    />
+                </div>
+            </div>
+
             {/* Share Profile Modal */}
             <AnimatePresence>
                 {showShareModal && (
@@ -1173,47 +1221,87 @@ export default function UserProfile() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowShareModal(false)}
-                            className="fixed inset-0 bg-black/80 z-[100] backdrop-blur-sm"
+                            className="fixed inset-0 bg-black/90 z-[100] backdrop-blur-md"
                         />
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[110] w-[90%] max-w-[400px] flex flex-col items-center gap-6"
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[110] w-[90%] max-w-[420px] flex flex-col items-center gap-6"
                         >
-                            <div className="flex justify-between w-full">
-                                <h3 className="text-white font-display text-xl">Share Your Profile</h3>
-                                <button onClick={() => setShowShareModal(false)} className="text-white/60 hover:text-white">
-                                    <X className="w-6 h-6" />
+                            <div className="flex justify-between w-full items-center">
+                                <h3 className="text-white font-display text-2xl tracking-tight">Share Your Profile</h3>
+                                <button onClick={() => setShowShareModal(false)} className="p-2 rounded-full bg-white/10 text-white/60 hover:text-white hover:bg-white/20 transition-all">
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
                             
-                            <div className="w-full relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/20 aspect-[4/5] bg-black">
-                                <div className="absolute top-0 left-0 origin-top-left w-[1080px] h-[1350px]" style={{ transform: 'scale(0.37)' }}>
-                                    <ShareBadge 
-                                        type="profile"
-                                        username={user?.username || ''}
-                                        name={user?.name || ''}
-                                        avatarUrl={user?.avatarUrl}
-                                        plan={user?.plan}
-                                        role={user?.role || ''}
-                                        city={user?.city || ''}
-                                        bio={user?.bio || ''}
-                                        stats={{ signals: dbSignals.length, connections: dbConnections.length, rating: avgRating }}
-                                    />
-                                </div>
+                            {/* Preview Area (4:5 Aspect Ratio) */}
+                            <div className="w-full relative rounded-3xl overflow-hidden shadow-2xl border border-white/20 aspect-[4/5] bg-black/50 flex items-center justify-center">
+                                {badgeImage ? (
+                                    <img src={badgeImage} alt="Ecosystem Member Badge" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="flex flex-col items-center gap-4 text-white/50">
+                                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                                        <p className="font-mono text-xs tracking-widest uppercase">Generating High-Res Badge...</p>
+                                    </div>
+                                )}
                             </div>
                             
-                            <button onClick={() => {
-                                navigator.clipboard.writeText(`https://demoo-production-f047.up.railway.app/profile/${user?.username}`);
-                                showToast('Profile link copied to clipboard!');
-                            }} className="w-full py-4 bg-primary text-background font-bold uppercase tracking-widest rounded-xl hover:opacity-90">
-                                Copy Profile Link
-                            </button>
+                            {/* Action Buttons */}
+                            <div className="w-full grid grid-cols-2 gap-3">
+                                <button 
+                                    onClick={() => {
+                                        if (badgeImage) {
+                                            const link = document.createElement('a');
+                                            link.download = `starto_badge_${user?.username || 'profile'}.png`;
+                                            link.href = badgeImage;
+                                            link.click();
+                                            showToast('Badge downloaded successfully!');
+                                        }
+                                    }}
+                                    disabled={!badgeImage}
+                                    className="col-span-2 w-full py-4 bg-primary text-background font-bold uppercase tracking-widest rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    <Download className="w-5 h-5" /> Download Image (4:5)
+                                </button>
+                                
+                                <button 
+                                    onClick={() => {
+                                        const url = `https://demoo-production-f047.up.railway.app/profile/${user?.username}`;
+                                        const text = `Check out my Starto Ecosystem Member profile!\n\n`;
+                                        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+                                    }}
+                                    className="w-full py-3 bg-[#1DA1F2] text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:opacity-90 flex items-center justify-center gap-2"
+                                >
+                                    <Twitter className="w-4 h-4" /> Share
+                                </button>
+                                
+                                <button 
+                                    onClick={() => {
+                                        const url = `https://demoo-production-f047.up.railway.app/profile/${user?.username}`;
+                                        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+                                    }}
+                                    className="w-full py-3 bg-[#0A66C2] text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:opacity-90 flex items-center justify-center gap-2"
+                                >
+                                    <Linkedin className="w-4 h-4" /> Share
+                                </button>
+
+                                <button 
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(`https://demoo-production-f047.up.railway.app/profile/${user?.username}`);
+                                        showToast('Profile link copied to clipboard!');
+                                    }}
+                                    className="col-span-2 w-full py-3 border border-white/20 text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-white/10 flex items-center justify-center gap-2 transition-colors"
+                                >
+                                    <LinkIcon className="w-4 h-4" /> Copy Profile Link
+                                </button>
+                            </div>
                         </motion.div>
                     </>
                 )}
             </AnimatePresence>
+
         </div>
     )
 }
