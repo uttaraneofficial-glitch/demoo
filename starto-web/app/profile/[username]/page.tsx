@@ -1,6 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import { MapPin, Globe, Twitter, Linkedin, Github, Zap, Users, BadgeCheck, Star, CheckCheck, Building } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
