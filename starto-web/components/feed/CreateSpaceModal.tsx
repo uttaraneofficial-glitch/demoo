@@ -93,7 +93,7 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/70 backdrop-blur-md">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -239,8 +239,8 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                                     exit={{ opacity: 0 }}
                                     className={`flex items-center gap-3 p-4 rounded-2xl text-xs font-bold tracking-tight shadow-lg ${
                                         toast.type === 'success'
-                                            ? 'bg-green-500 text-white shadow-green-500/20'
-                                            : 'bg-orange-500 text-white shadow-orange-500/20'
+                                            ? 'bg-green-500 text-background shadow-green-500/20'
+                                            : 'bg-orange-500 text-background shadow-orange-500/20'
                                     }`}
                                 >
                                     {toast.type === 'success'
