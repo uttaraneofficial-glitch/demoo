@@ -79,7 +79,7 @@ function mapApiSignalToCard(s: any) {
 
 export default function HomeFeed() {
     const router = useRouter()
-    const { isAuthenticated, user } = useAuthStore()
+    const { user, isAuthenticated, isFirebaseReady } = useAuthStore()
     const { signals: localSignals } = useSignalStore()
     const { connections, sentRequests, pendingRequests, sendRequest } = useNetworkStore()
     const { query, setQuery, performSearch, clearSearch } = useSearchStore()
@@ -145,7 +145,7 @@ export default function HomeFeed() {
 
     // Fetch notifications (last 7 days only)
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && isFirebaseReady) {
             notificationsApi.getAll().then(({ data }) => {
                 if (data) {
                     const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
@@ -159,7 +159,7 @@ export default function HomeFeed() {
                 }
             })
         }
-    }, [isAuthenticated, refreshKey])
+    }, [isAuthenticated, isFirebaseReady, refreshKey])
 
     const requireAuth = (action: () => void) => {
         if (!isAuthenticated) {
