@@ -1,6 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
+import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { Bell, Zap, UserPlus, MessageSquare, ArrowRight, ShieldAlert, CheckCircle2, Gift } from 'lucide-react'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -85,6 +86,24 @@ export default function NotificationsPage() {
         }
     }
 
+    
+    const extractSender = (notif: any) => {
+        let meta = notif.data;
+        if (typeof meta === 'string' && meta.trim().startsWith('{')) {
+            try { meta = JSON.parse(meta); } catch (e) {}
+        }
+        
+        if (notif.senderName) return { name: notif.senderName, avatar: notif.senderAvatar || notif.avatarUrl };
+        if (meta?.senderName) return { name: meta.senderName, avatar: meta.senderAvatar || meta.avatarUrl };
+        
+        // Parse from body
+        const body = notif.body || '';
+        const match = body.match(/^([A-Za-z\s]+) (sent|commented|accepted|requested|liked|replied)/i);
+        if (match) return { name: match[1].trim(), avatar: null };
+        
+        return null;
+    }
+    
     const getIcon = (type: string = '') => {
         const t = type.toLowerCase();
         if (t.includes('urgent')) return <ShieldAlert className="w-5 h-5" />
@@ -98,7 +117,7 @@ export default function NotificationsPage() {
     const getColor = (type: string = '') => {
         const t = type.toLowerCase();
         if (t.includes('urgent')) return 'text-accent-red bg-accent-red/10 border-accent-red/20'
-        if (t.includes('offer')) return 'text-[#9C27B0] bg-[#9C27B0]/10 border-[#9C27B0]/20'
+        if (t.includes('offer')) return 'text-primary bg-primary/10 border-primary/20'
         if (t.includes('plan')) return 'text-[#4CAF50] bg-[#4CAF50]/10 border-[#4CAF50]/20'
         if (t.includes('signal')) return 'text-accent-yellow bg-accent-yellow/10 border-accent-yellow/20'
         if (t.includes('connection')) return 'text-accent-blue bg-accent-blue/10 border-accent-blue/20'
