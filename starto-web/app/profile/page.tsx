@@ -1227,17 +1227,17 @@ export default function UserProfile() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[110] w-[90%] max-w-[420px] flex flex-col items-center gap-6"
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[110] w-[90%] max-w-[420px] max-h-[90vh] overflow-y-auto bg-surface border border-border rounded-[2rem] p-6 flex flex-col items-center gap-5 shadow-2xl"
                         >
                             <div className="flex justify-between w-full items-center">
-                                <h3 className="text-white font-display text-2xl tracking-tight">Share Your Profile</h3>
-                                <button onClick={() => setShowShareModal(false)} className="p-2 rounded-full bg-white/10 text-white/60 hover:text-white hover:bg-white/20 transition-all">
+                                <h3 className="text-text-primary font-display text-2xl tracking-tight">Share Your Profile</h3>
+                                <button onClick={() => setShowShareModal(false)} className="p-2 rounded-full bg-surface-2 text-text-muted hover:text-text-primary hover:bg-border transition-all">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
                             
                             {/* Preview Area (4:5 Aspect Ratio) */}
-                            <div className="w-full relative rounded-3xl overflow-hidden shadow-2xl border border-white/20 aspect-[4/5] bg-black/50 flex items-center justify-center">
+                            <div className="w-full relative rounded-2xl overflow-hidden shadow-md border border-border aspect-[4/5] bg-surface-2 flex items-center justify-center">
                                 {badgeImage ? (
                                     <img src={badgeImage} alt="Ecosystem Member Badge" className="w-full h-full object-cover" />
                                 ) : (
