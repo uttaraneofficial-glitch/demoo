@@ -71,7 +71,7 @@ export default function MobileNavigation({ title = "Professional Network" }: { t
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsOpen(false)}
-                            className="fixed inset-0 bg-black/60 z-[60] backdrop-blur-sm"
+                            className="fixed inset-0 bg-primary/60 z-[60] backdrop-blur-sm"
                         />
                         
                         {/* Drawer Content */}
@@ -86,7 +86,7 @@ export default function MobileNavigation({ title = "Professional Network" }: { t
                             {isAuthenticated && user ? (
                                 <div className="p-6 border-b border-border bg-surface-1">
                                     <div className="flex items-start justify-between mb-4">
-                                        <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center text-white font-display text-2xl shadow-lg relative overflow-hidden">
+                                        <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center text-background font-display text-2xl shadow-lg relative overflow-hidden">
                                             {user.avatarUrl ? (
                                                 <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                                             ) : (
