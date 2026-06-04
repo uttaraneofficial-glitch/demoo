@@ -282,7 +282,7 @@ export default function MySignals() {
                                                         Manage Space →
                                                     </Link>
                                                     {space.website && (
-                                                        <Link href={space.website} target="_blank" className="text-text-muted text-xs hover:text-black">
+                                                        <Link href={space.website} target="_blank" className="text-text-muted text-xs hover:text-text-primary">
                                                             Website
                                                         </Link>
                                                     )}
@@ -327,7 +327,7 @@ export default function MySignals() {
                                                 <span className="text-xs uppercase tracking-widest text-background/40">Efficiency</span>
                                                 <span className="text-2xl font-mono">{efficiency}%</span>
                                             </div>
-                                            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="w-full h-1 bg-surface/10 rounded-full overflow-hidden">
                                                 <div 
                                                     className="bg-accent-green h-full transition-all duration-1000 ease-out" 
                                                     style={{ width: `${efficiency}%` }} 
@@ -338,7 +338,7 @@ export default function MySignals() {
                                 );
                             })()}
                         </div>
-                        <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/5 rounded-full blur-2xl" />
+                        <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-surface/5 rounded-full blur-2xl" />
                     </div>
 
                     <div className="bg-surface border border-border border-dashed p-6 rounded-xl shadow-sm relative overflow-hidden group">
