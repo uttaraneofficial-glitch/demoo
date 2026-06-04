@@ -77,7 +77,7 @@ export default function VerifiedAvatar({
             <span className={`${size} rounded-full border border-border overflow-hidden relative flex items-center justify-center select-none ${shouldShowImage ? 'bg-surface-2' : `${bgColor} text-white`}`}>
                 {shouldShowImage ? (
                     <img crossOrigin="anonymous"
-                        src={avatarUrl}
+                        src={avatarUrl?.startsWith("http") ? `${avatarUrl}${avatarUrl.includes("?") ? "&" : "?"}not-from-cache-please` : avatarUrl}
                         alt={username}
                         className="w-full h-full object-cover"
                         onError={() => setImageError(true)}
