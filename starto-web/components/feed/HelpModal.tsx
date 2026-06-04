@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Zap, Link as LinkIcon, Building2 } from 'lucide-react'
+import { X, Zap, Link as LinkIcon, Building2, CheckCircle2 } from 'lucide-react'
 import { useSignalStore } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -83,9 +83,9 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="bg-white w-full max-w-[480px] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+                        className="bg-surface w-full max-w-[480px] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
                     >
-                        <div className="p-6 border-b border-border flex justify-between items-center bg-white relative">
+                        <div className="p-6 border-b border-border flex justify-between items-center bg-surface relative">
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent-blue" />
                             <div>
                                 <h2 className="text-xl font-bold font-display">Offer Help</h2>
@@ -104,7 +104,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                     className="flex flex-col items-center justify-center py-8 text-center"
                                 >
                                     <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-4">
-                                        <Zap className="w-8 h-8 text-primary fill-primary" />
+                                        <CheckCircle2 className="w-8 h-8 text-primary" />
                                     </div>
                                     <h3 className="text-xl font-bold text-primary mb-2">Offer Sent!</h3>
                                     <p className="text-sm text-text-secondary">Thank you for stepping up to help.</p>
@@ -158,9 +158,9 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                     <button 
                                         onClick={handleSubmit}
                                         disabled={!organizationName || !portfolioLink}
-                                        className="w-full bg-black text-white px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 hover:bg-black/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase mt-auto"
+                                        className="w-full bg-primary text-background px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase mt-auto"
                                     >
-                                        <Zap className="w-4 h-4 fill-white text-white" /> Send Offer
+                                        <Zap className="w-4 h-4 fill-background text-background" /> Send Offer
                                     </button>
                                 </>
                             )}
