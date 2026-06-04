@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Twitter, Linkedin, Link as LinkIcon } from 'lucide-react';
 import { ShareBadge } from '@/components/feed/ShareBadge';
-import html2canvas from 'html2canvas';
+import * as htmlToImage from 'html-to-image';
 
 interface ShareProfileModalProps {
     isOpen: boolean;
@@ -74,27 +74,17 @@ export default function ShareProfileModal({ isOpen, onClose, user, dbSignals, db
                                 if (node) {
                                     try {
                                         showToast('Generating image...', 'info');
-                                        const clone = node.cloneNode(true);
-                                        clone.style.transform = 'none';
-                                        clone.style.position = 'fixed';
-                                        clone.style.left = '-9999px';
-                                        clone.style.top = '0';
-                                        document.body.appendChild(clone);
-                                        
-                                        const canvas = await html2canvas(clone, {
-                                            scale: 2,
-                                            useCORS: true,
-                                            allowTaint: true,
-                                            backgroundColor: '#050505',
+                                        const dataUrl = await htmlToImage.toPng(node, {
+                                            pixelRatio: 2,
+                                            cacheBust: true,
+                                            style: { transform: 'none' },
                                             width: 1080,
                                             height: 1350
                                         });
                                         
-                                        document.body.removeChild(clone);
-                                        
                                         const link = document.createElement('a');
                                         link.download = `starto_badge_${user?.username || 'profile'}.png`;
-                                        link.href = canvas.toDataURL('image/png');
+                                        link.href = dataUrl;
                                         link.click();
                                     } catch (err) {
                                         console.error(err);
