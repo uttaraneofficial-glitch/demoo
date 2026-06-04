@@ -509,7 +509,7 @@ export default function StartoAIExplore() {
                                             <div className="text-center py-10 opacity-50 text-sm">
                                                 Plan generation is available for valid reports.
                                             </div>
-                                        )}
+                                        ))}
                                     </div>
                                     <button 
                                         onClick={handleDownloadReport}
