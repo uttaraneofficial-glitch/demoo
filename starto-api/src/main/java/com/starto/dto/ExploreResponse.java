@@ -61,6 +61,8 @@ public class ExploreResponse {
     @Data
     public static class ActionPhase {
         private String range;
+        private String estimatedBudget;
+        private String goal;
         private List<String> tasks;
     }
 }
