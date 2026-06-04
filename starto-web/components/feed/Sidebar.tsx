@@ -27,7 +27,7 @@ const navItems = [
 
 export default function Sidebar() {
     const pathname = usePathname()
-    const { isAuthenticated, user } = useAuthStore()
+    const { user, isAuthenticated, isFirebaseReady } = useAuthStore()
     const { theme, toggleTheme } = useTheme()
 
     const isAdmin = !!isAuthenticated && !!user && user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
@@ -44,7 +44,7 @@ export default function Sidebar() {
 
     // Fetch true counts from backend
     useEffect(() => {
-        if (isAuthenticated && user) {
+        if (isAuthenticated && user && isFirebaseReady) {
             signalsApi.getMine().then(({ data }) => {
                 if (data) {
                     const sigCount = data.signals?.length || 0;
@@ -68,12 +68,12 @@ export default function Sidebar() {
                 }
             })
         }
-    }, [isAuthenticated, user, signals, connections])
+    }, [isAuthenticated, user, isFirebaseReady, signals, connections])
 
     // Listen for notification read events to update count
     useEffect(() => {
         const handleRead = () => {
-            if (isAuthenticated && user) {
+            if (isAuthenticated && user && isFirebaseReady) {
                 notificationsApi.getAll().then(({ data }) => {
                     if (data) {
                         const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
@@ -89,7 +89,7 @@ export default function Sidebar() {
         }
         window.addEventListener('notificationsRead', handleRead);
         return () => window.removeEventListener('notificationsRead', handleRead);
-    }, [isAuthenticated, user])
+    }, [isAuthenticated, user, isFirebaseReady])
 
     // Ping backend to check connectivity
     useEffect(() => {
