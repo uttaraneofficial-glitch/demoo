@@ -64,7 +64,7 @@ export default function SignalDetail() {
                             <h3 className="font-display text-xl mb-6">Offer Your Help</h3>
                             <textarea
                                 placeholder="Explain why you are a good fit..."
-                                className="w-full bg-white p-4 rounded-md border border-border outline-none focus:border-primary text-sm h-32 resize-none mb-4"
+                                className="w-full bg-surface p-4 rounded-md border border-border outline-none focus:border-primary text-sm h-32 resize-none mb-4"
                             />
                             <button className="bg-primary text-background w-full py-4 rounded-md font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90">
                                 <Send className="w-4 h-4" /> Submit Help Offer
@@ -74,7 +74,7 @@ export default function SignalDetail() {
                 </main>
 
                 <aside className="hidden lg:block w-[320px] p-8 space-y-8">
-                    <div className="p-6 border border-border rounded-2xl bg-white text-center">
+                    <div className="p-6 border border-border rounded-2xl bg-surface text-center">
                         <div className="w-20 h-20 bg-surface-2 rounded-full mx-auto mb-4 border border-border" />
                         <h4 className="font-display">Arjun Sharma</h4>
                         <p className="text-xs text-text-secondary mb-6">Founder at KrishiFast</p>
