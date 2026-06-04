@@ -4,7 +4,7 @@ import Sidebar from '@/components/feed/Sidebar'
 import MobileNavigation from '@/components/feed/MobileNavigation'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { ShareBadge } from '@/components/feed/ShareBadge'
-import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
+import { Share2, MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -131,6 +131,7 @@ export default function UserProfile() {
         type: 'success'
     })
     const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false)
+    const [showShareModal, setShowShareModal] = useState(false)
 
     const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
         setToast({ isVisible: true, message, type })
@@ -726,7 +727,9 @@ export default function UserProfile() {
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
-                                            <ShareBadge />
+                                            <button onClick={() => setShowShareModal(true)} className="px-4 py-2 border border-primary text-primary rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary/10">
+                                                <Share2 className="w-3.5 h-3.5" /> Share Profile
+                                            </button>
                                         </div>
                                     </>
                                 )}
