@@ -231,7 +231,7 @@ export default function HomeFeed() {
                             </button>
                             <button
                                 onClick={() => requireAuth(() => setIsRaiseModalOpen(true))}
-                                className="bg-primary text-background px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black/90 transition-all shrink-0 shadow-sm"
+                                className="bg-primary text-background px-4 py-2 rounded-full flex items-center gap-2 hover:bg-primary/90 transition-all shrink-0 shadow-sm"
                             >
                                 <Plus className="w-4 h-4" />
                                 <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline">Raise</span>
@@ -250,7 +250,7 @@ export default function HomeFeed() {
                             <span>
                                 {backendError.toLowerCase().includes('expired') || backendError.toLowerCase().includes('token') ? (
                                     <>
-                                        <strong>Session expired.</strong> Please <a href="/auth" className="underline font-semibold text-black hover:text-primary">login again</a> to view your personalized feed.
+                                        <strong>Session expired.</strong> Please <a href="/auth" className="underline font-semibold text-text-primary hover:text-primary">login again</a> to view your personalized feed.
                                     </>
                                 ) : (
                                     <>
@@ -287,7 +287,7 @@ export default function HomeFeed() {
                 </main>
 
                 <aside className="hidden lg:block w-[320px] p-8 space-y-4">
-                    <div className="bg-white/[0.02] border border-border p-6 rounded-xl relative overflow-hidden group">
+                    <div className="bg-surface/[0.02] border border-border p-6 rounded-xl relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <h3 className="font-display text-lg mb-2 relative z-10">Need Market Analysis?</h3>
                         <p className="text-text-secondary text-sm mb-6 relative z-10">Real World Data. No Hallucinations. Powered by Starto AI.</p>
