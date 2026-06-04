@@ -87,9 +87,18 @@ export async function apiFetch<T>(
         }
 
         if (!response.ok) {
+            let errorMessage = (data && typeof data === 'object') ? (data.error || data.message) : data;
+            
+            if (!errorMessage) {
+                if (status === 401) errorMessage = "Unauthorized: Please log in again.";
+                else if (status === 403) errorMessage = "Forbidden: You don't have access to this resource.";
+                else if (status >= 500) errorMessage = "Internal Server Error. Please try again later.";
+                else errorMessage = response.statusText || 'Network request failed';
+            }
+
             return {
                 data: null,
-                error: (data && typeof data === 'object') ? (data.error || data.message || response.statusText) : (data || response.statusText),
+                error: errorMessage,
                 status
             };
         }
@@ -219,6 +228,8 @@ export interface ApiExploreResponse {
     };
     actionPlan: {
         range: string;
+        estimatedBudget?: string;
+        goal?: string;
         tasks: string[];
     }[];
 }

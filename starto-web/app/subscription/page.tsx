@@ -242,6 +242,12 @@ export default function SubscriptionPage() {
             const { data: orderData, error: orderError } = await subscriptionApi.createOrder(targetPlanId);
 
             if (orderError || !orderData) {
+                if (orderError && orderError.startsWith('Unauthorized')) {
+                    useAuthStore.getState().logout();
+                    try { getAuth().signOut(); } catch (e) {}
+                    window.location.href = '/login';
+                    return;
+                }
                 setStatusModal({
                     isOpen: true,
                     type: 'error',
@@ -642,3 +648,5 @@ function PlanCard({ plan, idx, currentPlan, onUpgrade }: { plan: any, idx: numbe
         </motion.div>
     )
 }
+
+
