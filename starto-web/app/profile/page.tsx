@@ -283,32 +283,7 @@ export default function UserProfile() {
 
 
     
-    const generateShareBadge = () => {
-        setShowShareModal(true);
-        setBadgeImage(null);
-        setIsGenerating(true);
-        
-        setTimeout(async () => {
-            const node = document.getElementById('share-badge-node');
-            if (node) {
-                try {
-                    const canvas = await html2canvas(node, {
-                        scale: 2, // High quality
-                        useCORS: true,
-                        allowTaint: true,
-                        backgroundColor: '#050505'
-                    });
-                    setBadgeImage(canvas.toDataURL('image/png'));
-                } catch (err) {
-                    console.error('Failed to generate badge', err);
-                    showToast('Failed to generate preview', 'error');
-                } finally {
-                    setIsGenerating(false);
-                }
-            }
-        }, 300); // Give it a moment to render off-screen
-    };
-
+    
     const handleSave = async () => {
         if (editForm.websiteUrl && !editForm.websiteUrl.includes('.')) {
             setStatusModal({
@@ -757,7 +732,7 @@ export default function UserProfile() {
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
-                                            <button onClick={generateShareBadge} className="px-4 py-2 border border-primary text-primary rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary/10">
+                                            <button onClick={() => setShowShareModal(true)} className="px-4 py-2 border border-primary text-primary rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary/10">
                                                 <Share2 className="w-3.5 h-3.5" /> Share Profile
                                             </button>
                                         </div>
@@ -1195,39 +1170,23 @@ export default function UserProfile() {
             />
 
             
-            {/* Hidden Node for html2canvas */}
-            <div style={{ position: 'fixed', left: '-9999px', top: 0, zIndex: -1 }}>
-                <div id="share-badge-node" style={{ width: '1080px', height: '1350px' }}>
-                    <ShareBadge 
-                        type="profile"
-                        username={user?.username || ''}
-                        name={user?.name || ''}
-                        avatarUrl={user?.avatarUrl}
-                        plan={user?.plan}
-                        role={user?.role || ''}
-                        city={user?.city || ''}
-                        bio={user?.bio || ''}
-                        stats={{ signals: dbSignals.length, connections: dbConnections.length, rating: avgRating }}
-                    />
-                </div>
-            </div>
-
+            
             {/* Share Profile Modal */}
             <AnimatePresence>
                 {showShareModal && (
-                    <>
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 overflow-y-auto pointer-events-none">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowShareModal(false)}
-                            className="fixed inset-0 bg-black/90 z-[100] backdrop-blur-md"
+                            className="fixed inset-0 bg-black/80 backdrop-blur-md pointer-events-auto"
                         />
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[110] w-[90%] max-w-[420px] max-h-[90vh] overflow-y-auto bg-surface border border-border rounded-[2rem] p-6 flex flex-col items-center gap-5 shadow-2xl"
+                            className="relative w-full max-w-[420px] bg-surface border border-border rounded-[2rem] p-6 flex flex-col gap-5 shadow-2xl pointer-events-auto my-auto"
                         >
                             <div className="flex justify-between w-full items-center">
                                 <h3 className="text-text-primary font-display text-2xl tracking-tight">Share Your Profile</h3>
@@ -1236,32 +1195,68 @@ export default function UserProfile() {
                                 </button>
                             </div>
                             
-                            {/* Preview Area (4:5 Aspect Ratio) */}
-                            <div className="w-full relative rounded-2xl overflow-hidden shadow-md border border-border aspect-[4/5] bg-surface-2 flex items-center justify-center">
-                                {badgeImage ? (
-                                    <img src={badgeImage} alt="Ecosystem Member Badge" className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="flex flex-col items-center gap-4 text-white/50">
-                                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                                        <p className="font-mono text-xs tracking-widest uppercase">Generating High-Res Badge...</p>
-                                    </div>
-                                )}
+                            {/* Instant Preview Area via CSS Scale */}
+                            <div 
+                                className="w-full relative rounded-2xl overflow-hidden shadow-md border border-border aspect-[4/5] bg-surface-2"
+                                ref={(el) => {
+                                    if (el) {
+                                        const scale = el.clientWidth / 1080;
+                                        const child = el.firstElementChild as HTMLElement;
+                                        if (child) child.style.transform = `scale(${scale})`;
+                                    }
+                                }}
+                            >
+                                <div id="share-badge-node" className="absolute top-0 left-0 w-[1080px] h-[1350px] origin-top-left">
+                                    <ShareBadge 
+                                        type="profile"
+                                        username={user?.username || ''}
+                                        name={user?.name || ''}
+                                        avatarUrl={user?.avatarUrl}
+                                        plan={user?.plan}
+                                        role={user?.role || ''}
+                                        city={user?.city || ''}
+                                        bio={user?.bio || ''}
+                                        stats={{ signals: dbSignals.length, connections: dbConnections.length, rating: avgRating }}
+                                    />
+                                </div>
                             </div>
                             
                             {/* Action Buttons */}
                             <div className="w-full grid grid-cols-2 gap-3">
                                 <button 
-                                    onClick={() => {
-                                        if (badgeImage) {
-                                            const link = document.createElement('a');
-                                            link.download = `starto_badge_${user?.username || 'profile'}.png`;
-                                            link.href = badgeImage;
-                                            link.click();
-                                            showToast('Badge downloaded successfully!');
+                                    onClick={async () => {
+                                        const node = document.getElementById('share-badge-node');
+                                        if (node) {
+                                            try {
+                                                // Create a temporary unscaled clone to get a perfect high-res render
+                                                const clone = node.cloneNode(true) as HTMLElement;
+                                                clone.style.transform = 'none';
+                                                clone.style.position = 'fixed';
+                                                clone.style.left = '-9999px';
+                                                clone.style.top = '0';
+                                                document.body.appendChild(clone);
+                                                
+                                                const canvas = await html2canvas(clone, {
+                                                    scale: 2,
+                                                    useCORS: true,
+                                                    allowTaint: true,
+                                                    backgroundColor: '#050505',
+                                                    width: 1080,
+                                                    height: 1350
+                                                });
+                                                
+                                                document.body.removeChild(clone);
+                                                
+                                                const link = document.createElement('a');
+                                                link.download = `starto_badge_${user?.username || 'profile'}.png`;
+                                                link.href = canvas.toDataURL('image/png');
+                                                link.click();
+                                            } catch (err) {
+                                                console.error(err);
+                                            }
                                         }
                                     }}
-                                    disabled={!badgeImage}
-                                    className="col-span-2 w-full py-4 bg-primary text-background font-bold uppercase tracking-widest rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="col-span-2 w-full py-4 bg-primary text-background font-bold uppercase tracking-widest rounded-xl hover:opacity-90 transition-colors flex items-center justify-center gap-2"
                                 >
                                     <Download className="w-5 h-5" /> Download Image (4:5)
                                 </button>
@@ -1290,15 +1285,16 @@ export default function UserProfile() {
                                 <button 
                                     onClick={() => {
                                         navigator.clipboard.writeText(`https://demoo-production-f047.up.railway.app/profile/${user?.username}`);
-                                        showToast('Profile link copied to clipboard!');
+                                        // Assume showToast is available in scope
+                                        if (typeof showToast === 'function') showToast('Profile link copied to clipboard!');
                                     }}
-                                    className="col-span-2 w-full py-3 border border-white/20 text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-white/10 flex items-center justify-center gap-2 transition-colors"
+                                    className="col-span-2 w-full py-3 border border-border text-text-primary font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-surface-2 flex items-center justify-center gap-2 transition-colors"
                                 >
                                     <LinkIcon className="w-4 h-4" /> Copy Profile Link
                                 </button>
                             </div>
                         </motion.div>
-                    </>
+                    </div>
                 )}
             </AnimatePresence>
 
