@@ -1,7 +1,7 @@
 "use client"
  
 import Sidebar from '@/components/feed/Sidebar'
-import MobileNavigation from '@/components/feed/MobileNavigation'
+import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
@@ -155,15 +155,14 @@ export default function StartoAIExplore() {
             `}</style>
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
                 <div className="no-print">
-                    <MobileNavigation title="Starto AI Explore" />
-                <Sidebar />
+                    <Sidebar />
                 </div>
 
                 <main className="flex-1 w-full p-4 md:p-6 lg:p-12 overflow-y-auto">
                     <header className="mb-12">
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                             <div className="inline-flex items-center gap-2 bg-primary text-background px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                                Powered by GPT-4o + Gemini
+                                Powered by Starto Ai
                             </div>
                             {usage && (
                                 <div className="inline-flex items-center gap-2 bg-surface-2 border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-text-primary">
@@ -452,45 +451,79 @@ export default function StartoAIExplore() {
                             </motion.section>
 
                             <aside className="space-y-6 report-sidebar">
-                                <div className="bg-primary text-background p-8 rounded-2xl overflow-hidden relative print:bg-white print:text-black print:border print:border-border">
-                                    <FileText className="w-12 h-12 text-white/10 absolute -top-2 -right-2 print:hidden" />
-                                    <h4 className="text-lg font-display mb-4">90-Day Execution Plan</h4>
-                                    <div className="space-y-6 relative text-background">
+                                <div className="bg-primary text-background p-8 rounded-2xl relative print:bg-white print:text-black print:border print:border-border overflow-hidden group">
+                                    <FileText className="w-48 h-48 text-white/5 absolute -top-10 -right-10 print:hidden transition-transform group-hover:scale-110 duration-700" />
+                                    <h4 className="text-xl font-display mb-8 relative flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                                            <FileText className="w-4 h-4 text-white" />
+                                        </div>
+                                        90-Day Execution Plan
+                                    </h4>
+                                    <div className="space-y-8 relative text-background">
                                         {(results?.actionPlan?.map((phase, pIdx) => (
-                                            <div key={pIdx} className="space-y-3">
-                                                <span className="text-[10px] uppercase text-background/60 block print:text-text-muted">{phase.range}</span>
-                                                {phase.tasks.map((task, tIdx) => (
-                                                    <div key={tIdx} className="border-l border-background/20 pl-4 relative print:border-border">
-                                                        {tIdx === 0 ? (
-                                                            <CheckCircle2 className="w-4 h-4 text-accent-green absolute -left-2 top-0 bg-primary print:bg-white" />
-                                                        ) : (
-                                                            <div className="w-3 h-3 border border-background/20 rounded-full absolute -left-[6.5px] top-1 bg-primary print:bg-white print:border-border" />
-                                                        )}
-                                                        <p className="text-xs">{task}</p>
+                                            <div key={pIdx} className="space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="px-3 py-1 bg-white/10 text-white text-[10px] uppercase font-bold tracking-widest rounded-full print:bg-black/10 print:text-black">
+                                                        📍 {phase.range}
                                                     </div>
-                                                ))}
+                                                </div>
+                                                
+                                                <div className="border-l-2 border-white/20 ml-[15px] pl-6 py-2 space-y-4 print:border-border">
+                                                    {(phase.estimatedBudget || phase.goal) && (
+                                                        <div className="bg-white/5 p-4 rounded-xl border border-white/10 space-y-2 mb-4 backdrop-blur-sm print:border-border">
+                                                            {phase.estimatedBudget && (
+                                                                <div className="flex items-start gap-2 text-xs">
+                                                                    <span className="shrink-0">💰</span>
+                                                                    <div>
+                                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Est. Budget</span>
+                                                                        <span className="font-mono">{phase.estimatedBudget}</span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {phase.goal && (
+                                                                <div className="flex items-start gap-2 text-xs">
+                                                                    <span className="shrink-0">🎯</span>
+                                                                    <div>
+                                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Primary Goal</span>
+                                                                        <span className="text-white/90">{phase.goal}</span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    
+                                                    <div className="space-y-3">
+                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest print:text-text-muted">🛠️ Action Items</span>
+                                                        {phase.tasks.map((task, tIdx) => (
+                                                            <div key={tIdx} className="flex items-start gap-3 group/task">
+                                                                <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center shrink-0 mt-0.5 group-hover/task:bg-accent-green group-hover/task:border-accent-green transition-colors print:border-border">
+                                                                    <CheckCircle2 className="w-3 h-3 text-transparent group-hover/task:text-primary transition-colors" />
+                                                                </div>
+                                                                <p className="text-sm text-white/80 group-hover/task:text-white transition-colors leading-relaxed print:text-black">{task}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
                                         )) || (
-                                            <>
-                                                <div className="border-l border-white/20 pl-4 relative">
-                                                    <CheckCircle2 className="w-4 h-4 text-accent-green absolute -left-2 top-0 bg-primary" />
-                                                    <span className="text-[10px] uppercase text-white/40 block">Week 1-2</span>
-                                                    <p className="text-xs mt-1">Setup supply partnerships Nashik region.</p>
-                                                </div>
-                                                <div className="border-l border-white/20 pl-4 relative">
-                                                    <div className="w-3 h-3 border border-white/20 rounded-full absolute -left-[6.5px] top-1 bg-primary" />
-                                                    <span className="text-[10px] uppercase text-white/40 block">Week 3-6</span>
-                                                    <p className="text-xs mt-1">Hire 2 field operations managers.</p>
-                                                </div>
-                                            </>
-                                        ))}
+                                            <div className="text-center py-10 opacity-50 text-sm">
+                                                Plan generation is available for valid reports.
+                                            </div>
+                                        )}
                                     </div>
                                     <button 
                                         onClick={handleDownloadReport}
-                                        className="w-full mt-10 border border-white/20 py-3 rounded-md text-sm font-medium hover:bg-white/10 transition-all no-print"
+                                        className="w-full mt-10 border border-white/20 py-4 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-primary transition-all no-print flex items-center justify-center gap-2"
                                     >
-                                        Download Report
+                                        <FileText className="w-4 h-4" /> Download Full Report
                                     </button>
+                                </div>
+
+                                <div className="flex items-start gap-3 p-4 bg-surface-2 rounded-xl border border-border no-print">
+                                    <AlertTriangle className="w-4 h-4 text-text-muted shrink-0 mt-0.5" />
+                                    <p className="text-[10px] text-text-muted leading-relaxed">
+                                        Starto AI provides strategic guidance based on available market data. Market conditions can rapidly change. Always verify critical decisions with professional advisors.
+                                    </p>
                                 </div>
 
                                 <div className="bg-surface-2 border border-border p-6 rounded-2xl no-print">
@@ -505,7 +538,7 @@ export default function StartoAIExplore() {
                     )}
                 </main>
                 <div className="no-print">
-                    
+                    <MobileBottomNav />
                 </div>
             </div>
             <AnimatePresence>
