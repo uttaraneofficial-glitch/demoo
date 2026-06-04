@@ -464,7 +464,7 @@ export default function StartoAIExplore() {
                                             <div key={pIdx} className="space-y-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="px-3 py-1 bg-white/10 text-white text-[10px] uppercase font-bold tracking-widest rounded-full print:bg-black/10 print:text-black">
-                                                        📍 {phase.range}
+                                                        {phase.range}
                                                     </div>
                                                 </div>
                                                 
@@ -473,7 +473,7 @@ export default function StartoAIExplore() {
                                                         <div className="bg-white/5 p-4 rounded-xl border border-white/10 space-y-2 mb-4 backdrop-blur-sm print:border-border">
                                                             {phase.estimatedBudget && (
                                                                 <div className="flex items-start gap-2 text-xs">
-                                                                    <span className="shrink-0">💰</span>
+                                                                    <span className="shrink-0 text-text-muted mt-0.5"><Briefcase className="w-3 h-3 text-white/50" /></span>
                                                                     <div>
                                                                         <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Est. Budget</span>
                                                                         <span className="font-mono">{phase.estimatedBudget}</span>
@@ -482,7 +482,7 @@ export default function StartoAIExplore() {
                                                             )}
                                                             {phase.goal && (
                                                                 <div className="flex items-start gap-2 text-xs">
-                                                                    <span className="shrink-0">🎯</span>
+                                                                    <span className="shrink-0 text-text-muted mt-0.5"><AlertTriangle className="w-3 h-3 text-white/50" /></span>
                                                                     <div>
                                                                         <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Primary Goal</span>
                                                                         <span className="text-white/90">{phase.goal}</span>
@@ -493,7 +493,7 @@ export default function StartoAIExplore() {
                                                     )}
                                                     
                                                     <div className="space-y-3">
-                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest print:text-text-muted">🛠️ Action Items</span>
+                                                        <span className="text-white/60 font-bold uppercase text-[9px] tracking-widest print:text-text-muted border-b border-white/10 pb-1 inline-block mb-2">Action Items</span>
                                                         {phase.tasks.map((task, tIdx) => (
                                                             <div key={tIdx} className="flex items-start gap-3 group/task">
                                                                 <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center shrink-0 mt-0.5 group-hover/task:bg-accent-green group-hover/task:border-accent-green transition-colors print:border-border">
