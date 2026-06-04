@@ -192,7 +192,7 @@ export default function SignalDetailPage() {
                     <div className="flex items-center justify-between mb-8">
                         <button 
                             onClick={() => router.back()}
-                            className="flex items-center gap-2 text-text-muted hover:text-black transition-colors group"
+                            className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors group"
                         >
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                             <span className="text-sm font-medium uppercase tracking-widest">Back</span>
@@ -264,7 +264,7 @@ export default function SignalDetailPage() {
                                         <p className="text-[10px] uppercase font-bold text-text-muted">Life remaining</p>
                                     </div>
                                 </div>
-                                <div className="w-full h-3 bg-white/50 rounded-full overflow-hidden border border-border/30">
+                                <div className="w-full h-3 bg-surface/50 rounded-full overflow-hidden border border-border/30">
                                     <motion.div 
                                         initial={{ width: 0 }}
                                         animate={{ width: `${progressPercent}%` }}
@@ -290,7 +290,7 @@ export default function SignalDetailPage() {
                                         <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                                         <div className="space-y-1">
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Specific Location</p>
-                                            <p className="text-sm font-medium text-black">{signal.address}</p>
+                                            <p className="text-sm font-medium text-text-primary">{signal.address}</p>
                                         </div>
                                     </div>
                                 )}
@@ -387,7 +387,7 @@ export default function SignalDetailPage() {
                                                         setCommentText(text); // Restore text on error
                                                     }
                                                 }}
-                                                className="bg-black text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-primary transition-all disabled:opacity-40"
+                                                className="bg-primary text-background px-6 py-2 rounded-full text-xs font-bold hover:bg-primary transition-all disabled:opacity-40"
                                             >
                                                 Post Response
                                             </button>
@@ -530,7 +530,7 @@ export default function SignalDetailPage() {
                                 <button className="flex-1 bg-primary text-background py-4 rounded-xl font-bold text-sm shadow-lg shadow-primary/20">
                                     I Can Help
                                 </button>
-                                <button className="flex-1 bg-black text-white py-4 rounded-xl font-bold text-sm">
+                                <button className="flex-1 bg-primary text-background py-4 rounded-xl font-bold text-sm">
                                     Respond
                                 </button>
                             </div>
