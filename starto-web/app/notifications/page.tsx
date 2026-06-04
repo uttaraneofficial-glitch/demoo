@@ -10,15 +10,7 @@ import { formatDistanceToNow, isToday, isYesterday, format } from 'date-fns'
 import toast from 'react-hot-toast'
 
 export default function NotificationsPage() {
-    const [notifications, setNotifications] = useState<any[]>(() => {
-        if (typeof window !== 'undefined') {
-            try {
-                const cached = localStorage.getItem('starto_notifs_cache');
-                if (cached) return JSON.parse(cached);
-            } catch (e) {}
-        }
-        return [];
-    })
+    const [notifications, setNotifications] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const router = useRouter()
 
