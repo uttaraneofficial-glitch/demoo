@@ -72,7 +72,7 @@ export const ShareBadge = forwardRef<HTMLDivElement, ShareBadgeProps>(({
 
             {/* Main Central Card */}
             <div className="z-10 flex-1 flex flex-col items-center justify-center w-full relative my-12">
-                <div className="w-full bg-surface border-2 border-border rounded-[3rem] p-16 flex flex-col items-center shadow-2xl relative overflow-hidden">
+                <div className="w-full bg-surface border-2 border-border rounded-[3rem] p-16 flex flex-col items-center shadow-2xl relative">
                     
                     {/* Floating Avatar */}
                     <div className="absolute -top-28 left-1/2 -translate-x-1/2">
@@ -83,7 +83,7 @@ export const ShareBadge = forwardRef<HTMLDivElement, ShareBadgeProps>(({
                                 plan={plan}
                                 size="w-[190px] h-[190px]"
                                 badgeSize="w-16 h-16"
-                                className="!rounded-[2rem]"
+                                className="!rounded-[2rem] text-[80px]"
                             />
                         </div>
                     </div>
