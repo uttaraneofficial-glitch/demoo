@@ -219,6 +219,8 @@ export interface ApiExploreResponse {
     };
     actionPlan: {
         range: string;
+        estimatedBudget?: string;
+        goal?: string;
         tasks: string[];
     }[];
 }
