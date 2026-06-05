@@ -94,7 +94,7 @@ export default function VerifiedAvatar({
                     className="absolute -bottom-0.5 -right-0.5 bg-surface rounded-full flex items-center justify-center shadow-sm"
                     style={{ padding: '1px' }}
                 >
-                    <BadgeCheck className={`${badgeSize} fill-black text-background`} />
+                    <BadgeCheck className={`${badgeSize} fill-blue-500 text-white`} />
                 </span>
             )}
         </span>
