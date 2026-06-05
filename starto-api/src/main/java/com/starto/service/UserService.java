@@ -21,8 +21,6 @@ import com.starto.repository.OfferRepository;
 import com.starto.repository.CommentRepository;
 import com.starto.repository.SignalViewRepository;
 import com.starto.repository.NearbySpaceRepository;
-import com.starto.repository.*;
-import com.starto.model.*;
 import com.starto.repository.ConnectionRepository;
 import com.starto.model.Signal;
 import java.util.List;
@@ -40,14 +38,7 @@ public class UserService {
     private final CommentRepository commentRepository;
     private final SignalViewRepository signalViewRepository;
     private final NearbySpaceRepository nearbySpaceRepository;
-        private final ConnectionRepository connectionRepository;
-    private final ResponseRepository responseRepository;
-    private final NotificationRepository notificationRepository;
-    private final ReviewRepository reviewRepository;
-    private final AiUsageRepository aiUsageRepository;
-    private final SubscriptionRepository subscriptionRepository;
-    private final ExploreReportRepository exploreReportRepository;
-    private final MessageRepository messageRepository;
+    private final ConnectionRepository connectionRepository;
 
 
  public Optional<User> getUserByFirebaseUid(String firebaseUid) {
@@ -343,25 +334,12 @@ public void updatePresence(String firebaseUid) {
             signalRepository.delete(signal);
         }
         
-                // 5. Delete spaces
+        // 5. Delete spaces
         nearbySpaceRepository.deleteByUser_Id(userId);
-
-        // 5.5 Delete other foreign keys
-        responseRepository.deleteByUserId(userId);
-        notificationRepository.deleteByUserId(userId);
-        reviewRepository.deleteByReviewerId(userId);
-        reviewRepository.deleteByReviewedId(userId);
-        aiUsageRepository.deleteByUserId(userId);
-        subscriptionRepository.deleteByUserId(userId);
-        exploreReportRepository.deleteByUserId(userId);
-        messageRepository.deleteBySenderId(userId);
-        messageRepository.deleteByReceiverId(userId);
         
         // 6. Delete user
         userRepository.delete(user);
     }
 }
-
-
 
 
