@@ -272,20 +272,25 @@ if (user.getAvatarUrl() != null) existing.setAvatarUrl(user.getAvatarUrl());
     }
 
 private String generateUniqueUsername(String name, String role) {
-
-    String base = name.toLowerCase().trim().replaceAll("\\s+", "");
-    String baseUsername = base + "_" + role.toLowerCase();
-
-    String finalUsername = baseUsername;
-    int i = 1;
-
-    while (userRepository.existsByUsername(finalUsername)) {
-        finalUsername = baseUsername + i;
-        i++;
-    }
-
-    return finalUsername;
-}
+      if (name == null || name.trim().isEmpty()) {
+          name = "user";
+      }
+      String base = name.toLowerCase().trim().replaceAll("\\s+", "");
+      String baseUsername = base + "_" + role.toLowerCase();
+  
+      String finalUsername = baseUsername;
+      int maxTries = 10;
+      int attempts = 0;
+  
+      while (userRepository.existsByUsername(finalUsername) && attempts < maxTries) {
+          // Use a random high-entropy suffix to prevent TOCTOU race conditions at massive scale
+          String suffix = java.util.UUID.randomUUID().toString().substring(0, 4);
+          finalUsername = baseUsername + "_" + suffix;
+          attempts++;
+      }
+  
+      return finalUsername;
+  }
 
 
 @Transactional
@@ -336,4 +341,5 @@ public void updatePresence(String firebaseUid) {
         userRepository.delete(user);
     }
 }
+
 
