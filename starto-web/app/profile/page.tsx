@@ -820,7 +820,7 @@ export default function UserProfile() {
                                         {myActiveSignals.length > 3 && (
                                             <button
                                                 onClick={() => setShowAllActiveSignals(!showAllActiveSignals)}
-                                                className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-black"
+                                                className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-text-primary"
                                             >
                                                 {showAllActiveSignals ? 'View Less' : `View All ${myActiveSignals.length} Signals`}
                                             </button>
@@ -1059,12 +1059,12 @@ export default function UserProfile() {
                             <div className="space-y-6">
                                 {linkedinUrl ? (
                                     <Link href={formatURL(linkedinUrl)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-white transition-all text-black">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
                                             <Linkedin className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">LinkedIn</p>
-                                            <p className="text-sm font-bold truncate text-black">{extractHandle(linkedinUrl, '')}</p>
+                                            <p className="text-sm font-bold truncate text-text-primary">{extractHandle(linkedinUrl, '')}</p>
                                         </div>
                                     </Link>
                                 ) : (
@@ -1075,12 +1075,12 @@ export default function UserProfile() {
                                 )}
                                 {twitterUrl ? (
                                     <Link href={formatURL(twitterUrl.startsWith('http') ? twitterUrl : `twitter.com/${twitterUrl.replace('@', '')}`)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-black group-hover:text-white transition-all text-black">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
                                             <Twitter className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">Twitter</p>
-                                            <p className="text-sm font-bold truncate text-black">{twitterUrl.startsWith('http') ? extractHandle(twitterUrl) : (twitterUrl.startsWith('@') ? twitterUrl : `@${twitterUrl}`)}</p>
+                                            <p className="text-sm font-bold truncate text-text-primary">{twitterUrl.startsWith('http') ? extractHandle(twitterUrl) : (twitterUrl.startsWith('@') ? twitterUrl : `@${twitterUrl}`)}</p>
                                         </div>
                                     </Link>
                                 ) : (
@@ -1091,12 +1091,12 @@ export default function UserProfile() {
                                 )}
                                 {githubUrl ? (
                                     <Link href={formatURL(githubUrl)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-black group-hover:text-white transition-all text-black">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
                                             <Github className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">GitHub</p>
-                                            <p className="text-sm font-bold truncate text-black">{extractHandle(githubUrl, '')}</p>
+                                            <p className="text-sm font-bold truncate text-text-primary">{extractHandle(githubUrl, '')}</p>
                                         </div>
                                     </Link>
                                 ) : (
