@@ -19,4 +19,7 @@ public interface AiUsageRepository extends JpaRepository<AiUsage, UUID> {
 
     @Query("SELECT COALESCE(SUM(a.usedCount), 0) FROM AiUsage a WHERE a.userId = :userId AND a.date >= :startDate")
     long countByUserIdAndDateAfter(@Param("userId") UUID userId, @Param("startDate") LocalDate startDate);
+
+    void deleteByUserId(UUID userId);
 }
+

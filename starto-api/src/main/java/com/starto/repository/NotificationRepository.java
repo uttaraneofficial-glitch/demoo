@@ -20,4 +20,7 @@ long countUnreadByUserId(@Param("userId") UUID userId);
 void markAllReadByUserId(@Param("userId") UUID userId);
 
 
+
+    void deleteByUserId(UUID userId);
 }
+
