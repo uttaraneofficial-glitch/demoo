@@ -336,3 +336,4 @@ public void updatePresence(String firebaseUid) {
         userRepository.delete(user);
     }
 }
+
