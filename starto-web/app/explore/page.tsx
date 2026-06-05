@@ -137,7 +137,7 @@ export default function StartoAIExplore() {
                         background-color: white !important;
                         color: black !important;
                     }
-                    .bg-surface, .bg-surface-1, .bg-surface-2, .bg-primary {
+                    .bg-surface, .bg-surface-2, .bg-surface-2, .bg-primary {
                         background-color: white !important;
                         color: black !important;
                         border-color: #e5e7eb !important;
@@ -496,10 +496,10 @@ export default function StartoAIExplore() {
                                                         <span className="text-background/60 font-bold uppercase text-[9px] tracking-widest print:text-text-muted border-b border-white/10 pb-1 inline-block mb-2">Action Items</span>
                                                         {phase.tasks.map((task, tIdx) => (
                                                             <div key={tIdx} className="flex items-start gap-3 group/task">
-                                                                <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center shrink-0 mt-0.5 group-hover/task:bg-accent-green group-hover/task:border-accent-green transition-colors print:border-border">
+                                                                <div className="w-5 h-5 rounded-full border border-background/30 flex items-center justify-center shrink-0 mt-0.5 group-hover/task:bg-accent-green group-hover/task:border-accent-green transition-colors print:border-border">
                                                                     <CheckCircle2 className="w-3 h-3 text-transparent group-hover/task:text-primary transition-colors" />
                                                                 </div>
-                                                                <p className="text-sm text-background/80 group-hover/task:text-background transition-colors leading-relaxed print:text-text-primary">{task}</p>
+                                                                <p className="text-sm text-background opacity-80 group-hover/task:opacity-100 transition-colors leading-relaxed print:text-text-primary">{task}</p>
                                                             </div>
                                                         ))}
                                                     </div>
@@ -601,3 +601,5 @@ export default function StartoAIExplore() {
         </div>
     )
 }
+
+
