@@ -1,13 +1,11 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
-import MobileNavigation from '@/components/feed/MobileNavigation'
+import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
-import { ShareBadge } from '@/components/feed/ShareBadge'
-import { Download, Share2, MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
+import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import html2canvas from 'html2canvas'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useSignalStore, getSignalExpiration } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
@@ -22,7 +20,6 @@ import { signalsApi, subscriptionsApi, offersApi, connectionsApi, usersApi } fro
 import StatusModal from '@/components/feed/StatusModal'
 import Toast from '@/components/feed/Toast'
 import NetworkModal from '@/components/feed/NetworkModal'
-import ShareProfileModal from '@/components/feed/ShareProfileModal'
 
 
 export default function UserProfile() {
@@ -110,8 +107,8 @@ export default function UserProfile() {
         lat: user?.lat || null,
         lng: user?.lng || null,
         handleBase: username
-            ? (username || '').split('_').slice(0, -1).join('_')
-            : (name ? (name || '').split(' ')[0].toLowerCase() : '')
+            ? username.split('_').slice(0, -1).join('_')
+            : (name ? name.split(' ')[0].toLowerCase() : '')
     })
 
     const [statusModal, setStatusModal] = useState<{
@@ -133,9 +130,6 @@ export default function UserProfile() {
         type: 'success'
     })
     const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false)
-    const [showShareModal, setShowShareModal] = useState(false)
-    const [badgeImage, setBadgeImage] = useState<string | null>(null)
-    const [isGenerating, setIsGenerating] = useState(false)
 
     const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
         setToast({ isVisible: true, message, type })
@@ -163,7 +157,7 @@ export default function UserProfile() {
                 avatarUrl: user.avatarUrl || null,
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? (user.username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || ''
+                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user.name.split(' ')[0]?.toLowerCase() || ''
             })
             // Fetch ratings for self
             if (user.id) {
@@ -283,8 +277,6 @@ export default function UserProfile() {
     const myPastSignals = dbSignals.filter(s => s.status === 'Solved' || s.status === 'EXPIRED' || getSignalExpiration(s).isExpired)
 
 
-    
-    
     const handleSave = async () => {
         if (editForm.websiteUrl && !editForm.websiteUrl.includes('.')) {
             setStatusModal({
@@ -296,7 +288,7 @@ export default function UserProfile() {
             return
         }
         const formattedRole = editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '')
-        const formattedBase = (editForm.handleBase || '').toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '')
+        const formattedBase = editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '')
         const newUsername = `${formattedBase}_${formattedRole}`
 
         const updatedProfile = { 
@@ -324,13 +316,30 @@ export default function UserProfile() {
             } else {
                 throw new Error(error)
             }
-        } catch (error) {
-            setStatusModal({
-                isOpen: true,
-                type: 'error',
-                title: 'Update Failed',
-                message: 'Failed to save profile: ' + error
-            })
+        } catch (error: any) {
+            const errorMsg = error.message || String(error);
+            if (errorMsg.includes('already taken')) {
+                const roleSuffix = `_${formattedRole}`;
+                const alts = [
+                    `${formattedBase}01${roleSuffix}`,
+                    `${formattedBase}_official${roleSuffix}`,
+                    `${formattedBase}2026${roleSuffix}`,
+                    `${formattedBase}_pro${roleSuffix}`
+                ];
+                setStatusModal({
+                    isOpen: true,
+                    type: 'error',
+                    title: 'Username Unavailable',
+                    message: `The username @${newUsername} is already taken.\n\nTry one of these instead:\n� @${alts[0]}\n� @${alts[1]}\n� @${alts[2]}\n� @${alts[3]}`
+                })
+            } else {
+                setStatusModal({
+                    isOpen: true,
+                    type: 'error',
+                    title: 'Update Failed',
+                    message: 'Failed to save profile: ' + errorMsg
+                })
+            }
         } finally {}
     }
 
@@ -350,7 +359,7 @@ export default function UserProfile() {
                 coverUrl: user.coverUrl || null, 
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? (user.username || '').split('_').slice(0, -1).join('_') : (user.name || '').split(' ')[0]?.toLowerCase() || '' 
+                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user.name.split(' ')[0]?.toLowerCase() || '' 
             })
         }
         setIsEditing(false)
@@ -483,7 +492,6 @@ export default function UserProfile() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
-                <MobileNavigation title="Professional Network" />
                 <Sidebar />
 
 
@@ -583,7 +591,7 @@ export default function UserProfile() {
                                             <input value={editForm.handleBase} onChange={(e) => setEditForm({ ...editForm, handleBase: e.target.value })} className="w-full bg-surface border border-primary/30 p-2 rounded-md font-mono text-sm focus:ring-1 focus:ring-primary outline-none text-text-primary" placeholder="e.g. krishna_k88" />
                                             <p className="text-[10px] text-text-muted mt-1 font-mono">
                                                 Preview: <span className="text-primary font-bold">
-                                                    @{(editForm.handleBase || '').toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || '…'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
+                                                    @{editForm.handleBase.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]+/g, '') || '…'}_{editForm.role.toLowerCase().trim().replace(/[\s/]+/g, '').replace(/[^a-z0-9]+/g, '') || 'role'}
                                                 </span>
                                             </p>
                                         </div>
@@ -638,7 +646,7 @@ export default function UserProfile() {
                                             <h1 className="text-2xl font-display">{name}</h1>
                                             {(isVerified || displayPlan === 'Pro' || displayPlan === 'Founder' || displayPlan === 'TRIAL') && !displayPlan.toLowerCase().includes('explorer') && (
                                                 <span title={`${displayPlan} Verified`} className="relative inline-flex items-center justify-center">
-                                                    <BadgeCheck className="w-6 h-6 fill-black text-background" />
+                                                    <BadgeCheck className="w-6 h-6 fill-black text-white" />
                                                 </span>
                                             )}
                                         </div>
@@ -727,15 +735,12 @@ export default function UserProfile() {
                                             </div>
                                         </div>
                                         <div className="flex gap-2">
-                                            <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-primary text-background rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-90">
+                                            <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-black text-white rounded-md text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-90">
                                                 <Edit3 className="w-3.5 h-3.5" /> Edit Profile
                                             </button>
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
-                                            <button onClick={() => setShowShareModal(true)} className="px-4 py-2 border border-primary text-primary rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary/10">
-                                                <Share2 className="w-3.5 h-3.5" /> Share Profile
-                                            </button>
                                         </div>
                                     </>
                                 )}
@@ -799,7 +804,7 @@ export default function UserProfile() {
                                                 className="p-6 bg-surface-2 rounded-2xl border border-border group hover:border-primary transition-all mb-4 cursor-pointer"
                                             >
                                                 <div className="flex justify-between items-start mb-4">
-                                                    <span className="text-[10px] px-2 py-0.5 bg-primary text-background rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
+                                                    <span className="text-[10px] px-2 py-0.5 bg-black text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
                                                     <span className="text-[10px] font-bold text-primary uppercase tracking-widest">● Active</span>
                                                 </div>
                                                 <h3 className="text-xl font-display mb-2 group-hover:text-primary transition-colors">{signal.title}</h3>
@@ -815,7 +820,7 @@ export default function UserProfile() {
                                         {myActiveSignals.length > 3 && (
                                             <button
                                                 onClick={() => setShowAllActiveSignals(!showAllActiveSignals)}
-                                                className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-text-primary"
+                                                className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-black"
                                             >
                                                 {showAllActiveSignals ? 'View Less' : `View All ${myActiveSignals.length} Signals`}
                                             </button>
@@ -841,7 +846,7 @@ export default function UserProfile() {
                                             className="p-6 bg-surface-2 rounded-2xl border border-border group hover:border-primary transition-all mb-4 cursor-pointer opacity-80"
                                         >
                                             <div className="flex justify-between items-start mb-4">
-                                                <span className="text-[10px] px-2 py-0.5 bg-text-muted text-background rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
+                                                <span className="text-[10px] px-2 py-0.5 bg-text-muted text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
                                                 {signal.status === 'Solved' ? (
                                                     <span className="text-[10px] font-bold text-primary uppercase tracking-widest">✓ Completed</span>
                                                 ) : (
@@ -1054,12 +1059,12 @@ export default function UserProfile() {
                             <div className="space-y-6">
                                 {linkedinUrl ? (
                                     <Link href={formatURL(linkedinUrl)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-white transition-all text-black">
                                             <Linkedin className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">LinkedIn</p>
-                                            <p className="text-sm font-bold truncate text-text-primary">{extractHandle(linkedinUrl, '')}</p>
+                                            <p className="text-sm font-bold truncate text-black">{extractHandle(linkedinUrl, '')}</p>
                                         </div>
                                     </Link>
                                 ) : (
@@ -1070,12 +1075,12 @@ export default function UserProfile() {
                                 )}
                                 {twitterUrl ? (
                                     <Link href={formatURL(twitterUrl.startsWith('http') ? twitterUrl : `twitter.com/${twitterUrl.replace('@', '')}`)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-black group-hover:text-white transition-all text-black">
                                             <Twitter className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">Twitter</p>
-                                            <p className="text-sm font-bold truncate text-text-primary">{twitterUrl.startsWith('http') ? extractHandle(twitterUrl) : (twitterUrl.startsWith('@') ? twitterUrl : `@${twitterUrl}`)}</p>
+                                            <p className="text-sm font-bold truncate text-black">{twitterUrl.startsWith('http') ? extractHandle(twitterUrl) : (twitterUrl.startsWith('@') ? twitterUrl : `@${twitterUrl}`)}</p>
                                         </div>
                                     </Link>
                                 ) : (
@@ -1086,12 +1091,12 @@ export default function UserProfile() {
                                 )}
                                 {githubUrl ? (
                                     <Link href={formatURL(githubUrl)} target="_blank" className="flex items-center gap-4 group">
-                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-primary group-hover:text-background transition-all text-text-primary">
+                                        <div className="w-10 h-10 bg-surface-2 rounded-xl flex items-center justify-center border border-border group-hover:bg-black group-hover:text-white transition-all text-black">
                                             <Github className="w-5 h-5" />
                                         </div>
                                         <div className="overflow-hidden">
                                             <p className="text-[10px] font-bold uppercase text-text-muted">GitHub</p>
-                                            <p className="text-sm font-bold truncate text-text-primary">{extractHandle(githubUrl, '')}</p>
+                                            <p className="text-sm font-bold truncate text-black">{extractHandle(githubUrl, '')}</p>
                                         </div>
                                     </Link>
                                 ) : (
@@ -1142,18 +1147,8 @@ export default function UserProfile() {
                         </button>
                     </div>
                 </aside>
-                
+                <MobileBottomNav />
             </div>
-
-            <ShareProfileModal 
-                isOpen={showShareModal}
-                onClose={() => setShowShareModal(false)}
-                user={user}
-                dbSignals={dbSignals}
-                dbConnections={dbConnections}
-                avgRating={avgRating}
-                showToast={showToast}
-            />
 
             <NetworkModal 
                 isOpen={isNetworkModalOpen}
@@ -1179,11 +1174,8 @@ export default function UserProfile() {
                 type={toast.type}
                 onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
             />
-
-            
-            
-            
-
         </div>
     )
 }
+
+
