@@ -316,13 +316,30 @@ export default function UserProfile() {
             } else {
                 throw new Error(error)
             }
-        } catch (error) {
-            setStatusModal({
-                isOpen: true,
-                type: 'error',
-                title: 'Update Failed',
-                message: 'Failed to save profile: ' + error
-            })
+        } catch (error: any) {
+            const errorMsg = error.message || String(error);
+            if (errorMsg.includes('already taken')) {
+                const roleSuffix = `_${formattedRole}`;
+                const alts = [
+                    `${formattedBase}01${roleSuffix}`,
+                    `${formattedBase}_official${roleSuffix}`,
+                    `${formattedBase}2026${roleSuffix}`,
+                    `${formattedBase}_pro${roleSuffix}`
+                ];
+                setStatusModal({
+                    isOpen: true,
+                    type: 'error',
+                    title: 'Username Unavailable',
+                    message: `The username @${newUsername} is already taken.\n\nTry one of these instead:\n• @${alts[0]}\n• @${alts[1]}\n• @${alts[2]}\n• @${alts[3]}`
+                })
+            } else {
+                setStatusModal({
+                    isOpen: true,
+                    type: 'error',
+                    title: 'Update Failed',
+                    message: 'Failed to save profile: ' + errorMsg
+                })
+            }
         } finally {}
     }
 
@@ -1160,3 +1177,5 @@ export default function UserProfile() {
         </div>
     )
 }
+
+
