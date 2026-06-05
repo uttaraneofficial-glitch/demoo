@@ -202,7 +202,11 @@ export default function PublicProfile({ params }: { params: { username: string }
                             <p className="text-text-secondary font-medium flex items-center gap-2">
                                 {displayRole} • {displayCity.split(',')[0]}
                                 <span className="w-1.5 h-1.5 rounded-full bg-accent-green" />
-                                <span className="text-[10px] px-2.5 py-1 bg-surface-2 rounded-full uppercase tracking-widest font-bold border border-border text-text-primary whitespace-nowrap">
+                                <span className={`text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest font-bold border whitespace-nowrap ${
+                                    displaySubscription.toLowerCase().includes('pro') || displaySubscription.toLowerCase().includes('founder')
+                                        ? 'bg-primary/10 text-primary border-primary/20'
+                                        : 'bg-surface-2 text-text-primary border-border'
+                                }`}>
                                     {displaySubscription} Account
                                 </span>
                                 {isOwnProfile && activeUser?.planExpiresAt && (
@@ -267,7 +271,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                             >
                                                 <Zap className="w-4 h-4 fill-white" /> WhatsApp
                                             </button>
-                                            <div className="px-6 py-2.5 bg-surface-2 text-accent-green border border-accent-green/20 text-xs font-bold uppercase tracking-widest rounded-xl flex items-center gap-2">
+                                            <div className="px-6 py-2.5 bg-accent-green/10 text-accent-green border border-accent-green/20 text-xs font-bold uppercase tracking-widest rounded-xl flex items-center gap-2">
                                                 <CheckCheck className="w-4 h-4" /> Connected
                                             </div>
                                         </div>
@@ -367,9 +371,9 @@ export default function PublicProfile({ params }: { params: { username: string }
                             </div>
                             <div className="flex flex-col items-end gap-2">
                                 <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all whitespace-nowrap ${
-                                    displaySubscription.toLowerCase() === 'pro' 
-                                        ? 'bg-primary/5 text-primary border-primary/20 shadow-sm shadow-primary/10' 
-                                        : 'bg-surface-2 text-text-muted border-border'
+                                    displaySubscription.toLowerCase().includes('pro') || displaySubscription.toLowerCase().includes('founder')
+                                        ? 'bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/10' 
+                                        : 'bg-surface-2 text-text-primary border-border'
                                 }`}>
                                     {displaySubscription} Account
                                 </div>
@@ -639,7 +643,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                 <Star className={`w-9 h-9 transition-all ${
                                                     star <= (hoverStar || selectedStar)
                                                         ? 'fill-yellow-400 text-yellow-400'
-                                                        : 'fill-border text-border'
+                                                        : 'fill-surface-2 text-text-secondary'
                                                 }`} />
                                             </button>
                                         ))}
@@ -654,7 +658,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                         value={ratingComment}
                                         onChange={e => setRatingComment(e.target.value)}
                                         rows={3}
-                                        className="w-full border border-border rounded-xl p-3 text-sm resize-none outline-none focus:border-primary mb-4"
+                                        className="w-full bg-surface-2 text-text-primary border border-border rounded-xl p-3 text-sm resize-none outline-none focus:border-primary focus:ring-1 focus:ring-primary mb-4"
                                     />
                                     <button
                                         disabled={!selectedStar}
