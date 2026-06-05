@@ -168,6 +168,19 @@ export default function PublicProfile({ params }: { params: { username: string }
     const signalsCount = isMounted ? userSignals.length : 0
     const connectionsCount = isMounted ? (isOwnProfile ? (connections?.length || 0) : (userConnections.length || activeUser?.networkSize || 0)) : 0
 
+    if (!isMounted || isLoadingUser) {
+        return (
+            <div className="min-h-screen bg-background flex justify-center">
+                <div className="max-w-[1400px] w-full flex">
+                    <Sidebar />
+                    <main className="flex-1 max-w-[680px] border-r border-border min-h-screen flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </main>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex">
@@ -313,8 +326,8 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                     }
                                                 }
                                             }}
-                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all shadow-lg active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed ${
-                                                requestJustSent || isPending ? 'bg-surface-2 text-text-muted border border-border' : 'bg-primary text-background hover:opacity-90'
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all shadow-lg active:scale-95 disabled:cursor-not-allowed ${
+                                                requestJustSent || isPending ? 'bg-surface-2 text-text-primary border border-border opacity-80' : 'bg-primary text-background hover:opacity-90'
                                             }`}
                                             disabled={isPending || requestJustSent || alreadyConnected}
                                         >
