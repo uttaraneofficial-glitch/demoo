@@ -230,7 +230,7 @@ export default function CityAutocomplete({
                             <button
                                 key={item.place_id}
                                 onMouseDown={() => handleSelect(item)}
-                                className="w-full text-left px-4 py-3 hover:bg-surface-1 flex items-start gap-3 transition-colors border-b border-border/50 last:border-0"
+                                className="w-full text-left px-4 py-3 hover:bg-surface-2 flex items-start gap-3 transition-colors border-b border-border/50 last:border-0"
                             >
                                 {item.isBackend ? (
                                     <Database className="w-4 h-4 mt-0.5 text-primary shrink-0" />
@@ -249,3 +249,4 @@ export default function CityAutocomplete({
         </div>
     );
 }
+
