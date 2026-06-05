@@ -85,7 +85,7 @@ export default function InsightsModal({ isOpen, onClose, stats, signalTitle, hid
                                     {signalTitle}
                                 </p>
                             </div>
-                            <button onClick={onClose} className="p-2 bg-surface-1 hover:bg-surface-2 rounded-full transition-all text-text-primary border border-border">
+                            <button onClick={onClose} className="p-2 bg-surface-2 hover:bg-surface-2 rounded-full transition-all text-text-primary border border-border">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
@@ -141,7 +141,7 @@ export default function InsightsModal({ isOpen, onClose, stats, signalTitle, hid
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.4 }}
-                                    className="bg-surface-1 p-4 rounded-3xl flex flex-col items-start shadow-sm border border-border/50 w-full"
+                                    className="bg-surface-2 p-4 rounded-3xl flex flex-col items-start shadow-sm border border-border/50 w-full"
                                 >
                                     <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center mb-2">
                                         <MessageSquare className="w-4 h-4 text-primary" />
@@ -155,7 +155,7 @@ export default function InsightsModal({ isOpen, onClose, stats, signalTitle, hid
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ delay: 0.5 }}
-                                        className="bg-surface-1 p-4 rounded-3xl flex flex-col items-start shadow-sm border border-border/50 w-full"
+                                        className="bg-surface-2 p-4 rounded-3xl flex flex-col items-start shadow-sm border border-border/50 w-full"
                                     >
                                         <div className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center mb-2">
                                             <Zap className="w-4 h-4 text-primary" />
@@ -169,7 +169,7 @@ export default function InsightsModal({ isOpen, onClose, stats, signalTitle, hid
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.6 }}
-                                    className="bg-surface-1 p-4 rounded-3xl flex flex-col items-start shadow-sm border border-border/50 w-full"
+                                    className="bg-surface-2 p-4 rounded-3xl flex flex-col items-start shadow-sm border border-border/50 w-full"
                                 >
                                     <div className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center mb-2">
                                         <Eye className="w-4 h-4 text-primary" />
@@ -186,3 +186,4 @@ export default function InsightsModal({ isOpen, onClose, stats, signalTitle, hid
         </AnimatePresence>
     );
 }
+
