@@ -378,11 +378,11 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                             <label className="text-sm font-medium text-text-primary mb-2 flex justify-between items-center block">
                                 <span>Signal Duration <span className="text-red-500">*</span></span>
                                 <span className={`font-mono font-bold ${duration === 0 ? 'text-text-muted' : (duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? 'text-orange-600' : 'text-primary'} flex items-center gap-2`}>
-                                    {editSignal && <span className="text-[9px] uppercase bg-surface-1 px-1.5 py-0.5 rounded border border-border text-text-muted flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Fixed</span>}
+                                    {editSignal && <span className="text-[9px] uppercase bg-surface-2 px-1.5 py-0.5 rounded border border-border text-text-muted flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Fixed</span>}
                                     {duration === 0 ? 'Not Selected' : `${duration} Days`}
                                 </span>
                             </label>
-                            <div className={`p-4 rounded-xl border transition-colors ${duration > 7 ? 'bg-orange-50/50 border-orange-200' : duration === 0 ? 'bg-surface-2 border-red-200' : 'bg-surface-2 border-border'}`}>
+                            <div className={`p-4 rounded-xl border transition-colors ${duration > 7 ? 'bg-orange-500/10 border-orange-500/20' : duration === 0 ? 'bg-surface-2 border-red-200' : 'bg-surface-2 border-border'}`}>
                                 <input 
                                     type="range" 
                                     min="0" 
@@ -409,14 +409,14 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                                         initial={{ opacity: 0, height: 0 }}
                                         animate={{ opacity: 1, height: 'auto' }}
                                         exit={{ opacity: 0, height: 0 }}
-                                        className="mt-4 bg-orange-50 border border-orange-200 p-3 rounded-lg flex items-start gap-3 overflow-hidden"
+                                        className="mt-4 bg-orange-500/10 border border-orange-500/20 p-3 rounded-lg flex items-start gap-3 overflow-hidden"
                                     >
                                         <div className="bg-orange-100 p-1.5 rounded-full mt-0.5">
                                             <Zap className="w-3.5 h-3.5 text-orange-600 fill-orange-600" />
                                         </div>
                                         <div>
-                                            <h4 className="text-xs font-bold text-orange-900">StarPro Feature</h4>
-                                            <p className="text-[10px] text-orange-800 mt-0.5 leading-relaxed">Signals lasting longer than 7 days require an active StarPro subscription. Please upgrade to broadcast for {duration} days.</p>
+                                            <h4 className="text-xs font-bold text-orange-400">StarPro Feature</h4>
+                                            <p className="text-[10px] text-orange-300 mt-0.5 leading-relaxed">Signals lasting longer than 7 days require an active StarPro subscription. Please upgrade to broadcast for {duration} days.</p>
                                         </div>
                                     </motion.div>
                                 )}
@@ -468,3 +468,5 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
         </AnimatePresence>
     )
 }
+
+
