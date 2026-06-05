@@ -25,7 +25,7 @@ export default function SearchResultsPanel() {
                 <div className="flex items-center justify-between p-3 border-b border-border bg-surface-2/50 backdrop-blur-sm">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Search Results</span>
                     <button onClick={clearSearch} className="p-1 hover:bg-border rounded-md transition-colors">
-                        <X className="w-3 h-3 text-text-muted" />
+                        <X className="w-3 h-3 text-text-primary" />
                     </button>
                 </div>
 

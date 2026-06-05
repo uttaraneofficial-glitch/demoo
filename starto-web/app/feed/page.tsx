@@ -216,7 +216,7 @@ export default function HomeFeed() {
                                             onClick={clearSearch}
                                             className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-surface-2 rounded-full"
                                         >
-                                            <X className="w-3 h-3 text-text-muted" />
+                                            <X className="w-3 h-3 text-text-primary" />
                                         </button>
                                     )}
                                 </div>
