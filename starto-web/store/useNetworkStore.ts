@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
 import { connectionsApi, offersApi } from '@/lib/apiClient'
 import { useAuthStore } from './useAuthStore'
 
