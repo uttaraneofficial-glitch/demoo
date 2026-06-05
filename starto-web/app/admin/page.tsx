@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import { adminApi } from '@/lib/apiClient'
 import { useAuthStore } from '@/store/useAuthStore'
 import { 
@@ -92,7 +92,8 @@ export default function AdminDashboard() {
         return (
             <div className="min-h-screen bg-background flex justify-center">
                 <div className="max-w-[1400px] w-full flex">
-                    <Sidebar />
+                    <MobileNavigation title="Admin Dashboard" />
+                <Sidebar />
                     <main className="flex-1 p-8 flex flex-col items-center justify-center gap-6">
                         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center">
                             <AlertCircle className="w-8 h-8 text-red-500" />
@@ -103,7 +104,7 @@ export default function AdminDashboard() {
                         </div>
                         <button 
                             onClick={() => router.push('/feed')}
-                            className="bg-black text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest"
+                            className="bg-primary text-background px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest"
                         >
                             Return to Feed
                         </button>
@@ -114,7 +115,7 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#F5F4F0] text-black flex justify-center">
+        <div className="min-h-screen bg-[#F5F4F0] text-text-primary flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row mb-16 md:mb-0">
                 <Sidebar />
 
@@ -130,9 +131,9 @@ export default function AdminDashboard() {
                                 <p className="text-text-muted mt-2 text-sm">Managing the heart of Starto V3 network.</p>
                             </div>
                             
-                            <div className="bg-white border border-border px-6 py-3 rounded-2xl shadow-sm text-center">
+                            <div className="bg-surface border border-border px-6 py-3 rounded-2xl shadow-sm text-center">
                                 <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">Total Users</p>
-                                <p className="text-2xl font-mono font-bold text-black">{stats.totalUsers}</p>
+                                <p className="text-2xl font-mono font-bold text-text-primary">{stats.totalUsers}</p>
                             </div>
                         </div>
 
@@ -143,7 +144,7 @@ export default function AdminDashboard() {
                                 placeholder="Search by name, username, email or phone..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-2xl text-sm focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 transition-all shadow-sm"
+                                className="w-full pl-12 pr-4 py-4 bg-surface border border-border rounded-2xl text-sm focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 transition-all shadow-sm"
                             />
                         </div>
                     </header>
@@ -152,24 +153,24 @@ export default function AdminDashboard() {
                     <div className="flex gap-2 mb-6">
                         <button
                             onClick={() => router.push('/admin')}
-                            className="px-6 py-2 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-full"
+                            className="px-6 py-2 bg-primary text-background text-xs font-bold uppercase tracking-widest rounded-full"
                         >
                             Ecosystem Users
                         </button>
                         <button
                             onClick={() => router.push('/admin/promo-codes')}
-                            className="px-6 py-2 bg-white border border-border text-black text-xs font-bold uppercase tracking-widest rounded-full hover:bg-gray-50 transition-colors"
+                            className="px-6 py-2 bg-surface border border-border text-text-primary text-xs font-bold uppercase tracking-widest rounded-full hover:bg-surface-2 transition-colors"
                         >
                             Promo Codes
                         </button>
                     </div>
 
                     {/* Users Table */}
-                    <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
+                    <div className="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-gray-50 border-b border-border">
+                                    <tr className="bg-surface-2 border-b border-border">
                                         <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-text-muted">User</th>
                                         <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-text-muted">Contact Info</th>
                                         <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-text-muted">Role & Plan</th>
@@ -189,19 +190,19 @@ export default function AdminDashboard() {
                                         </tr>
                                     ) : (
                                         filteredUsers.map((u) => (
-                                            <tr key={u.id} className="border-b border-border hover:bg-gray-50/50 transition-colors group">
+                                            <tr key={u.id} className="border-b border-border hover:bg-surface-2/50 transition-colors group">
                                                 <td className="px-6 py-5">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center border border-border overflow-hidden">
+                                                        <div className="w-10 h-10 bg-surface-2 rounded-full flex items-center justify-center border border-border overflow-hidden">
                                                             {u.avatarUrl ? (
                                                                 <img src={u.avatarUrl} alt={u.name} className="w-full h-full object-cover" />
                                                             ) : (
-                                                                <UserCircle className="w-6 h-6 text-gray-400" />
+                                                                <UserCircle className="w-6 h-6 text-text-muted" />
                                                             )}
                                                         </div>
                                                         <div>
                                                             <div className="flex items-center gap-1.5">
-                                                                <p className="font-bold text-sm text-black group-hover:text-primary transition-colors">{u.name}</p>
+                                                                <p className="font-bold text-sm text-text-primary group-hover:text-primary transition-colors">{u.name}</p>
                                                                 {u.isVerified && <ShieldCheck className="w-3 h-3 text-primary" />}
                                                             </div>
                                                             <p className="text-[11px] text-text-muted">@{u.username}</p>
@@ -222,13 +223,13 @@ export default function AdminDashboard() {
                                                 </td>
                                                 <td className="px-6 py-5">
                                                     <div className="space-y-1">
-                                                        <div className="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-wider">
+                                                        <div className="flex items-center gap-2 text-xs font-bold text-text-primary uppercase tracking-wider">
                                                             <Briefcase className="w-3 h-3 opacity-50" />
                                                             {u.role}
                                                         </div>
                                                         <div className="flex items-center gap-2">
                                                             <span className={`text-[10px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-full border ${
-                                                                u.plan === 'EXPLORER' ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-primary/10 text-primary border-primary/20'
+                                                                u.plan === 'EXPLORER' ? 'bg-surface-2 text-text-secondary border-border' : 'bg-primary/10 text-primary border-primary/20'
                                                             }`}>
                                                                 {u.plan}
                                                             </span>
@@ -242,7 +243,7 @@ export default function AdminDashboard() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-5 text-right">
-                                                    <span className={`inline-block w-2 h-2 rounded-full ${u.isOnline ? 'bg-primary animate-pulse shadow-[0_0_8px_rgba(0,0,0,0.1)]' : 'bg-gray-300'}`} />
+                                                    <span className={`inline-block w-2 h-2 rounded-full ${u.isOnline ? 'bg-primary animate-pulse shadow-[0_0_8px_rgba(0,0,0,0.1)]' : 'bg-border'}`} />
                                                     <span className="ml-2 text-[10px] font-bold uppercase tracking-widest text-text-muted">
                                                         {u.isOnline ? 'Active' : 'Offline'}
                                                     </span>
@@ -260,7 +261,7 @@ export default function AdminDashboard() {
                     </footer>
                 </main>
 
-                <MobileBottomNav />
+                
             </div>
         </div>
     )

@@ -72,18 +72,18 @@ export default function VerifiedAvatar({
     const shouldShowImage = avatarUrl && !imageError;
 
     return (
-        <span className={`relative inline-flex shrink-0 ${size} ${className}`}>
+        <span className={`relative inline-flex shrink-0 ${size} ${className} ${className.includes("text-") ? "" : "text-base"}`}>
             {/* Avatar circle */}
-            <span className={`${size} rounded-full border border-border overflow-hidden relative flex items-center justify-center select-none ${shouldShowImage ? 'bg-surface-2' : `${bgColor} text-white`}`}>
+            <span className={`${size} rounded-full border border-border overflow-hidden relative flex items-center justify-center select-none ${shouldShowImage ? 'bg-surface-2' : `${bgColor} text-background`}`}>
                 {shouldShowImage ? (
-                    <img
-                        src={avatarUrl}
+                    <img crossOrigin="anonymous"
+                        src={avatarUrl?.startsWith("http") ? `${avatarUrl}${avatarUrl.includes("?") ? "&" : "?"}not-from-cache-please` : avatarUrl}
                         alt={username}
                         className="w-full h-full object-cover"
                         onError={() => setImageError(true)}
                     />
                 ) : (
-                    <span className="text-[45%] tracking-tighter uppercase font-bold">{initials}</span>
+                    <span className="tracking-tighter uppercase font-bold">{initials}</span>
                 )}
             </span>
 
@@ -91,10 +91,10 @@ export default function VerifiedAvatar({
             {verified && (
                 <span
                     title={`${plan} Verified`}
-                    className="absolute -bottom-0.5 -right-0.5 bg-white rounded-full flex items-center justify-center shadow-sm"
+                    className="absolute -bottom-0.5 -right-0.5 bg-surface rounded-full flex items-center justify-center shadow-sm"
                     style={{ padding: '1px' }}
                 >
-                    <BadgeCheck className={`${badgeSize} fill-black text-white`} />
+                    <BadgeCheck className={`${badgeSize} fill-black text-background`} />
                 </span>
             )}
         </span>

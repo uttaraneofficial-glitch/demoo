@@ -21,7 +21,7 @@ export default function OnboardingStep3() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white p-8 rounded-xl shadow-md border border-border max-w-lg w-full"
+                className="bg-surface p-8 rounded-xl shadow-md border border-border max-w-lg w-full"
             >
                 <h2 className="text-3xl mb-8">What is your industry?</h2>
 

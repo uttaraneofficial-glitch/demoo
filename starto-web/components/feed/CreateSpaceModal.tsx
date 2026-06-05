@@ -93,7 +93,7 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/70 backdrop-blur-md">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -148,7 +148,7 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                             <label className="text-xs font-bold uppercase tracking-widest text-text-muted mb-3 block">Description <span className="text-primary">*</span></label>
                             <textarea
                                 placeholder="Describe the facilities, vibe, and community focus of this space..."
-                                className="w-full bg-surface-1 p-5 rounded-2xl border border-border outline-none focus:border-primary text-sm h-32 resize-none placeholder:text-text-muted/50 shadow-inner"
+                                className="w-full bg-surface-2 p-5 rounded-2xl border border-border outline-none focus:border-primary text-sm h-32 resize-none placeholder:text-text-muted/50 shadow-inner"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
@@ -229,7 +229,7 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                     </div>
 
                     {/* Footer */}
-                    <div className="p-8 bg-surface-1 border-t border-border space-y-4">
+                    <div className="p-8 bg-surface-2 border-t border-border space-y-4">
                         {/* Toast */}
                         <AnimatePresence>
                             {toast && (
@@ -239,8 +239,8 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                                     exit={{ opacity: 0 }}
                                     className={`flex items-center gap-3 p-4 rounded-2xl text-xs font-bold tracking-tight shadow-lg ${
                                         toast.type === 'success'
-                                            ? 'bg-green-500 text-white shadow-green-500/20'
-                                            : 'bg-orange-500 text-white shadow-orange-500/20'
+                                            ? 'bg-green-500 text-background shadow-green-500/20'
+                                            : 'bg-orange-500 text-background shadow-orange-500/20'
                                     }`}
                                 >
                                     {toast.type === 'success'
@@ -269,3 +269,4 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
         </AnimatePresence>
     )
 }
+

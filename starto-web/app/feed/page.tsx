@@ -79,7 +79,7 @@ function mapApiSignalToCard(s: any) {
 
 export default function HomeFeed() {
     const router = useRouter()
-    const { isAuthenticated, user } = useAuthStore()
+    const { user, isAuthenticated, isFirebaseReady } = useAuthStore()
     const { signals: localSignals } = useSignalStore()
     const { connections, sentRequests, pendingRequests, sendRequest } = useNetworkStore()
     const { query, setQuery, performSearch, clearSearch } = useSearchStore()
@@ -132,7 +132,7 @@ export default function HomeFeed() {
         signalsApi.getAll().then(({ data, error }) => {
             if (cancelled) return
             if (error || data === null) {
-                setBackendError(error || 'Could not reach backend')
+                setBackendError(error || 'Connection failed')
             } else {
                 console.log('[DEBUG] API Signals:', data);
                 setApiSignals(Array.isArray(data) ? data : [])
@@ -145,7 +145,7 @@ export default function HomeFeed() {
 
     // Fetch notifications (last 7 days only)
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && isFirebaseReady) {
             notificationsApi.getAll().then(({ data }) => {
                 if (data) {
                     const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
@@ -159,7 +159,7 @@ export default function HomeFeed() {
                 }
             })
         }
-    }, [isAuthenticated, refreshKey])
+    }, [isAuthenticated, isFirebaseReady, refreshKey])
 
     const requireAuth = (action: () => void) => {
         if (!isAuthenticated) {
@@ -231,7 +231,7 @@ export default function HomeFeed() {
                             </button>
                             <button
                                 onClick={() => requireAuth(() => setIsRaiseModalOpen(true))}
-                                className="bg-primary text-background px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black/90 transition-all shrink-0 shadow-sm"
+                                className="bg-primary text-background px-4 py-2 rounded-full flex items-center gap-2 hover:bg-primary/90 transition-all shrink-0 shadow-sm"
                             >
                                 <Plus className="w-4 h-4" />
                                 <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline">Raise</span>
@@ -250,12 +250,11 @@ export default function HomeFeed() {
                             <span>
                                 {backendError.toLowerCase().includes('expired') || backendError.toLowerCase().includes('token') ? (
                                     <>
-                                        <strong>Session expired.</strong> Please <a href="/auth" className="underline font-semibold text-black hover:text-primary">login again</a> to view your personalized feed.
+                                        <strong>Session expired.</strong> Please <a href="/auth" className="underline font-semibold text-text-primary hover:text-primary">login again</a> to view your personalized feed.
                                     </>
                                 ) : (
                                     <>
-                                        <strong>Backend unreachable:</strong> {backendError}. Showing local signals only.
-                                        Make sure the Spring Boot server is running at <code className="font-mono bg-orange-100 px-1 rounded">localhost:8080</code>.
+                                        <strong>Unable to connect:</strong> {backendError}. Showing local signals only.
                                     </>
                                 )}
                             </span>
@@ -266,7 +265,7 @@ export default function HomeFeed() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3 text-text-muted">
                             <Loader2 className="w-8 h-8 animate-spin" />
-                            <p className="text-sm">Loading signals from backend…</p>
+                            <p className="text-sm">Loading market signals...</p>
                         </div>
                     ) : displaySignals.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-24 gap-3 text-text-muted">
@@ -288,7 +287,7 @@ export default function HomeFeed() {
                 </main>
 
                 <aside className="hidden lg:block w-[320px] p-8 space-y-4">
-                    <div className="bg-white/[0.02] border border-border p-6 rounded-xl relative overflow-hidden group">
+                    <div className="bg-surface/[0.02] border border-border p-6 rounded-xl relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <h3 className="font-display text-lg mb-2 relative z-10">Need Market Analysis?</h3>
                         <p className="text-text-secondary text-sm mb-6 relative z-10">Real World Data. No Hallucinations. Powered by Starto AI.</p>

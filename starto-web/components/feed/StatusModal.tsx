@@ -1,14 +1,14 @@
 "use client"
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, AlertCircle, Zap, ShieldAlert } from 'lucide-react'
+import { X, AlertCircle, Zap, ShieldAlert, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 
 interface StatusModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm?: () => void;
-    type: 'upgrade' | 'duplicate' | 'error' | 'confirm';
+    type: 'upgrade' | 'duplicate' | 'error' | 'confirm' | 'success';
     title: string;
     message: string;
     confirmText?: string;
@@ -29,7 +29,7 @@ export default function StatusModal({
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-primary/40 backdrop-blur-sm">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -48,11 +48,13 @@ export default function StatusModal({
                             type === 'upgrade' ? 'bg-primary/10 text-primary' : 
                             type === 'duplicate' ? 'bg-yellow-50/10 text-yellow-600' :
                             type === 'confirm' ? 'bg-surface-2 text-text-primary' :
+                            type === 'success' ? 'bg-primary/10 text-primary' :
                             'bg-surface-2 text-text-primary'
                         }`}>
                             {type === 'upgrade' ? <Zap className="w-8 h-8 fill-primary" /> : 
                              type === 'duplicate' ? <ShieldAlert className="w-8 h-8" /> :
                              type === 'confirm' ? <ShieldAlert className="w-8 h-8" /> :
+                             type === 'success' ? <CheckCircle className="w-8 h-8" /> :
                              <AlertCircle className="w-8 h-8" />}
                         </div>
 

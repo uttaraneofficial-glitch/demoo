@@ -17,7 +17,7 @@ export enum Plan {
 }
 
 export const MAX_SIGNALS: Record<Plan, number> = {
-    [Plan.EXPLORER]: 2,
+    [Plan.EXPLORER]: 6,
     [Plan.TRIAL]: 5,
     [Plan.SPRINT]: 5,
     [Plan.BOOST]: 8,
@@ -43,7 +43,7 @@ export const MAX_OFFERS: Record<Plan, number> = {
 };
 
 export const MAX_AI_CALLS: Record<Plan, number> = {
-    [Plan.EXPLORER]: 0,
+    [Plan.EXPLORER]: 3,
     [Plan.TRIAL]: 5,
     [Plan.SPRINT]: 10,
     [Plan.BOOST]: 15,

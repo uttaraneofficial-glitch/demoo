@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import { promoCodesApi } from '@/lib/apiClient'
 import { useAuthStore } from '@/store/useAuthStore'
 import { 
@@ -182,7 +182,8 @@ export default function PromoCodesPage() {
         return (
             <div className="min-h-screen bg-background flex justify-center">
                 <div className="max-w-[1400px] w-full flex">
-                    <Sidebar />
+                    <MobileNavigation title="Admin Promo Codes" />
+                <Sidebar />
                     <main className="flex-1 p-8 flex flex-col items-center justify-center gap-6">
                         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center">
                             <AlertCircle className="w-8 h-8 text-red-500" />
@@ -193,7 +194,7 @@ export default function PromoCodesPage() {
                         </div>
                         <button 
                             onClick={() => router.push('/feed')}
-                            className="bg-black text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest"
+                            className="bg-primary text-background px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest"
                         >
                             Return to Feed
                         </button>
@@ -299,7 +300,7 @@ export default function PromoCodesPage() {
                         </button>
                         <button
                             onClick={() => router.push('/admin/promo-codes')}
-                            className="px-6 py-2 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-full"
+                            className="px-6 py-2 bg-primary text-background text-xs font-bold uppercase tracking-widest rounded-full"
                         >
                             Promo Codes
                         </button>
@@ -349,7 +350,7 @@ export default function PromoCodesPage() {
                                                 <td className="px-6 py-5">
                                                     <span className={`text-[10px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-full border ${
                                                         c.status === 'UNUSED' ? 'bg-primary/10 text-primary border-primary/20' :
-                                                        c.status === 'USED' ? 'bg-gray-100 text-gray-500 border-gray-200' :
+                                                        c.status === 'USED' ? 'bg-surface-2 text-text-secondary border-border' :
                                                         'bg-red-50 text-red-500 border-red-100'
                                                     }`}>
                                                         {c.status}
@@ -415,15 +416,15 @@ export default function PromoCodesPage() {
                     </footer>
                 </main>
 
-                <MobileBottomNav />
+                
             </div>
 
             {/* Delete Modal */}
             {deleteModal.isOpen && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-primary/50 flex items-center justify-center z-50">
                     <div className="bg-surface p-8 rounded-2xl max-w-sm w-full text-center shadow-xl border border-border">
-                        <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Trash2 className="w-6 h-6 text-white" />
+                        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Trash2 className="w-6 h-6 text-background" />
                         </div>
                         <h3 className="text-xl font-display mb-2">Delete Promo Code</h3>
                         <p className="text-text-muted text-sm mb-6">Are you sure you want to delete this promo code? This action cannot be undone.</p>
@@ -441,7 +442,7 @@ export default function PromoCodesPage() {
                                     }
                                     setDeleteModal({ isOpen: false, id: null });
                                 }}
-                                className="px-6 py-2 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-full hover:bg-black/90 transition-colors"
+                                className="px-6 py-2 bg-primary text-background text-xs font-bold uppercase tracking-widest rounded-full hover:bg-primary/90 transition-colors"
                             >
                                 Delete
                             </button>

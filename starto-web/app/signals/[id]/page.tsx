@@ -22,7 +22,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { signalsApi, ApiSignal, usersApi, ApiUser, commentsApi, ApiComment } from '@/lib/apiClient'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -184,6 +184,7 @@ export default function SignalDetailPage() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
+                <MobileNavigation title="Signal Details" />
                 <Sidebar />
 
                 <main className="flex-1 w-full max-w-[900px] md:border-r border-border min-h-screen p-4 md:p-8">
@@ -191,7 +192,7 @@ export default function SignalDetailPage() {
                     <div className="flex items-center justify-between mb-8">
                         <button 
                             onClick={() => router.back()}
-                            className="flex items-center gap-2 text-text-muted hover:text-black transition-colors group"
+                            className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors group"
                         >
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                             <span className="text-sm font-medium uppercase tracking-widest">Back</span>
@@ -263,7 +264,7 @@ export default function SignalDetailPage() {
                                         <p className="text-[10px] uppercase font-bold text-text-muted">Life remaining</p>
                                     </div>
                                 </div>
-                                <div className="w-full h-3 bg-white/50 rounded-full overflow-hidden border border-border/30">
+                                <div className="w-full h-3 bg-surface/50 rounded-full overflow-hidden border border-border/30">
                                     <motion.div 
                                         initial={{ width: 0 }}
                                         animate={{ width: `${progressPercent}%` }}
@@ -285,11 +286,11 @@ export default function SignalDetailPage() {
                                     </p>
                                 </div>
                                 {signal.address && (
-                                    <div className="flex items-start gap-3 p-4 bg-surface-1 rounded-xl border border-border/40 mt-4">
+                                    <div className="flex items-start gap-3 p-4 bg-surface-2 rounded-xl border border-border/40 mt-4">
                                         <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                                         <div className="space-y-1">
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Specific Location</p>
-                                            <p className="text-sm font-medium text-black">{signal.address}</p>
+                                            <p className="text-sm font-medium text-text-primary">{signal.address}</p>
                                         </div>
                                     </div>
                                 )}
@@ -386,7 +387,7 @@ export default function SignalDetailPage() {
                                                         setCommentText(text); // Restore text on error
                                                     }
                                                 }}
-                                                className="bg-black text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-primary transition-all disabled:opacity-40"
+                                                className="bg-primary text-background px-6 py-2 rounded-full text-xs font-bold hover:bg-primary transition-all disabled:opacity-40"
                                             >
                                                 Post Response
                                             </button>
@@ -529,14 +530,14 @@ export default function SignalDetailPage() {
                                 <button className="flex-1 bg-primary text-background py-4 rounded-xl font-bold text-sm shadow-lg shadow-primary/20">
                                     I Can Help
                                 </button>
-                                <button className="flex-1 bg-black text-white py-4 rounded-xl font-bold text-sm">
+                                <button className="flex-1 bg-primary text-background py-4 rounded-xl font-bold text-sm">
                                     Respond
                                 </button>
                             </div>
                         </div>
                     </div>
                 </main>
-                <MobileBottomNav />
+                
             </div>
             
             <Toast 
@@ -556,3 +557,4 @@ export default function SignalDetailPage() {
         </div>
     )
 }
+

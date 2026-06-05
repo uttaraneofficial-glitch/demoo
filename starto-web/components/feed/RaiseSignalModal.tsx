@@ -203,7 +203,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 userPlan: user?.subscription || user?.plan || 'Free',
             }, data.id);
             updateUser({ signalCount: (user?.signalCount || 0) + 1 });
-            setToast({ type: 'success', msg: '✓ Signal broadcast to backend DB!' });
+            setToast({ type: 'success', msg: '✓ Signal successfully broadcasted!' });
             setTimeout(() => { onClose(); }, 1200);
         } else if (status === 401) {
             // ⚠️ Authentication Issue
@@ -238,7 +238,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 type: signalType,
                 userPlan: user?.subscription || user?.plan || 'Free',
             });
-            setToast({ type: 'warn', msg: `Saved locally. Backend error: ${error}` });
+            setToast({ type: 'warn', msg: `Saved locally. Will sync when online.` });
             setTimeout(() => { onClose(); }, 1800);
         }
 
@@ -248,7 +248,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/60 backdrop-blur-sm">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -273,7 +273,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                                     <button 
                                         key={s} 
                                         onClick={() => setStage(s)}
-                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${stage === s ? 'bg-primary text-background border-primary font-medium' : 'border-border text-text-secondary hover:border-black hover:text-black'}`}
+                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${stage === s ? 'bg-primary text-background border-primary font-medium' : 'border-border text-text-secondary hover:border-black hover:text-text-primary'}`}
                                     >
                                         {s}
                                     </button>
@@ -289,7 +289,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                                     <button 
                                         key={cat} 
                                         onClick={() => setCategory(cat)}
-                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${category === cat ? 'bg-black text-white border-black font-medium text-sm' : 'border-border text-text-secondary hover:border-black text-sm hover:text-black'}`}
+                                        className={`px-4 py-1.5 rounded-full border text-sm transition-all ${category === cat ? 'bg-primary text-background border-black font-medium text-sm' : 'border-border text-text-secondary hover:border-black text-sm hover:text-text-primary'}`}
                                     >
                                         {cat}
                                     </button>
@@ -378,11 +378,11 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                             <label className="text-sm font-medium text-text-primary mb-2 flex justify-between items-center block">
                                 <span>Signal Duration <span className="text-red-500">*</span></span>
                                 <span className={`font-mono font-bold ${duration === 0 ? 'text-text-muted' : (duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? 'text-orange-600' : 'text-primary'} flex items-center gap-2`}>
-                                    {editSignal && <span className="text-[9px] uppercase bg-surface-1 px-1.5 py-0.5 rounded border border-border text-text-muted flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Fixed</span>}
+                                    {editSignal && <span className="text-[9px] uppercase bg-surface-2 px-1.5 py-0.5 rounded border border-border text-text-muted flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Fixed</span>}
                                     {duration === 0 ? 'Not Selected' : `${duration} Days`}
                                 </span>
                             </label>
-                            <div className={`p-4 rounded-xl border transition-colors ${duration > 7 ? 'bg-orange-50/50 border-orange-200' : duration === 0 ? 'bg-surface-2 border-red-200' : 'bg-surface-2 border-border'}`}>
+                            <div className={`p-4 rounded-xl border transition-colors ${duration > 7 ? 'bg-orange-500/10 border-orange-500/20' : duration === 0 ? 'bg-surface-2 border-red-200' : 'bg-surface-2 border-border'}`}>
                                 <input 
                                     type="range" 
                                     min="0" 
@@ -409,14 +409,14 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                                         initial={{ opacity: 0, height: 0 }}
                                         animate={{ opacity: 1, height: 'auto' }}
                                         exit={{ opacity: 0, height: 0 }}
-                                        className="mt-4 bg-orange-50 border border-orange-200 p-3 rounded-lg flex items-start gap-3 overflow-hidden"
+                                        className="mt-4 bg-orange-500/10 border border-orange-500/20 p-3 rounded-lg flex items-start gap-3 overflow-hidden"
                                     >
                                         <div className="bg-orange-100 p-1.5 rounded-full mt-0.5">
                                             <Zap className="w-3.5 h-3.5 text-orange-600 fill-orange-600" />
                                         </div>
                                         <div>
-                                            <h4 className="text-xs font-bold text-orange-900">StarPro Feature</h4>
-                                            <p className="text-[10px] text-orange-800 mt-0.5 leading-relaxed">Signals lasting longer than 7 days require an active StarPro subscription. Please upgrade to broadcast for {duration} days.</p>
+                                            <h4 className="text-xs font-bold text-orange-400">StarPro Feature</h4>
+                                            <p className="text-[10px] text-orange-300 mt-0.5 leading-relaxed">Signals lasting longer than 7 days require an active StarPro subscription. Please upgrade to broadcast for {duration} days.</p>
                                         </div>
                                     </motion.div>
                                 )}
@@ -450,16 +450,16 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                         <button 
                             onClick={handleBroadcast}
                             disabled={!headline || !details || duration === 0 || submitting}
-                            className={`w-full text-white px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase ${(duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? 'bg-orange-500 hover:bg-orange-600' : 'bg-black hover:bg-black/90'}`}
+                            className={`w-full text-background px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase ${(duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary hover:bg-primary/90'}`}
                         >
                             {submitting ? (
-                                <><Zap className="w-4 h-4 fill-white text-white animate-pulse" /> Broadcasting…</>
+                                <><Zap className="w-4 h-4 fill-white text-background animate-pulse" /> Broadcasting…</>
                             ) : duration === 0 ? (
                                 <>Select Duration to Broadcast</>
                             ) : (duration > 7 && (!user?.plan || user.plan.toUpperCase() === 'EXPLORER')) ? (
-                                <><Zap className="w-4 h-4 fill-white text-white" /> Upgrade to Pro → Subscription</>
+                                <><Zap className="w-4 h-4 fill-white text-background" /> Upgrade to Pro → Subscription</>
                             ) : (
-                                <><Zap className="w-4 h-4 fill-white text-white" /> Broadcast to Network</>
+                                <><Zap className="w-4 h-4 fill-white text-background" /> Broadcast to Network</>
                             )}
                         </button>
                     </div>
@@ -468,3 +468,5 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
         </AnimatePresence>
     )
 }
+
+

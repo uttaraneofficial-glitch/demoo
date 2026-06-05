@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Zap, Link as LinkIcon, Building2 } from 'lucide-react'
+import { X, Zap, Link as LinkIcon, Building2, CheckCircle2 } from 'lucide-react'
 import { useSignalStore } from '@/store/useSignalStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useRouter } from 'next/navigation'
+import StatusModal from '@/components/feed/StatusModal'
 
 interface HelpModalProps {
     isOpen: boolean
@@ -26,6 +27,12 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
     const [message, setMessage] = useState('')
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [error, setError] = useState('')
+    const [statusModal, setStatusModal] = useState<{isOpen: boolean, type: 'success' | 'error' | 'upgrade', title: string, message: string}>({
+        isOpen: false,
+        type: 'error',
+        title: '',
+        message: ''
+    })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -56,11 +63,12 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
             }, 2000)
         } catch (err: any) {
             if (err.status === 403) {
-                setError(`🚫 Limit reached! Your ${user?.plan || 'Explorer'} plan limit is exceeded. Redirecting to upgrade...`)
-                setTimeout(() => {
-                    router.push('/subscription')
-                    onClose()
-                }, 2500)
+                setStatusModal({
+                    isOpen: true,
+                    type: 'upgrade',
+                    title: 'Upgrade Required',
+                    message: `Limit reached! Your ${user?.plan || 'Explorer'} plan limit is exceeded.`
+                })
             } else {
                 setError(err.message || 'Failed to send offer. Please try again.')
             }
@@ -70,14 +78,14 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/60 backdrop-blur-sm">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="bg-white w-full max-w-[480px] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+                        className="bg-surface w-full max-w-[480px] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
                     >
-                        <div className="p-6 border-b border-border flex justify-between items-center bg-white relative">
+                        <div className="p-6 border-b border-border flex justify-between items-center bg-surface relative">
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent-blue" />
                             <div>
                                 <h2 className="text-xl font-bold font-display">Offer Help</h2>
@@ -96,7 +104,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                     className="flex flex-col items-center justify-center py-8 text-center"
                                 >
                                     <div className="w-16 h-16 bg-surface-2 rounded-full flex items-center justify-center mb-4">
-                                        <Zap className="w-8 h-8 text-primary fill-primary" />
+                                        <CheckCircle2 className="w-8 h-8 text-primary" />
                                     </div>
                                     <h3 className="text-xl font-bold text-primary mb-2">Offer Sent!</h3>
                                     <p className="text-sm text-text-secondary">Thank you for stepping up to help.</p>
@@ -110,7 +118,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                             <input
                                                 type="text"
                                                 placeholder="John Doe / TechCorp"
-                                                className="w-full bg-surface-1 border border-border p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors"
+                                                className="w-full bg-surface-2 border border-border p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors"
                                                 value={organizationName}
                                                 onChange={(e) => setOrganizationName(e.target.value)}
                                             />
@@ -124,7 +132,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                             <input
                                                 type="url"
                                                 placeholder="https://github.com/johndoe/project"
-                                                className={`w-full bg-surface-1 border ${error ? 'border-red-500' : 'border-border'} p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors`}
+                                                className={`w-full bg-surface-2 border ${error ? 'border-red-500' : 'border-border'} p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors`}
                                                 value={portfolioLink}
                                                 onChange={(e) => {
                                                     setPortfolioLink(e.target.value)
@@ -140,7 +148,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                         <textarea
                                             placeholder="Tell them how you can help..."
                                             rows={2}
-                                            className="w-full bg-surface-1 border border-border p-3 rounded-xl outline-none focus:border-black text-sm transition-colors resize-none"
+                                            className="w-full bg-surface-2 border border-border p-3 rounded-xl outline-none focus:border-black text-sm transition-colors resize-none"
                                             value={message}
                                             onChange={(e) => setMessage(e.target.value)}
                                         />
@@ -150,9 +158,9 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                     <button 
                                         onClick={handleSubmit}
                                         disabled={!organizationName || !portfolioLink}
-                                        className="w-full bg-black text-white px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 hover:bg-black/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase mt-auto"
+                                        className="w-full bg-primary text-background px-8 py-3.5 rounded-xl font-bold text-xs tracking-wider flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase mt-auto"
                                     >
-                                        <Zap className="w-4 h-4 fill-white text-white" /> Send Offer
+                                        <Zap className="w-4 h-4 fill-background text-background" /> Send Offer
                                     </button>
                                 </>
                             )}
@@ -160,6 +168,21 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                     </motion.div>
                 </div>
             )}
+            
+            <StatusModal
+                isOpen={statusModal.isOpen}
+                onClose={() => {
+                    setStatusModal(prev => ({...prev, isOpen: false}))
+                    if (statusModal.type === 'upgrade') {
+                        onClose()
+                        router.push('/subscription')
+                    }
+                }}
+                type={statusModal.type}
+                title={statusModal.title}
+                message={statusModal.message}
+            />
         </AnimatePresence>
     )
 }
+

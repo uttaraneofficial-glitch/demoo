@@ -137,7 +137,7 @@ export default function StartoAIExplore() {
                         background-color: white !important;
                         color: black !important;
                     }
-                    .bg-surface, .bg-surface-1, .bg-surface-2, .bg-primary {
+                    .bg-surface, .bg-surface-2, .bg-surface-2, .bg-primary {
                         background-color: white !important;
                         color: black !important;
                         border-color: #e5e7eb !important;
@@ -162,7 +162,7 @@ export default function StartoAIExplore() {
                     <header className="mb-12">
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                             <div className="inline-flex items-center gap-2 bg-primary text-background px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                                Powered by GPT-4o + Gemini
+                                Powered by Starto Ai
                             </div>
                             {usage && (
                                 <div className="inline-flex items-center gap-2 bg-surface-2 border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-text-primary">
@@ -262,7 +262,7 @@ export default function StartoAIExplore() {
                                     setShowResults(false)
                                     setResults(null)
                                 }}
-                                className="text-sm font-bold text-text-muted hover:text-black flex items-center gap-2 transition-colors"
+                                className="text-sm font-bold text-text-muted hover:text-text-primary flex items-center gap-2 transition-colors"
                             >
                                 ← Run New Analysis
                             </button>
@@ -281,10 +281,10 @@ export default function StartoAIExplore() {
                                     <div 
                                         key={report.id}
                                         onClick={() => handleViewReport(report)}
-                                        className="bg-white border border-border p-5 rounded-2xl hover:border-primary hover:shadow-lg transition-all cursor-pointer group"
+                                        className="bg-surface border border-border p-5 rounded-2xl hover:border-primary hover:shadow-lg transition-all cursor-pointer group"
                                     >
                                         <div className="flex justify-between items-start mb-4">
-                                            <div className="bg-primary/5 text-primary p-2 rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">
+                                            <div className="bg-primary/5 text-primary p-2 rounded-lg group-hover:bg-primary group-hover:text-background transition-colors">
                                                 <FileText className="w-5 h-5" />
                                             </div>
                                             <span className="text-[10px] text-text-muted font-mono">
@@ -451,45 +451,79 @@ export default function StartoAIExplore() {
                             </motion.section>
 
                             <aside className="space-y-6 report-sidebar">
-                                <div className="bg-primary text-background p-8 rounded-2xl overflow-hidden relative print:bg-white print:text-black print:border print:border-border">
-                                    <FileText className="w-12 h-12 text-white/10 absolute -top-2 -right-2 print:hidden" />
-                                    <h4 className="text-lg font-display mb-4">90-Day Execution Plan</h4>
-                                    <div className="space-y-6 relative text-background">
+                                <div className="bg-primary text-background p-8 rounded-2xl relative print:bg-surface print:text-text-primary print:border print:border-border overflow-hidden group">
+                                    <FileText className="w-48 h-48 text-background/5 absolute -top-10 -right-10 print:hidden transition-transform group-hover:scale-110 duration-700" />
+                                    <h4 className="text-xl font-display mb-8 relative flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-surface/10 flex items-center justify-center shrink-0">
+                                            <FileText className="w-4 h-4 text-background" />
+                                        </div>
+                                        90-Day Execution Plan
+                                    </h4>
+                                    <div className="space-y-8 relative text-background">
                                         {(results?.actionPlan?.map((phase, pIdx) => (
-                                            <div key={pIdx} className="space-y-3">
-                                                <span className="text-[10px] uppercase text-background/60 block print:text-text-muted">{phase.range}</span>
-                                                {phase.tasks.map((task, tIdx) => (
-                                                    <div key={tIdx} className="border-l border-background/20 pl-4 relative print:border-border">
-                                                        {tIdx === 0 ? (
-                                                            <CheckCircle2 className="w-4 h-4 text-accent-green absolute -left-2 top-0 bg-primary print:bg-white" />
-                                                        ) : (
-                                                            <div className="w-3 h-3 border border-background/20 rounded-full absolute -left-[6.5px] top-1 bg-primary print:bg-white print:border-border" />
-                                                        )}
-                                                        <p className="text-xs">{task}</p>
+                                            <div key={pIdx} className="space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="px-3 py-1 bg-surface/10 text-background text-[10px] uppercase font-bold tracking-widest rounded-full print:bg-primary/10 print:text-text-primary">
+                                                        {phase.range}
                                                     </div>
-                                                ))}
+                                                </div>
+                                                
+                                                <div className="border-l-2 border-white/20 ml-[15px] pl-6 py-2 space-y-4 print:border-border">
+                                                    {(phase.estimatedBudget || phase.goal) && (
+                                                        <div className="bg-surface/5 p-4 rounded-xl border border-white/10 space-y-2 mb-4 backdrop-blur-sm print:border-border">
+                                                            {phase.estimatedBudget && (
+                                                                <div className="flex items-start gap-2 text-xs">
+                                                                    <span className="shrink-0 text-text-muted mt-0.5"><Briefcase className="w-3 h-3 text-background/50" /></span>
+                                                                    <div>
+                                                                        <span className="text-background/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Est. Budget</span>
+                                                                        <span className="font-mono">{phase.estimatedBudget}</span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {phase.goal && (
+                                                                <div className="flex items-start gap-2 text-xs">
+                                                                    <span className="shrink-0 text-text-muted mt-0.5"><AlertTriangle className="w-3 h-3 text-background/50" /></span>
+                                                                    <div>
+                                                                        <span className="text-background/60 font-bold uppercase text-[9px] tracking-widest block mb-0.5 print:text-text-muted">Primary Goal</span>
+                                                                        <span className="text-background/90">{phase.goal}</span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    
+                                                    <div className="space-y-3">
+                                                        <span className="text-background/60 font-bold uppercase text-[9px] tracking-widest print:text-text-muted border-b border-white/10 pb-1 inline-block mb-2">Action Items</span>
+                                                        {phase.tasks.map((task, tIdx) => (
+                                                            <div key={tIdx} className="flex items-start gap-3 group/task">
+                                                                <div className="w-5 h-5 rounded-full border border-background/30 flex items-center justify-center shrink-0 mt-0.5 group-hover/task:bg-accent-green group-hover/task:border-accent-green transition-colors print:border-border">
+                                                                    <CheckCircle2 className="w-3 h-3 text-transparent group-hover/task:text-primary transition-colors" />
+                                                                </div>
+                                                                <p className="text-sm text-background opacity-80 group-hover/task:opacity-100 transition-colors leading-relaxed print:text-text-primary">{task}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
                                         )) || (
-                                            <>
-                                                <div className="border-l border-white/20 pl-4 relative">
-                                                    <CheckCircle2 className="w-4 h-4 text-accent-green absolute -left-2 top-0 bg-primary" />
-                                                    <span className="text-[10px] uppercase text-white/40 block">Week 1-2</span>
-                                                    <p className="text-xs mt-1">Setup supply partnerships Nashik region.</p>
-                                                </div>
-                                                <div className="border-l border-white/20 pl-4 relative">
-                                                    <div className="w-3 h-3 border border-white/20 rounded-full absolute -left-[6.5px] top-1 bg-primary" />
-                                                    <span className="text-[10px] uppercase text-white/40 block">Week 3-6</span>
-                                                    <p className="text-xs mt-1">Hire 2 field operations managers.</p>
-                                                </div>
-                                            </>
+                                            <div className="text-center py-10 opacity-50 text-sm">
+                                                Plan generation is available for valid reports.
+                                            </div>
                                         ))}
                                     </div>
                                     <button 
                                         onClick={handleDownloadReport}
-                                        className="w-full mt-10 border border-white/20 py-3 rounded-md text-sm font-medium hover:bg-white/10 transition-all no-print"
+                                        className="w-full mt-10 border border-white/20 py-4 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-surface hover:text-primary transition-all no-print flex items-center justify-center gap-2"
                                     >
-                                        Download Report
+                                        <FileText className="w-4 h-4" /> Download Full Report
                                     </button>
+                                </div>
+
+                                <div className="flex items-start gap-3 p-4 bg-surface-2 rounded-xl border border-border no-print">
+                                    <AlertTriangle className="w-4 h-4 text-text-muted shrink-0 mt-0.5" />
+                                    <p className="text-[10px] text-text-muted leading-relaxed">
+                                        Starto AI provides strategic guidance based on available market data. Market conditions can rapidly change. Always verify critical decisions with professional advisors.
+                                    </p>
                                 </div>
 
                                 <div className="bg-surface-2 border border-border p-6 rounded-2xl no-print">
@@ -513,14 +547,14 @@ export default function StartoAIExplore() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-primary/80 backdrop-blur-md z-[100] flex items-center justify-center p-4"
                         onClick={() => setShowUpgradeModal(false)}
                     >
                         <motion.div
                             initial={{ scale: 0.95, opacity: 0, y: 30 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.95, opacity: 0, y: 30 }}
-                            className="bg-white rounded-[2rem] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden"
+                            className="bg-surface rounded-[2rem] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden"
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="absolute top-0 right-0 p-20 bg-primary/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
@@ -530,7 +564,7 @@ export default function StartoAIExplore() {
                                     <Crown className="w-7 h-7 text-primary" />
                                 </div>
                                 <div className="relative z-10">
-                                    <h3 className="text-2xl font-display tracking-tight text-black">AI Limit Reached</h3>
+                                    <h3 className="text-2xl font-display tracking-tight text-text-primary">AI Limit Reached</h3>
                                     <p className="text-sm text-text-muted">Upgrade to unlock more market intelligence</p>
                                 </div>
                             </div>
@@ -549,7 +583,7 @@ export default function StartoAIExplore() {
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => setShowUpgradeModal(false)}
-                                    className="flex-1 border border-border py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-surface-2 transition-colors text-black"
+                                    className="flex-1 border border-border py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-surface-2 transition-colors text-text-primary"
                                 >
                                     Dismiss
                                 </button>
@@ -567,3 +601,5 @@ export default function StartoAIExplore() {
         </div>
     )
 }
+
+

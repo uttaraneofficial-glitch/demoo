@@ -77,7 +77,8 @@ public class ExploreService {
                     response.setCompetitors(realCompetitors);
                     System.out.println("INJECTED " + realCompetitors.size() + " REAL COMPETITORS FROM GOOGLE MAPS");
                 } else {
-                    response.setCompetitors(new java.util.ArrayList<>());
+                    System.out.println("GOOGLE MAPS RETURNED 0 COMPETITORS. USING AI PREDICTED FALLBACK.");
+                    // response.setCompetitors(new java.util.ArrayList<>()); // REMOVED to keep AI competitors
                 }
             } catch (Exception e) {
                 log.warn("Failed to inject real competitors", e);
@@ -119,30 +120,34 @@ public class ExploreService {
     }
 
     private String buildGptPrompt(ExploreRequest req, String locationData) {
-        return "You are a market analysis expert. Analyze the market for a " + req.getIndustry() +
+        return "You are an elite, senior-level market analyst and startup advisor at a top-tier management consulting firm (e.g., McKinsey, BCG). Produce a comprehensive, institutional-grade market analysis for a " + req.getIndustry() +
                 " startup in " + req.getLocation() +
                 " with a budget of " + req.getBudget() +
                 " at " + req.getStage() + " stage. " +
                 "Target customer: " + req.getTargetCustomer() + ". " +
                 "Location context: " + locationData + ".\n\n" +
-                "IMPORTANT: Use very simple English. It should be understandable by a 12-year-old. Avoid complex words and business jargon. Explain things simply.\n" +
+                "CRITICAL INSTRUCTIONS: Your insights MUST be senior-level, extremely valuable, and highly strategic. Write in a highly professional, authoritative, and analytical tone. Do NOT use emojis. Avoid generic advice; provide highly specific, actionable, and data-driven insights. Structure your language as if you are presenting to a board of directors or institutional investors.\n\n" +
                 "IMPORTANT: Provide REAL and VALID government schemes, subsidies, or policies available for this specific industry and location. Do not hallucinate.\n\n" +
-                "Return ONLY a valid JSON object with the following structure (no other text, no markdown):\n" +
+                "Return ONLY a valid JSON object with EXACTLY the following structure (do not add any comments or markdown):\n" +
                 "{\n" +
                 "  \"marketDemand\": {\n" +
-                "    \"score\": <1-10>,\n" +
-                "    \"marketSummary\": \"A clear, simple summary of why the demand is high or low (written like a person talking to a founder)\",\n" +
+                "    \"score\": 8,\n" +
+                "    \"marketSummary\": \"Write a deeply analytical, 3-paragraph strategic executive summary. Detail the macroeconomic opportunity, immediate localized threats, and the sustainable competitive advantage required. Use sophisticated, precise business terminology.\",\n" +
                 "    \"drivers\": [\"driver1\", \"driver2\"],\n" +
                 "    \"sources\": [\"source1\", \"source2\"]\n" +
                 "  },\n" +
-                "  \"competitors\": [], // Leave empty. Competitors are fetched from real-time data.\n" +
-                "  \"risks\": [{\"title\": \"\", \"description\": \"\", \"severity\": \"LOW|MEDIUM|HIGH\", \"mitigation\": \"\"}],\n" +
+                "  \"competitors\": [\n" +
+                "    {\"name\": \"Competitor Name\", \"location\": \"Local Area\", \"threatLevel\": \"HIGH\", \"description\": \"Detailed threat analysis\"},\n" +
+                "    {\"name\": \"Another Competitor\", \"location\": \"Nearby\", \"threatLevel\": \"MEDIUM\", \"description\": \"Detailed threat analysis\"},\n" +
+                "    {\"name\": \"Third Competitor\", \"location\": \"Region\", \"threatLevel\": \"LOW\", \"description\": \"Detailed threat analysis\"}\n" +
+                "  ],\n" +
+                "  \"risks\": [{\"title\": \"Specific Local Risk\", \"description\": \"CITE REAL WORLD DATA: Mention specific local supply chain issues, exact competitor saturation levels, or verified demographic/purchasing power constraints.\", \"severity\": \"LOW|MEDIUM|HIGH\", \"mitigation\": \"Actionable mitigation strategy\"}],\n" +
                 "  \"budgetFeasibility\": {\"canBuild\": [\"item1\", \"item2\"], \"actualNeed\": [\"item1\", \"item2\"], \"verdict\": \"Feasible|Tight|Infeasible\"},\n" +
                 "  \"governmentSchemes\": [{\"name\": \"Name of scheme\", \"body\": \"Governing body\", \"benefits\": \"Detailed benefits\", \"eligibility\": \"Who can apply\", \"applyUrl\": \"Official link if known\"}],\n" +
                 "  \"actionPlan\": [\n" +
-                "    {\"range\": \"Month 1: Foundation\", \"tasks\": [\"task1\", \"task2\"]},\n" +
-                "    {\"range\": \"Month 2: Execution\", \"tasks\": [\"task3\", \"task4\"]},\n" +
-                "    {\"range\": \"Month 3: Launch\", \"tasks\": [\"task5\", \"task6\"]}\n" +
+                "    {\"range\": \"Month 1: Foundation\", \"estimatedBudget\": \"₹15,000 - ₹25,000\", \"goal\": \"Secure 3 reliable wholesale vendors\", \"tasks\": [\"task1\", \"task2\"]},\n" +
+                "    {\"range\": \"Month 2: Execution\", \"estimatedBudget\": \"₹5,000 - ₹10,000\", \"goal\": \"Set up shop\", \"tasks\": [\"task3\", \"task4\"]},\n" +
+                "    {\"range\": \"Month 3: Launch\", \"estimatedBudget\": \"₹0 - ₹5,000\", \"goal\": \"Host grand opening\", \"tasks\": [\"task5\", \"task6\"]}\n" +
                 "  ]\n" +
                 "}";
     }

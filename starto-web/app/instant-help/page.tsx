@@ -56,12 +56,12 @@ export default function InstantHelp() {
                         <p className="text-text-secondary text-sm">Get help in minutes, not days. Pinged to all nearby online nodes.</p>
                     </header>
 
-                    <div className="flex bg-white border border-border rounded-xl overflow-hidden mb-12">
+                    <div className="flex bg-surface border border-border rounded-xl overflow-hidden mb-12">
                         <button className="flex-1 py-4 text-sm font-bold uppercase tracking-widest bg-primary text-background">Need Help</button>
                         <button className="flex-1 py-4 text-sm font-bold uppercase tracking-widest text-text-muted hover:bg-surface-2 transition-all">Can Help</button>
                     </div>
 
-                    <section className="bg-white border border-border p-8 rounded-2xl shadow-sm mb-12">
+                    <section className="bg-surface border border-border p-8 rounded-2xl shadow-sm mb-12">
                         <h3 className="font-display text-xl mb-6">Raise Urgent Request</h3>
                         <div className="space-y-6">
                             <div>
@@ -83,7 +83,7 @@ export default function InstantHelp() {
                             <button 
                                 onClick={handleEmit}
                                 disabled={isSubmitting}
-                                className="w-full bg-accent-red text-white py-4 rounded-md font-bold uppercase tracking-widest shadow-lg shadow-accent-red/20 hover:opacity-90 disabled:opacity-50"
+                                className="w-full bg-accent-red text-background py-4 rounded-md font-bold uppercase tracking-widest shadow-lg shadow-accent-red/20 hover:opacity-90 disabled:opacity-50"
                             >
                                 {isSubmitting ? 'Emitting...' : 'Emit Urgent Signal'}
                             </button>
@@ -96,10 +96,10 @@ export default function InstantHelp() {
                         </h3>
                         <div className="space-y-4">
                             {[1, 2].map(i => (
-                                <div key={i} className="bg-white border-l-4 border-accent-red p-6 rounded-xl border border-border shadow-sm flex items-center gap-6">
+                                <div key={i} className="bg-surface border-l-4 border-accent-red p-6 rounded-xl border border-border shadow-sm flex items-center gap-6">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-[10px] font-bold bg-accent-red text-white px-2 py-0.5 rounded">URGENT</span>
+                                            <span className="text-[10px] font-bold bg-accent-red text-background px-2 py-0.5 rounded">URGENT</span>
                                             <span className="text-xs text-text-muted">Requested 10m ago</span>
                                         </div>
                                         <h4 className="font-medium mb-1">AWS DB Outage - Need RDS Expert</h4>

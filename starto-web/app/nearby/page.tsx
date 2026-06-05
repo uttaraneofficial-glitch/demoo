@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import { Map as MapIcon, Filter, Navigation, Search, Users, ChevronRight, ChevronDown, MapPin, Loader2, Zap, LayoutGrid, Map as MapType, Radio, Building } from 'lucide-react'
 import Image from 'next/image'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -108,6 +108,7 @@ export default function NearbyEcosystem() {
     return (
         <div className="min-h-screen bg-background text-text-primary flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
+                <MobileNavigation title="Nearby Startups" />
                 <Sidebar />
 
                 <main className="flex-1 flex flex-col min-h-screen border-x border-border overflow-hidden">
@@ -116,7 +117,7 @@ export default function NearbyEcosystem() {
                             <div className="flex-shrink-0">
                                 <h1 className="text-3xl font-display font-medium tracking-tight mb-1">Nearby Ecosystem</h1>
                                 <div className="flex items-center gap-3 h-6">
-                                    <p className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest font-bold whitespace-nowrap">
+                                    <p className="text-[10px] md:text-xs text-text-secondary uppercase tracking-widest font-bold whitespace-nowrap">
                                         Discover strategic partners within {radius}km
                                     </p>
                                     <AnimatePresence mode="wait">
@@ -125,7 +126,7 @@ export default function NearbyEcosystem() {
                                                 initial={{ opacity: 0, x: -10 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 exit={{ opacity: 0, x: -10 }}
-                                                className="px-2 py-1 bg-black text-white text-[9px] font-bold rounded-md uppercase tracking-widest flex items-center gap-1.5 shadow-sm flex-shrink-0"
+                                                className="px-2 py-1 bg-primary text-background text-[9px] font-bold rounded-md uppercase tracking-widest flex items-center gap-1.5 shadow-sm flex-shrink-0"
                                             >
                                                 <Filter className="w-2.5 h-2.5" />
                                                 {roles.find(r => r.id === searchRole)?.label || searchRole}
@@ -158,21 +159,21 @@ export default function NearbyEcosystem() {
                                     <CityAutocomplete 
                                         value={searchCity} 
                                         onChange={handleLocationChange} 
-                                        inputClassName="h-12 !py-0 shadow-sm bg-white text-black"
+                                        inputClassName="h-12 !py-0 shadow-sm bg-surface text-text-primary"
                                     />
                                 </div>
                                 
                                 <div className="relative h-12 flex-shrink-0 w-44">
                                     <button 
                                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                        className="bg-black text-white border border-border rounded-xl px-5 h-full text-[10px] font-bold uppercase tracking-widest focus:outline-none focus:border-primary transition-all cursor-pointer shadow-sm w-full flex items-center justify-between"
+                                        className="bg-primary text-background border border-border rounded-xl px-5 h-full text-[10px] font-bold uppercase tracking-widest focus:outline-none focus:border-primary transition-all cursor-pointer shadow-sm w-full flex items-center justify-between"
                                     >
                                         <span>{roles.find(r => r.id === searchRole)?.label.toUpperCase() || 'ALL ROLES'}</span>
                                         <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                                     </button>
                                     
                                     {isDropdownOpen && (
-                                        <div className="absolute z-[100] mt-2 w-full bg-black border border-border rounded-xl overflow-hidden shadow-2xl">
+                                        <div className="absolute z-[100] mt-2 w-full bg-primary border border-border rounded-xl overflow-hidden shadow-2xl">
                                             {roles.map(r => (
                                                 <button
                                                     key={r.id}
@@ -181,7 +182,7 @@ export default function NearbyEcosystem() {
                                                         setIsDropdownOpen(false);
                                                     }}
                                                     className={`w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest transition-colors ${
-                                                        searchRole === r.id ? 'bg-primary text-background' : 'text-white hover:bg-surface-2'
+                                                        searchRole === r.id ? 'bg-primary text-background' : 'text-background hover:bg-surface-2'
                                                     }`}
                                                 >
                                                     {r.label.toUpperCase()}
@@ -193,7 +194,7 @@ export default function NearbyEcosystem() {
 
                                 <button 
                                     onClick={fetchNearby}
-                                    className="bg-black text-white h-12 w-12 flex-shrink-0 flex items-center justify-center rounded-xl hover:bg-black/90 transition-all active:scale-95 shadow-lg shadow-black/20"
+                                    className="bg-primary text-background h-12 w-12 flex-shrink-0 flex items-center justify-center rounded-xl hover:bg-primary/90 transition-all active:scale-95 shadow-lg shadow-black/20"
                                 >
                                     <Search className="w-5 h-5" />
                                 </button>
@@ -203,7 +204,7 @@ export default function NearbyEcosystem() {
 
                     <div className="flex-1 overflow-hidden relative">
                         {loading && (
-                            <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-text-muted">
+                            <div className="absolute inset-0 z-10 bg-surface/60 backdrop-blur-sm flex flex-col items-center justify-center text-text-muted">
                                 <Loader2 className="w-10 h-10 animate-spin mb-4 text-primary" />
                                 <p className="text-sm font-medium tracking-widest uppercase">Scanning the ecosystem...</p>
                             </div>
@@ -278,7 +279,7 @@ export default function NearbyEcosystem() {
                                         <div className="pt-12 border-t border-border flex justify-center">
                                             <button 
                                                 onClick={() => setRadius(r => r + 25)}
-                                                className="px-12 py-4 bg-surface border border-border text-text-primary rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-primary hover:text-white transition-all active:scale-95 flex items-center gap-3 shadow-sm"
+                                                className="px-12 py-4 bg-surface border border-border text-text-primary rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-primary hover:text-background transition-all active:scale-95 flex items-center gap-3 shadow-sm"
                                             >
                                                 <Navigation className="w-4 h-4" />
                                                 Search Further ({radius + 25}km)
@@ -307,7 +308,7 @@ export default function NearbyEcosystem() {
                         )}
                     </div>
                 </main>
-                <MobileBottomNav />
+                
             </div>
         </div>
     )

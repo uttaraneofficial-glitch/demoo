@@ -15,6 +15,7 @@ import { motion } from 'framer-motion'
 import StatusModal from '@/components/feed/StatusModal'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import NetworkModal from '@/components/feed/NetworkModal'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 
 export default function PublicProfile({ params }: { params: { username: string } }) {
     const { username: paramUsername } = params
@@ -174,8 +175,8 @@ export default function PublicProfile({ params }: { params: { username: string }
 
                 <main className="flex-1 max-w-[680px] border-r border-border min-h-screen p-0">
                     {/* Profile Header (No Banner) */}
-                    <div className="pt-8 px-8 flex items-end gap-6 border-b border-border pb-8 bg-surface-1">
-                        <div className="w-32 h-32 bg-white rounded-3xl p-1 border-4 border-background shadow-2xl relative shrink-0">
+                    <div className="pt-8 px-8 flex items-end gap-6 border-b border-border pb-8 bg-surface-2">
+                        <div className="w-32 h-32 bg-surface rounded-3xl p-1 border-4 border-background shadow-2xl relative shrink-0">
                             <VerifiedAvatar
                                 username={effectiveUsername}
                                 avatarUrl={displayAvatarUrl}
@@ -192,11 +193,11 @@ export default function PublicProfile({ params }: { params: { username: string }
                                     <h1 className="text-3xl font-display font-bold text-text-primary">{displayName}</h1>
                                     {(displayVerified || displaySubscription === 'Pro' || displaySubscription === 'Founder') && !displaySubscription.toLowerCase().includes('explorer') && (
                                         <span title={`${displaySubscription} Verified`} className="relative inline-flex items-center justify-center">
-                                            <BadgeCheck className="w-6 h-6 fill-black text-white" />
+                                            <BadgeCheck className="w-6 h-6 fill-black text-background" />
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-sm font-medium text-gray-500">@{effectiveUsername}</p>
+                                <p className="text-sm font-medium text-text-secondary">@{effectiveUsername}</p>
                             </div>
                             <p className="text-text-secondary font-medium flex items-center gap-2">
                                 {displayRole} • {displayCity.split(',')[0]}
@@ -262,7 +263,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                         });
                                                     }
                                                 }}
-                                                className="px-6 py-2.5 bg-accent-green text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-accent-green/20"
+                                                className="px-6 py-2.5 bg-accent-green text-background text-xs font-bold uppercase tracking-widest rounded-xl hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-accent-green/20"
                                             >
                                                 <Zap className="w-4 h-4 fill-white" /> WhatsApp
                                             </button>
@@ -357,7 +358,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                         </Link>
                                     )}
                                     {fetchedUser?.githubUrl && (
-                                        <Link href={formatURL(fetchedUser.githubUrl)} target="_blank" className="flex items-center gap-1.5 text-xs text-text-secondary hover:text-[#333] dark:hover:text-white transition-colors">
+                                        <Link href={formatURL(fetchedUser.githubUrl)} target="_blank" className="flex items-center gap-1.5 text-xs text-text-secondary hover:text-[#333] dark:hover:text-background transition-colors">
                                             <Github className="w-3.5 h-3.5" /> GitHub
                                         </Link>
                                     )}
@@ -445,7 +446,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                 className="cursor-pointer p-6 bg-surface-2 rounded-2xl border border-border group hover:border-primary transition-all"
                                             >
                                                 <div className="flex justify-between items-start mb-4">
-                                                    <span className="text-[10px] px-2 py-0.5 bg-black text-white rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
+                                                    <span className="text-[10px] px-2 py-0.5 bg-primary text-background rounded-full uppercase font-bold tracking-widest">{signal.category}</span>
                                                     <span className="text-[10px] font-bold text-text-muted">
                                                         {signal.createdAt ? new Date(signal.createdAt).toLocaleDateString() : 'Recent'}
                                                     </span>
@@ -463,7 +464,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                     {userSignals.filter(s => s.type !== 'SPACE').length > 3 && (
                                         <button
                                             onClick={() => setShowAllSignals(!showAllSignals)}
-                                            className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-black"
+                                            className="w-full py-3 rounded-xl border border-border text-sm font-bold hover:bg-surface-2 transition-all mt-2 text-text-primary"
                                         >
                                             {showAllSignals ? 'View Less' : `View All ${userSignals.filter(s => s.type !== 'SPACE').length} Signals`}
                                         </button>
@@ -474,7 +475,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                     </div>
 
                     {/* Spaces Feed */}
-                    <div className="p-8 border-b border-border bg-surface-1/30">
+                    <div className="p-8 border-b border-border bg-surface-2/30">
                         <div className="flex items-center gap-8 border-b border-border mb-8">
                             <button className="pb-4 border-b-2 border-black font-bold text-xs uppercase tracking-widest flex items-center gap-2">
                                 <Building className="w-4 h-4" /> Ecosystem Spaces
@@ -495,7 +496,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                             className="cursor-pointer p-6 bg-surface rounded-3xl border border-border group hover:border-black transition-all shadow-sm"
                                         >
                                             <div className="flex justify-between items-start mb-4">
-                                                <span className="text-[10px] px-3 py-1 bg-surface-2 text-black border border-border rounded-full uppercase font-bold tracking-widest">
+                                                <span className="text-[10px] px-3 py-1 bg-surface-2 text-text-primary border border-border rounded-full uppercase font-bold tracking-widest">
                                                     {(space as any).spaceType || 'Community Hub'}
                                                 </span>
                                                 <div className="flex items-center gap-1.5 text-text-muted">
@@ -503,7 +504,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                     <span className="text-[10px] font-bold uppercase tracking-widest">{(space as any).city || 'Ecosystem'}</span>
                                                 </div>
                                             </div>
-                                            <h3 className="text-xl font-display mb-2 group-hover:text-black transition-colors">{space.title}</h3>
+                                            <h3 className="text-xl font-display mb-2 group-hover:text-text-primary transition-colors">{space.title}</h3>
                                             <p className="text-sm text-text-secondary line-clamp-2 mb-4">{(space as any).description}</p>
                                             
                                             {(space as any).address && (
@@ -526,7 +527,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                         href={formatURL((space as any).website)}
                                                         target="_blank"
                                                         onClick={(e) => e.stopPropagation()}
-                                                        className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted hover:text-black"
+                                                        className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted hover:text-text-primary"
                                                     >
                                                         Website
                                                     </Link>
@@ -588,7 +589,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                                         className="shrink-0"
                                                     />
                                                     <div>
-                                                        <p className="text-sm font-bold text-black">{rating.reviewerName}</p>
+                                                        <p className="text-sm font-bold text-text-primary">{rating.reviewerName}</p>
                                                         <p className="text-[10px] text-text-muted">@{rating.reviewerUsername}</p>
                                                     </div>
                                                 </div>
@@ -729,3 +730,4 @@ export default function PublicProfile({ params }: { params: { username: string }
         </div>
     )
 }
+

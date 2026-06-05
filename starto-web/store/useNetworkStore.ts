@@ -103,20 +103,39 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
     },
 
     addOffer: async (offer) => {
+        const previousOffers = get().offers;
+        
+        // 1. Optimistic Update
+        const tempId = `temp-${Date.now()}`;
+        const optimisticOffer = { 
+            ...offer, 
+            id: tempId, 
+            status: 'PENDING',
+            createdAt: new Date().toISOString()
+        } as Offer;
+        
+        set({ offers: [...previousOffers, optimisticOffer] });
+
         try {
+            // 2. Perform API Call
             const { data, error, status } = await offersApi.create(offer);
+            
             if (error) {
                 const err = new Error(error);
                 (err as any).status = status;
                 throw err;
             }
+            
+            // 3. Replace optimistic offer with real data from server
             if (data) {
                 set((state) => ({ 
-                    offers: [...state.offers, data] 
+                    offers: state.offers.map(o => o.id === tempId ? data : o) 
                 }));
             }
             return data;
         } catch (error) {
+            // 4. Rollback on failure
+            set({ offers: previousOffers });
             console.error('Failed to send offer:', error);
             throw error;
         }

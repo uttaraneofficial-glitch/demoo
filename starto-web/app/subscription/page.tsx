@@ -476,7 +476,7 @@ export default function SubscriptionPage() {
                                             <button
                                                 onClick={() => handleUpgradeClick(plan.name)}
                                                 disabled={plan.name === 'Explorer'}
-                                                className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all ${subscription?.toUpperCase() === plan.id?.toUpperCase() ? 'bg-accent-green text-white shadow-lg shadow-accent-green/20' : plan.highlight ? 'bg-black text-white hover:bg-black/90' : 'bg-primary text-background hover:bg-primary/90'} disabled:opacity-50`}
+                                                className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all ${subscription?.toUpperCase() === plan.id?.toUpperCase() ? 'bg-accent-green text-white shadow-lg shadow-accent-green/20' : plan.highlight ? 'bg-black text-white hover:bg-black/90 hover:text-white' : 'bg-primary text-background hover:bg-primary/90'} disabled:opacity-50`}
                                             >
                                                 {subscription?.toUpperCase() === plan.id?.toUpperCase() ? 'Renew Program' : `Join Program`}
                                             </button>
@@ -641,12 +641,13 @@ function PlanCard({ plan, idx, currentPlan, onUpgrade }: { plan: any, idx: numbe
             <button
                 onClick={() => onUpgrade(plan.name)}
                 disabled={plan.name === 'Explorer'}
-                className={`w-full py-3.5 rounded-2xl font-bold uppercase tracking-widest text-[9px] transition-all shadow-sm ${isActive ? 'bg-primary text-background shadow-lg shadow-black/20 border-transparent' : plan.name === 'Explorer' ? 'bg-surface-2 text-text-muted' : 'bg-black text-white hover:bg-primary active:scale-95'}`}
+                className={`w-full py-3.5 rounded-2xl font-bold uppercase tracking-widest text-[9px] transition-all shadow-sm ${isActive ? 'bg-primary text-background shadow-lg shadow-black/20 border-transparent' : plan.name === 'Explorer' ? 'bg-surface-2 text-text-muted' : 'bg-black text-white hover:bg-primary hover:text-background active:scale-95'}`}
             >
                 {isActive ? 'Renew Plan' : plan.name === 'Explorer' ? 'Always Free' : 'Choose Plan'}
             </button>
         </motion.div>
     )
 }
+
 
 

@@ -1,7 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
-import MobileBottomNav from '@/components/feed/MobileBottomNav'
+import MobileNavigation from '@/components/feed/MobileNavigation'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -95,6 +95,7 @@ export default function NetworkPage() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
+                <MobileNavigation title="My Network" />
                 <Sidebar />
 
                 <main className="flex-1 w-full max-w-[680px] md:border-r border-border min-h-screen">
@@ -367,7 +368,7 @@ export default function NetworkPage() {
                                                                  <Zap className="w-4 h-4" />
                                                              </button>
                                                          )}
-                                                        <button onClick={() => deleteOffer(o.id)} className="text-text-muted hover:text-red-500 p-1.5 rounded-lg transition-colors bg-surface-1 border border-border/50">
+                                                        <button onClick={() => deleteOffer(o.id)} className="text-text-muted hover:text-red-500 p-1.5 rounded-lg transition-colors bg-surface-2 border border-border/50">
                                                             <X className="w-4 h-4" />
                                                         </button>
                                                     </div>
@@ -379,7 +380,7 @@ export default function NetworkPage() {
                                                             href={o.portfolioLink.startsWith('http') ? o.portfolioLink : `https://${o.portfolioLink}`} 
                                                             target="_blank" 
                                                             rel="noopener noreferrer" 
-                                                            className="text-sm text-primary hover:underline flex items-center gap-1.5 font-medium bg-surface-1 hover:bg-surface-2 transition-colors py-2 px-3 rounded-lg border border-border/50 inline-flex max-w-full"
+                                                            className="text-sm text-primary hover:underline flex items-center gap-1.5 font-medium bg-surface-2 hover:bg-surface-2 transition-colors py-2 px-3 rounded-lg border border-border/50 inline-flex max-w-full"
                                                             onClick={(e) => e.stopPropagation()}
                                                         >
                                                             <LinkIcon className="w-3.5 h-3.5" />
@@ -437,7 +438,7 @@ export default function NetworkPage() {
                         </button>
                     </div>
                 </aside>
-                <MobileBottomNav />
+                
             </div>
             <StatusModal 
                 isOpen={statusModal.isOpen} 
@@ -452,3 +453,4 @@ export default function NetworkPage() {
         </div>
     )
 }
+
