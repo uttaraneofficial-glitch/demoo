@@ -23,4 +23,5 @@ List<Subscription> findByUserIdOrderByCreatedAtDesc(@Param("userId") UUID userId
 List<com.starto.model.Subscription> findActiveByUserId(@Param("userId") UUID userId);
 
 Optional<Subscription> findByRazorpaySubscriptionId(String razorpaySubscriptionId);
+    void deleteByUserId(UUID userId);
 }

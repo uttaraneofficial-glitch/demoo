@@ -9,3 +9,4 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
     List<Message> findBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByCreatedAtAsc(
             UUID s1, UUID r1, UUID s2, UUID r2);
 }
+

@@ -8,3 +8,4 @@ import java.util.UUID;
 public interface ResponseRepository extends JpaRepository<Response, UUID> {
     List<Response> findBySignalId(UUID signalId);
 }
+

@@ -8,3 +8,4 @@ import java.util.UUID;
 public interface ExploreReportRepository extends JpaRepository<ExploreReport, UUID> {
     List<ExploreReport> findByUserId(UUID userId);
 }
+

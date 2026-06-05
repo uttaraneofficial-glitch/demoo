@@ -21,3 +21,4 @@ void markAllReadByUserId(@Param("userId") UUID userId);
 
 
 }
+
