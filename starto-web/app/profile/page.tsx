@@ -157,7 +157,7 @@ export default function UserProfile() {
                 avatarUrl: user.avatarUrl || null,
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user.name.split(' ')[0]?.toLowerCase() || ''
+                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user?.name?.split(' ')[0]?.toLowerCase() || ''
             })
             // Fetch ratings for self
             if (user.id) {
@@ -359,7 +359,7 @@ export default function UserProfile() {
                 coverUrl: user.coverUrl || null, 
                 lat: user.lat || null,
                 lng: user.lng || null,
-                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user.name.split(' ')[0]?.toLowerCase() || '' 
+                handleBase: user.username ? user.username.split('_').slice(0, -1).join('_') : user?.name?.split(' ')[0]?.toLowerCase() || '' 
             })
         }
         setIsEditing(false)
@@ -1026,7 +1026,7 @@ export default function UserProfile() {
                                             value={socialForm.linkedinUrl}
                                             onChange={(e) => { setSocialForm({ ...socialForm, linkedinUrl: e.target.value }); if (socialError) setSocialError(''); }}
                                             placeholder="https://linkedin.com/in/yourprofile"
-                                            className="w-full bg-surface-1 border border-border p-2 pl-8 rounded-lg text-xs focus:ring-1 focus:ring-primary outline-none text-text-primary"
+                                            className="w-full bg-surface-2 border border-border p-2 pl-8 rounded-lg text-xs focus:ring-1 focus:ring-primary outline-none text-text-primary"
                                         />
                                     </div>
                                 </div>
@@ -1038,7 +1038,7 @@ export default function UserProfile() {
                                             value={socialForm.twitterUrl}
                                             onChange={(e) => { setSocialForm({ ...socialForm, twitterUrl: e.target.value }); if (socialError) setSocialError(''); }}
                                             placeholder="https://twitter.com/yourhandle"
-                                            className="w-full bg-surface-1 border border-border p-2 pl-8 rounded-lg text-xs focus:ring-1 focus:ring-primary outline-none text-text-primary"
+                                            className="w-full bg-surface-2 border border-border p-2 pl-8 rounded-lg text-xs focus:ring-1 focus:ring-primary outline-none text-text-primary"
                                         />
                                     </div>
                                 </div>
@@ -1050,7 +1050,7 @@ export default function UserProfile() {
                                             value={socialForm.githubUrl}
                                             onChange={(e) => { setSocialForm({ ...socialForm, githubUrl: e.target.value }); if (socialError) setSocialError(''); }}
                                             placeholder="https://github.com/yourusername"
-                                            className="w-full bg-surface-1 border border-border p-2 pl-8 rounded-lg text-xs focus:ring-1 focus:ring-primary outline-none text-text-primary"
+                                            className="w-full bg-surface-2 border border-border p-2 pl-8 rounded-lg text-xs focus:ring-1 focus:ring-primary outline-none text-text-primary"
                                         />
                                     </div>
                                 </div>
@@ -1177,5 +1177,7 @@ export default function UserProfile() {
         </div>
     )
 }
+
+
 
 
