@@ -3,7 +3,7 @@
 import Sidebar from '@/components/feed/Sidebar'
 import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
-import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2 } from 'lucide-react'
+import { MapPin, Globe, Twitter, Linkedin, Github, Signal, Zap, Users, BadgeCheck, Star, Edit3, Check, X, Link as LinkIcon, Clock, CreditCard, Receipt, AlertCircle, Loader2, Share2 } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -20,6 +20,7 @@ import { signalsApi, subscriptionsApi, offersApi, connectionsApi, usersApi } fro
 import StatusModal from '@/components/feed/StatusModal'
 import Toast from '@/components/feed/Toast'
 import NetworkModal from '@/components/feed/NetworkModal'
+import ShareProfileModal from '@/components/feed/ShareProfileModal'
 
 
 export default function UserProfile() {
@@ -130,6 +131,7 @@ export default function UserProfile() {
         type: 'success'
     })
     const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false)
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false)
 
     const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
         setToast({ isVisible: true, message, type })
@@ -741,6 +743,9 @@ export default function UserProfile() {
                                             <Link href="/subscription" className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2">
                                                 <Star className="w-3.5 h-3.5" /> {displayPlan === 'Free' ? 'Upgrade' : 'My Plan'}
                                             </Link>
+                                            <button onClick={() => setIsShareModalOpen(true)} className="px-4 py-2 border border-border rounded-md text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-2 ml-auto" title="Share Profile">
+                                                <Share2 className="w-4 h-4" /> Share
+                                            </button>
                                         </div>
                                     </>
                                 )}
@@ -1168,16 +1173,24 @@ export default function UserProfile() {
                 cancelText="No, Keep My Account"
             />
 
-            <Toast 
-                isVisible={toast.isVisible}
-                message={toast.message}
-                type={toast.type}
-                onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
+            {toast.isVisible && (
+                <Toast 
+                    message={toast.message} 
+                    type={toast.type} 
+                    onClose={() => setToast({ ...toast, isVisible: false })} 
+                />
+            )}
+            
+            <ShareProfileModal 
+                isOpen={isShareModalOpen} 
+                onClose={() => setIsShareModalOpen(false)} 
+                user={user} 
+                dbSignals={dbSignals} 
+                dbConnections={dbConnections} 
+                avgRating={avgRating} 
+                showToast={(msg, type) => setToast({ isVisible: true, message: msg, type })} 
             />
         </div>
     )
-}
-
-
 
 
