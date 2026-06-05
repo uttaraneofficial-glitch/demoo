@@ -118,7 +118,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                             <input
                                                 type="text"
                                                 placeholder="John Doe / TechCorp"
-                                                className="w-full bg-surface-1 border border-border p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors"
+                                                className="w-full bg-surface-2 border border-border p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors"
                                                 value={organizationName}
                                                 onChange={(e) => setOrganizationName(e.target.value)}
                                             />
@@ -132,7 +132,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                             <input
                                                 type="url"
                                                 placeholder="https://github.com/johndoe/project"
-                                                className={`w-full bg-surface-1 border ${error ? 'border-red-500' : 'border-border'} p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors`}
+                                                className={`w-full bg-surface-2 border ${error ? 'border-red-500' : 'border-border'} p-3 pl-10 rounded-xl outline-none focus:border-black text-sm transition-colors`}
                                                 value={portfolioLink}
                                                 onChange={(e) => {
                                                     setPortfolioLink(e.target.value)
@@ -148,7 +148,7 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
                                         <textarea
                                             placeholder="Tell them how you can help..."
                                             rows={2}
-                                            className="w-full bg-surface-1 border border-border p-3 rounded-xl outline-none focus:border-black text-sm transition-colors resize-none"
+                                            className="w-full bg-surface-2 border border-border p-3 rounded-xl outline-none focus:border-black text-sm transition-colors resize-none"
                                             value={message}
                                             onChange={(e) => setMessage(e.target.value)}
                                         />
@@ -185,3 +185,4 @@ export default function HelpModal({ isOpen, onClose, signalId, signalTitle }: He
         </AnimatePresence>
     )
 }
+
