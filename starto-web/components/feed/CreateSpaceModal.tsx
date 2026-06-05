@@ -148,7 +148,7 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                             <label className="text-xs font-bold uppercase tracking-widest text-text-muted mb-3 block">Description <span className="text-primary">*</span></label>
                             <textarea
                                 placeholder="Describe the facilities, vibe, and community focus of this space..."
-                                className="w-full bg-surface-1 p-5 rounded-2xl border border-border outline-none focus:border-primary text-sm h-32 resize-none placeholder:text-text-muted/50 shadow-inner"
+                                className="w-full bg-surface-2 p-5 rounded-2xl border border-border outline-none focus:border-primary text-sm h-32 resize-none placeholder:text-text-muted/50 shadow-inner"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
@@ -229,7 +229,7 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                     </div>
 
                     {/* Footer */}
-                    <div className="p-8 bg-surface-1 border-t border-border space-y-4">
+                    <div className="p-8 bg-surface-2 border-t border-border space-y-4">
                         {/* Toast */}
                         <AnimatePresence>
                             {toast && (
@@ -269,3 +269,4 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
         </AnimatePresence>
     )
 }
+
