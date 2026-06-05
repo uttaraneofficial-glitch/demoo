@@ -57,7 +57,7 @@ export default function NetworkModal({ isOpen, onClose, connections, currentUser
                         className="relative w-full max-w-lg bg-surface rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
                     >
                         {/* Header */}
-                        <div className="px-6 py-5 border-b border-border flex justify-between items-center bg-surface-1">
+                        <div className="px-6 py-5 border-b border-border flex justify-between items-center bg-surface-2">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-primary/5 rounded-xl">
                                     <Users className="w-5 h-5 text-primary" />
@@ -89,7 +89,7 @@ export default function NetworkModal({ isOpen, onClose, connections, currentUser
                                     <Link 
                                         key={u.id}
                                         href={`/profile/${u.id}`}
-                                        className="flex items-center gap-4 p-3 rounded-2xl border border-transparent hover:border-border hover:bg-surface-1 transition-all group"
+                                        className="flex items-center gap-4 p-3 rounded-2xl border border-transparent hover:border-border hover:bg-surface-2 transition-all group"
                                         onClick={onClose}
                                     >
                                         <VerifiedAvatar 
@@ -134,3 +134,4 @@ export default function NetworkModal({ isOpen, onClose, connections, currentUser
         </AnimatePresence>
     )
 }
+
