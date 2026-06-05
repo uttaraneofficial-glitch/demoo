@@ -91,10 +91,10 @@ export default function VerifiedAvatar({
             {verified && (
                 <span
                     title={`${plan} Verified`}
-                    className="absolute -bottom-0.5 -right-0.5 bg-surface rounded-full flex items-center justify-center shadow-sm"
+                    className="absolute -bottom-0.5 -right-0.5 bg-white rounded-full flex items-center justify-center shadow-sm"
                     style={{ padding: '1px' }}
                 >
-                    <BadgeCheck className={`${badgeSize} fill-blue-500 text-white`} />
+                    <BadgeCheck className={`${badgeSize} fill-black text-white`} />
                 </span>
             )}
         </span>
