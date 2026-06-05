@@ -364,4 +364,3 @@ public void updatePresence(String firebaseUid) {
 
 
 
-
