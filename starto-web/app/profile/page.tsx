@@ -330,7 +330,7 @@ export default function UserProfile() {
                     isOpen: true,
                     type: 'error',
                     title: 'Username Unavailable',
-                    message: `The username @${newUsername} is already taken.\n\nTry one of these instead:\n• @${alts[0]}\n• @${alts[1]}\n• @${alts[2]}\n• @${alts[3]}`
+                    message: `The username @${newUsername} is already taken.\n\nTry one of these instead:\nï¿½ @${alts[0]}\nï¿½ @${alts[1]}\nï¿½ @${alts[2]}\nï¿½ @${alts[3]}`
                 })
             } else {
                 setStatusModal({
