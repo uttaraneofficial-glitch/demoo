@@ -204,7 +204,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                 <span className="w-1.5 h-1.5 rounded-full bg-accent-green" />
                                 <span className={`text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest font-bold border whitespace-nowrap ${
                                     displaySubscription.toLowerCase().includes('pro') || displaySubscription.toLowerCase().includes('founder')
-                                        ? 'bg-primary/10 text-primary border-primary/20'
+                                        ? 'bg-transparent text-primary border-primary'
                                         : 'bg-surface-2 text-text-primary border-border'
                                 }`}>
                                     {displaySubscription} Account
@@ -271,7 +271,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                             >
                                                 <Zap className="w-4 h-4 fill-white" /> WhatsApp
                                             </button>
-                                            <div className="px-6 py-2.5 bg-accent-green/10 text-accent-green border border-accent-green/20 text-xs font-bold uppercase tracking-widest rounded-xl flex items-center gap-2">
+                                            <div className="px-6 py-2.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-bold uppercase tracking-widest rounded-xl flex items-center gap-2">
                                                 <CheckCheck className="w-4 h-4" /> Connected
                                             </div>
                                         </div>
@@ -372,7 +372,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                             <div className="flex flex-col items-end gap-2">
                                 <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all whitespace-nowrap ${
                                     displaySubscription.toLowerCase().includes('pro') || displaySubscription.toLowerCase().includes('founder')
-                                        ? 'bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/10' 
+                                        ? 'bg-transparent text-primary border-primary shadow-sm shadow-primary/10' 
                                         : 'bg-surface-2 text-text-primary border-border'
                                 }`}>
                                     {displaySubscription} Account

@@ -16,7 +16,7 @@ module.exports = {
                 "text-primary": "var(--text-primary)",
                 "text-secondary": "var(--text-secondary)",
                 "text-muted": "var(--text-muted)",
-                "accent-green": "#0A0A0A",
+                "accent-green": "#10B981",
                 "accent-yellow": "#EAB308",
                 "accent-blue": "#3B82F6",
                 "accent-red": "#EF4444",
