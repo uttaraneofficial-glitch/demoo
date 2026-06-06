@@ -218,7 +218,7 @@ export default function SignalCard({
             className="bg-surface border border-border p-5 rounded-xl mb-4 hover:border-text-muted transition-all group"
         >
             <div className="flex justify-between items-start mb-4 gap-2">
-                <Link href={`/profile/${userId || username}`} className="flex items-center gap-3 group/profile hover:opacity-80 transition-opacity min-w-0">
+                <Link href={`/profile/${userId || username}`} className="flex flex-1 items-center gap-3 group/profile hover:opacity-80 transition-opacity min-w-0">
                     <VerifiedAvatar
                         username={username}
                         avatarUrl={avatarUrl}
@@ -226,10 +226,11 @@ export default function SignalCard({
                         isVerified={userIsVerified}
                         size="w-10 h-10"
                         badgeSize="w-4 h-4"
+                        className="shrink-0"
                     />
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-1 sm:gap-2 overflow-hidden">
-                            <span className="text-sm font-bold truncate hover:underline cursor-pointer">{username}</span>
+                    <div className="flex flex-col min-w-0 flex-1">
+                        <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+                            <span className="text-sm font-bold truncate hover:underline cursor-pointer min-w-0 block">{username}</span>
                             {type === 'SPACE' && <Building className="w-3.5 h-3.5 text-primary" />}
                             <span className="text-text-muted text-xs shrink-0">•</span>
                             <span className="text-text-muted text-[10px] font-bold uppercase tracking-widest shrink-0">{timeAgo}</span>
@@ -741,5 +742,6 @@ export default function SignalCard({
         </motion.div>
     )
 }
+
 
 
