@@ -42,11 +42,17 @@ interface SignalState {
     addReply: (signalId: string, commentId: string, text: string, username: string) => void;
     migrateUsername: (oldUsername: string, newUsername: string) => void;
     setComments: (signalId: string, comments: Comment[]) => void;
+    cachedGlobalFeed: any[];
+    setCachedGlobalFeed: (feed: any[]) => void;
 }
 
-export const useSignalStore = create<SignalState>((set, get) => ({
-    signals: [],
-    addSignal: (newSignal, id) => set((state) => {
+export const useSignalStore = create<SignalState>()(
+    persist(
+        (set, get) => ({
+            signals: [],
+            cachedGlobalFeed: [],
+            setCachedGlobalFeed: (feed) => set({ cachedGlobalFeed: feed }),
+            addSignal: (newSignal, id) => set((state) => {
         const signal: Signal = {
             ...newSignal,
             id: id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(7)),
@@ -110,6 +116,9 @@ export const useSignalStore = create<SignalState>((set, get) => ({
             s.id === signalId ? { ...s, comments } : s
         )
     })),
+}), {
+    name: 'starto-signal-storage',
+    storage: createJSONStorage(() => localStorage)
 }))
 
 export function getSignalExpiration(signal: any) {

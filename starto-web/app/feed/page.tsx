@@ -82,7 +82,7 @@ function mapApiSignalToCard(s: any) {
 export default function HomeFeed() {
     const router = useRouter()
     const { user, isAuthenticated, isFirebaseReady } = useAuthStore()
-    const { signals: localSignals } = useSignalStore()
+    const { signals: localSignals, cachedGlobalFeed, setCachedGlobalFeed } = useSignalStore()
     const { connections, sentRequests, pendingRequests, sendRequest } = useNetworkStore()
     const { query, setQuery, performSearch, clearSearch } = useSearchStore()
 
@@ -135,9 +135,13 @@ export default function HomeFeed() {
             if (cancelled) return
             if (error || data === null) {
                 setBackendError(error || 'Connection failed')
+                if (cachedGlobalFeed && cachedGlobalFeed.length > 0) {
+                    setApiSignals(cachedGlobalFeed)
+                }
             } else {
                 console.log('[DEBUG] API Signals:', data);
                 setApiSignals(Array.isArray(data) ? data : [])
+                setCachedGlobalFeed(Array.isArray(data) ? data : [])
             }
             setLoading(false)
         })
@@ -194,10 +198,11 @@ export default function HomeFeed() {
                         <div className="flex items-center gap-4">
                             <h1 className="text-2xl font-display tracking-tight text-text-primary">Signals Feed</h1>
 
-                            {/* Backend status and local mode notice moved into header for compactness */}
-                            {!loading && backendError && (
-                                <span className="flex items-center gap-1 text-[9px] font-extrabold uppercase tracking-tighter text-orange-600 border border-orange-200 bg-orange-50/80 px-2 py-0.5 rounded-full whitespace-nowrap">
-                                    <WifiOff className="w-2.5 h-2.5" /> Local
+                            {/* Backend status and local mode notice */}
+                            {backendError && (
+                                <span className="px-3 py-1 bg-surface-2 text-text-muted border border-border text-[10px] font-bold tracking-widest rounded-full uppercase flex items-center gap-1.5">
+                                    <WifiOff className="w-3 h-3" />
+                                    Offline Mode
                                 </span>
                             )}
                         </div>
@@ -244,24 +249,6 @@ export default function HomeFeed() {
                     <div className="relative">
                         <SearchResultsPanel />
                     </div>
-
-                    {/* Backend error notice */}
-                    {backendError && (
-                        <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl text-xs text-orange-700 flex items-start gap-2">
-                            <WifiOff className="w-4 h-4 shrink-0 mt-0.5" />
-                            <span>
-                                {backendError.toLowerCase().includes('expired') || backendError.toLowerCase().includes('token') ? (
-                                    <>
-                                        <strong>Session expired.</strong> Please <a href="/auth" className="underline font-semibold text-text-primary hover:text-primary">login again</a> to view your personalized feed.
-                                    </>
-                                ) : (
-                                    <>
-                                        <strong>Unable to connect:</strong> {backendError}. Showing local signals only.
-                                    </>
-                                )}
-                            </span>
-                        </div>
-                    )}
 
                     {/* Signal list */}
                     {loading ? (

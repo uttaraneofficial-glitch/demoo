@@ -9,6 +9,7 @@ import { useSignalStore, Signal, getSignalExpiration } from '@/store/useSignalSt
 import { useAuthStore } from '@/store/useAuthStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
 import { useResponseStore } from '@/store/useResponseStore'
+import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import RaiseSignalModal from './RaiseSignalModal'
 import InsightsModal from './InsightsModal'
 import HelpModal from './HelpModal'
@@ -93,6 +94,7 @@ export default function SignalCard({
     const { deleteSignal, signals, setComments } = useSignalStore()
     const { connections, sentRequests, pendingRequests, sendRequest } = useNetworkStore()
     const { addResponse, hasResponded } = useResponseStore()
+    const isOnline = useOnlineStatus()
     
     const [showDropdown, setShowDropdown] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -431,12 +433,13 @@ export default function SignalCard({
                     </Link>
                 ) : (
                     <button
+                        disabled={!isOnline}
                         onClick={() => setShowComments(!showComments)}
                         className={`flex-1 border py-2.5 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all ${
                             showComments
                                 ? 'border-primary bg-primary text-background'
                                 : 'border-border hover:bg-surface-2'
-                        }`}
+                        } disabled:opacity-50`}
                     >
                         <MessageSquare className="w-4 h-4" />
                         Respond
@@ -499,15 +502,15 @@ export default function SignalCard({
                                 })
                             }
                         }}
-                        disabled={alreadyConnected || alreadyPending || addedToNetwork}
+                        disabled={alreadyConnected || alreadyPending || addedToNetwork || !isOnline}
                         className={`px-3 border rounded-md transition-all duration-300 ${
                             alreadyConnected
                                 ? 'bg-primary text-background'
                                 : alreadyPending || addedToNetwork
                                     ? 'bg-primary text-background shadow-md'
                                     : 'border-border hover:bg-surface-2'
-                        }`}
-                        title={alreadyConnected ? 'Connected' : alreadyPending ? 'Request sent — pending' : 'Send connection request'}
+                        } disabled:opacity-50`}
+                        title={!isOnline ? "Network unavailable" : alreadyConnected ? 'Connected' : alreadyPending ? 'Request sent — pending' : 'Send connection request'}
                     >
                         {alreadyConnected ? (
                             <CheckCheck className="w-4 h-4" />
@@ -634,7 +637,8 @@ export default function SignalCard({
                                 }}
                             />
                             <button 
-                                disabled={!commentText.trim()}
+                                disabled={!commentText.trim() || !isOnline}
+                                title={!isOnline ? "Network unavailable" : "Post response"}
                                 onClick={async () => {
                                     if (commentText.trim()) {
                                         const text = commentText.trim();
