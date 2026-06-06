@@ -155,18 +155,71 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                         </section>
 
                         {/* Space Type */}
-                        <section>
-                            <label className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 block text-center">What type of space is this?</label>
-                            <div className="flex flex-wrap gap-2 justify-center">
+                        <section className="flex flex-col items-center">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4">What type of space is this?</label>
+                            <div className="flex flex-wrap gap-2 justify-center max-w-lg">
                                 {SPACE_TYPES.map(t => (
-                                    <button 
-                                        key={t} 
+                                    <button
+                                        key={t}
                                         onClick={() => setType(t)}
-                                        className={`px-5 py-2 rounded-full border text-xs font-bold uppercase tracking-tighter transition-all ${type === t ? 'bg-primary text-background border-primary shadow-lg shadow-black/20' : 'border-border text-text-secondary hover:border-primary hover:text-primary'}`}
+                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                            type === t 
+                                            ? 'bg-text-primary text-background border-text-primary shadow-lg scale-105' 
+                                            : 'bg-transparent border-border text-text-muted hover:border-text-primary hover:text-text-primary'
+                                        }`}
                                     >
                                         {t}
                                     </button>
                                 ))}
+                            </div>
+                        </section>
+
+                        {/* Access Model */}
+                        <section className="flex flex-col items-center pt-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4">Access Model</label>
+                            <div className="flex flex-wrap gap-2 justify-center max-w-lg">
+                                {ACCESS_MODELS.map(model => (
+                                    <button
+                                        key={model}
+                                        onClick={() => setAccessModel(model)}
+                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                            accessModel === model 
+                                            ? 'bg-text-primary text-background border-text-primary shadow-lg scale-105' 
+                                            : 'bg-transparent border-border text-text-muted hover:border-text-primary hover:text-text-primary'
+                                        }`}
+                                    >
+                                        {model}
+                                    </button>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Amenities */}
+                        <section className="flex flex-col items-center pt-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4">Amenities Provided</label>
+                            <div className="flex flex-wrap gap-2 justify-center max-w-lg">
+                                {AMENITIES_LIST.map(amenity => {
+                                    const isSelected = amenities.includes(amenity);
+                                    return (
+                                        <button
+                                            key={amenity}
+                                            onClick={() => {
+                                                if (isSelected) {
+                                                    setAmenities(amenities.filter(a => a !== amenity));
+                                                } else {
+                                                    setAmenities([...amenities, amenity]);
+                                                }
+                                            }}
+                                            className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                                                isSelected 
+                                                ? 'bg-accent-green text-black border-accent-green shadow-md' 
+                                                : 'bg-surface-2 border-border text-text-secondary hover:border-accent-green'
+                                            }`}
+                                        >
+                                            {amenity}
+                                        </button>
+                                    )
+                                })}
                             </div>
                         </section>
 
@@ -226,32 +279,49 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
                             </div>
                         </section>
 
-                        {/* Contact & Links */}
-                        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="group">
-                                <label className="text-xs font-bold uppercase tracking-widest text-text-muted mb-2 block flex items-center gap-2">
-                                    <Phone className="w-3.5 h-3.5" /> Contact
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Phone or email"
-                                    className="w-full bg-surface px-4 py-3 rounded-xl border border-border outline-none focus:border-primary text-sm shadow-sm"
-                                    value={contact}
-                                    onChange={(e) => setContact(e.target.value)}
+                        {/* Ownership & Contact */}
+                        <section className="space-y-6">
+                            <div className="flex items-center gap-3 p-4 bg-surface-2 rounded-2xl border border-border">
+                                <input 
+                                    type="checkbox" 
+                                    id="isOwner"
+                                    checked={isOwner}
+                                    onChange={(e) => setIsOwner(e.target.checked)}
+                                    className="w-5 h-5 rounded border-border text-primary focus:ring-primary accent-primary"
                                 />
-                            </div>
-                            <div className="group">
-                                <label className="text-xs font-bold uppercase tracking-widest text-text-muted mb-2 block flex items-center gap-2">
-                                    <Globe className="w-3.5 h-3.5" /> Website
+                                <label htmlFor="isOwner" className="text-sm font-bold text-text-primary cursor-pointer select-none">
+                                    I am the owner or manager of this space
                                 </label>
-                                <input
-                                    type="url"
-                                    placeholder="https://..."
-                                    className="w-full bg-surface px-4 py-3 rounded-xl border border-border outline-none focus:border-primary text-sm shadow-sm"
-                                    value={website}
-                                    onChange={(e) => setWebsite(e.target.value)}
-                                />
                             </div>
+
+                            {isOwner && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border border-border rounded-3xl bg-surface-2">
+                                    <div className="group">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2 block flex items-center gap-2">
+                                            <Phone className="w-3.5 h-3.5" /> Contact
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Phone or email"
+                                            className="w-full bg-surface px-4 py-3 rounded-xl border border-border outline-none focus:border-primary text-sm shadow-sm"
+                                            value={contact}
+                                            onChange={(e) => setContact(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="group">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-2 block flex items-center gap-2">
+                                            <Globe className="w-3.5 h-3.5" /> Website
+                                        </label>
+                                        <input
+                                            type="url"
+                                            placeholder="https://..."
+                                            className="w-full bg-surface px-4 py-3 rounded-xl border border-border outline-none focus:border-primary text-sm shadow-sm"
+                                            value={website}
+                                            onChange={(e) => setWebsite(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </section>
                     </div>
 
