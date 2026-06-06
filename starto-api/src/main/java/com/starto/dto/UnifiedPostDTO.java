@@ -36,6 +36,8 @@ public class UnifiedPostDTO {
     private String state;
     private String contact;
     private String website;
+    private String accessModel;
+    private String amenities;
     private Double lat;
     private Double lng;
 }

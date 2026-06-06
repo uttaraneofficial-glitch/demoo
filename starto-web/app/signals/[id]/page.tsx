@@ -517,9 +517,9 @@ export default function SignalDetailPage() {
                                             badgeSize="w-5 h-5"
                                             className="rounded-2xl"
                                         />
-                                        <div>
-                                            <h3 className="text-xl font-display leading-tight">{owner?.name || signal.username}</h3>
-                                            <p className="text-xs text-text-muted font-mono uppercase tracking-widest mt-0.5">@{signal.username}</p>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="text-xl font-display leading-tight truncate">{owner?.name || signal.username}</h3>
+                                            <p className="text-xs text-text-muted font-mono uppercase tracking-widest mt-0.5 truncate">@{signal.username}</p>
                                         </div>
                                     </div>
 
