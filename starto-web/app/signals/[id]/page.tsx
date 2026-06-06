@@ -279,7 +279,9 @@ export default function SignalDetailPage() {
 
                             {/* Description Section */}
                             <div className="space-y-4">
-                                <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary/60">Signal Details</h3>
+                                <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary/60">
+                                    {signal.type === 'SPACE' ? 'Space Overview' : 'Signal Details'}
+                                </h3>
                                 <div className="prose prose-slate max-w-none">
                                     <p className="text-lg text-text-secondary leading-relaxed whitespace-pre-wrap">
                                         {signal.description}
@@ -294,23 +296,78 @@ export default function SignalDetailPage() {
                                         </div>
                                     </div>
                                 )}
+                                
+                                {/* Extra Space Information */}
+                                {signal.type === 'SPACE' && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                        {signal.accessModel && (
+                                            <div className="p-4 bg-surface-2 rounded-xl border border-border/40">
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">Access Model</p>
+                                                <p className="text-sm font-bold text-text-primary">{signal.accessModel}</p>
+                                            </div>
+                                        )}
+                                        {signal.website && (
+                                            <div className="p-4 bg-surface-2 rounded-xl border border-border/40">
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">Website</p>
+                                                <a href={signal.website} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-primary hover:underline break-all">
+                                                    {signal.website}
+                                                </a>
+                                            </div>
+                                        )}
+                                        {signal.contact && (
+                                            <div className="p-4 bg-surface-2 rounded-xl border border-border/40">
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1">Contact Details</p>
+                                                <p className="text-sm font-bold text-text-primary">{signal.contact}</p>
+                                            </div>
+                                        )}
+                                        {signal.amenities && (
+                                            <div className="md:col-span-2 p-4 bg-surface-2 rounded-xl border border-border/40">
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-3">Amenities</p>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {(() => {
+                                                        try {
+                                                            const parsed = typeof signal.amenities === 'string' ? JSON.parse(signal.amenities) : signal.amenities;
+                                                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                                                return parsed.map((am: string, i: number) => (
+                                                                    <span key={i} className="text-[10px] font-bold uppercase tracking-wider text-text-secondary bg-surface px-3 py-1.5 rounded-md border border-border">
+                                                                        {am}
+                                                                    </span>
+                                                                ));
+                                                            }
+                                                        } catch(e) {}
+                                                        return <span className="text-sm text-text-muted">No amenities listed</span>;
+                                                    })()}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Stats & Metadata */}
-                            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
-                                <div className="text-center p-4 rounded-xl hover:bg-surface-2 transition-colors">
-                                    <p className="text-2xl font-mono font-bold">{signal.viewCount || 0}</p>
-                                    <p className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Views</p>
+                            {signal.type !== 'SPACE' ? (
+                                <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
+                                    <div className="text-center p-4 rounded-xl hover:bg-surface-2 transition-colors">
+                                        <p className="text-2xl font-mono font-bold">{signal.viewCount || 0}</p>
+                                        <p className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Views</p>
+                                    </div>
+                                    <div className="text-center p-4 rounded-xl hover:bg-surface-2 transition-colors">
+                                        <p className="text-2xl font-mono font-bold">{signal.responseCount || 0}</p>
+                                        <p className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Responses</p>
+                                    </div>
+                                    <div className="text-center p-4 rounded-xl hover:bg-surface-2 transition-colors">
+                                        <p className="text-2xl font-mono font-bold">{signal.offerCount || 0}</p>
+                                        <p className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Offers</p>
+                                    </div>
                                 </div>
-                                <div className="text-center p-4 rounded-xl hover:bg-surface-2 transition-colors">
-                                    <p className="text-2xl font-mono font-bold">{signal.responseCount || 0}</p>
-                                    <p className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Responses</p>
+                            ) : (
+                                <div className="grid grid-cols-1 gap-4 pt-6 border-t border-border">
+                                    <div className="text-center p-4 rounded-xl hover:bg-surface-2 transition-colors inline-block w-fit mx-auto">
+                                        <p className="text-2xl font-mono font-bold">{signal.viewCount || 0}</p>
+                                        <p className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Space Views</p>
+                                    </div>
                                 </div>
-                                <div className="text-center p-4 rounded-xl hover:bg-surface-2 transition-colors">
-                                    <p className="text-2xl font-mono font-bold">{signal.offerCount || 0}</p>
-                                    <p className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Offers</p>
-                                </div>
-                            </div>
+                            )}
 
                             {/* Engagement Section */}
                             <div className="pt-8 space-y-6">

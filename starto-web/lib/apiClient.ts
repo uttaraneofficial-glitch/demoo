@@ -138,6 +138,8 @@ export interface ApiUnifiedPost {
     state?: string;
     contact?: string;
     website?: string;
+    accessModel?: string;
+    amenities?: string;
     lat?: number | null;
     lng?: number | null;
 }
