@@ -257,7 +257,9 @@ export default function SignalDetailPage() {
                                 <div className="flex justify-between items-end mb-4">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Ecosystem Urgency</p>
-                                        <p className="text-lg font-medium">{signal.signalStrength} Priority</p>
+                                        <p className="text-lg font-medium">
+                                            {isExpired ? 'Expired' : (daysLeft > 0 ? `${daysLeft} Days Left` : `${hoursLeft} Hours Left`)}
+                                        </p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-2xl font-mono font-bold">{Math.round(progressPercent)}%</p>
