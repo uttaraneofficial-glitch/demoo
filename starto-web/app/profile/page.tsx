@@ -648,7 +648,7 @@ export default function UserProfile() {
                                             <h1 className="text-2xl font-display">{name}</h1>
                                             {(isVerified || displayPlan === 'Pro' || displayPlan === 'Founder' || displayPlan === 'TRIAL') && !displayPlan.toLowerCase().includes('explorer') && (
                                                 <span title={`${displayPlan} Verified`} className="relative inline-flex items-center justify-center">
-                                                    <BadgeCheck className="w-6 h-6 fill-black text-white" />
+                                                    <BadgeCheck className="w-6 h-6 fill-text-primary text-surface-2" />
                                                 </span>
                                             )}
                                         </div>

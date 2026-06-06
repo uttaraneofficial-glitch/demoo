@@ -206,7 +206,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                     <h1 className="text-3xl font-display font-bold text-text-primary">{displayName}</h1>
                                     {(displayVerified || displaySubscription === 'Pro' || displaySubscription === 'Founder') && !displaySubscription.toLowerCase().includes('explorer') && (
                                         <span title={`${displaySubscription} Verified`} className="relative inline-flex items-center justify-center">
-                                            <BadgeCheck className="w-6 h-6 fill-black text-background" />
+                                            <BadgeCheck className="w-6 h-6 fill-text-primary text-surface-2" />
                                         </span>
                                     )}
                                 </div>
