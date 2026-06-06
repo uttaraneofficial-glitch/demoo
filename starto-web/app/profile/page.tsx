@@ -946,7 +946,17 @@ export default function UserProfile() {
                     {/* ── Logout & Delete Account ── */}
                     <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
                         <button
-                            onClick={() => { useAuthStore.getState().clearAuth(); router.push('/auth') }}
+                            onClick={async () => { 
+                                try {
+                                    const { getAuth, signOut } = await import('firebase/auth');
+                                    const auth = getAuth();
+                                    await signOut(auth);
+                                } catch (err) {
+                                    console.error("Firebase signout failed:", err);
+                                }
+                                useAuthStore.getState().clearAuth(); 
+                                router.push('/auth');
+                            }}
                             className="w-full flex items-center justify-center gap-2 py-3 border border-border text-text-muted rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-surface-2 transition-colors"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -963,23 +973,44 @@ export default function UserProfile() {
                                     onConfirm: async () => {
                                         const store = useLocalUserStore.getState()
                                         
-                                        // Call backend API
-                                        const { error } = await usersApi.deleteAccount();
-                                        if (error) {
-                                            setToast({ isVisible: true, message: error, type: 'error' });
-                                            return;
-                                        }
+                                        try {
+                                            const { getAuth, signOut } = await import('firebase/auth');
+                                            const auth = getAuth();
+                                            const currentUser = auth.currentUser;
+                                            
+                                            // Call backend API first
+                                            const { error } = await usersApi.deleteAccount();
+                                            if (error) {
+                                                setToast({ isVisible: true, message: error, type: 'error' });
+                                                return;
+                                            }
+                                            
+                                            if (currentUser) {
+                                                await currentUser.delete();
+                                            } else {
+                                                // Just to be absolutely safe, try signing out
+                                                await signOut(auth);
+                                            }
 
-                                        if (user) {
-                                            store.deleteUser(user.email)
-                                        } else {
-                                            const authUser = useAuthStore.getState().user
-                                            if (authUser?.email) store.deleteUser(authUser.email)
+                                            const store = useLocalUserStore.getState()
+                                            if (user?.email) {
+                                                store.deleteUser(user.email)
+                                            } else {
+                                                const authUser = useAuthStore.getState().user
+                                                if (authUser?.email) store.deleteUser(authUser.email)
+                                            }
+
+                                            useNetworkStore.getState().clearAll()
+                                            useResponseStore.getState().clearAll()
+                                            useAuthStore.getState().clearAuth()
+                                            router.push('/auth')
+                                        } catch (err: any) {
+                                            if (err.code === 'auth/requires-recent-login') {
+                                                setToast({ isVisible: true, message: 'For security, please log out and log back in before deleting your account.', type: 'error' })
+                                            } else {
+                                                setToast({ isVisible: true, message: err.message || 'Failed to delete account', type: 'error' })
+                                            }
                                         }
-                                        useNetworkStore.getState().clearAll()
-                                        useResponseStore.getState().clearAll()
-                                        useAuthStore.getState().clearAuth()
-                                        router.push('/auth')
                                     }
                                 })
                             }}
@@ -1196,4 +1227,5 @@ export default function UserProfile() {
 
 
 }
+
 
