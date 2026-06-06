@@ -73,6 +73,8 @@ function mapApiSignalToCard(s: any) {
         address: s.address,
         website: s.website,
         contact: s.contact,
+        accessModel: s.accessModel,
+        amenities: s.amenities,
         avatarUrl: s.avatarUrl
     }
 }

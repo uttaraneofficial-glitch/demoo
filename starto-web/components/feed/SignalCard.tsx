@@ -78,12 +78,14 @@ interface SignalCardProps {
     state?: string
     website?: string
     contact?: string
+    accessModel?: string
+    amenities?: string
 }
 
 export default function SignalCard({ 
     id, type = 'SIGNAL', title, username, timeAgo, category, description, strength, stats, 
     hideViews = false, userPlan = 'free', userIsVerified, userId, createdAt, expiresAt, onRefresh, avatarUrl,
-    address, stage, city, state, website, contact
+    address, stage, city, state, website, contact, accessModel, amenities
 }: SignalCardProps) {
     const { user, token } = useAuthStore()
     const currentUser = user?.username
@@ -319,48 +321,79 @@ export default function SignalCard({
                 </div>
             )}
 
-            <div className="flex items-center gap-6 mb-5">
-                <div className="flex flex-col">
-                    <span className="text-[10px] text-text-muted uppercase">Responses</span>
-                    <span className="font-mono text-sm">{localStats.responses}</span>
-                </div>
-                {type !== 'SPACE' && (
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-text-muted uppercase">Offers</span>
-                        <span className="font-mono text-sm">{stats.offers}</span>
+            {type !== 'SPACE' ? (
+                <>
+                    <div className="flex items-center gap-6 mb-5">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-text-muted uppercase">Responses</span>
+                            <span className="font-mono text-sm">{localStats.responses}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-text-muted uppercase">Offers</span>
+                            <span className="font-mono text-sm">{stats.offers}</span>
+                        </div>
+                        {!hideViews && (
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-text-muted uppercase">Views</span>
+                                <span className="font-mono text-sm">{stats.views}</span>
+                            </div>
+                        )}
                     </div>
-                )}
-                {!hideViews && (
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-text-muted uppercase">Views</span>
-                        <span className="font-mono text-sm">{stats.views}</span>
+                    
+                    {/* Urgency Progress Bar */}
+                    <div className="mb-5 relative">
+                        <div className="w-full h-1.5 bg-surface-2 overflow-hidden mb-1 flex">
+                            <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progressPercent}%` }}
+                                transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+                                className={`h-full rounded-r-md transition-colors ${
+                                    daysLeft <= 1 ? "bg-red-500" :
+                                    daysLeft >= totalDuration - 2 ? "bg-primary" :
+                                    "bg-gradient-to-r from-yellow-400 to-orange-500"
+                                }`}
+                            />
+                        </div>
+                        <div className={`text-[10px] uppercase tracking-widest font-bold float-right ${
+                            daysLeft <= 1 ? "text-red-500" :
+                            daysLeft >= totalDuration - 2 ? "text-primary" :
+                            "text-orange-500"
+                        }`}>
+                            {daysLeft > 0 ? `${daysLeft} Days Left` : `${hoursLeft} Hours Left`}
+                        </div>
+                        <div className="clear-both" />
                     </div>
-                )}
-            </div>
-            
-            {/* Urgency Progress Bar */}
-            <div className="mb-5 relative">
-                <div className="w-full h-1.5 bg-surface-2 overflow-hidden mb-1 flex">
-                    <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progressPercent}%` }}
-                        transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                        className={`h-full rounded-r-md transition-colors ${
-                            daysLeft <= 1 ? "bg-red-500" :
-                            daysLeft >= totalDuration - 2 ? "bg-primary" :
-                            "bg-gradient-to-r from-yellow-400 to-orange-500"
-                        }`}
-                    />
+                </>
+            ) : (
+                <div className="mb-5 mt-2 space-y-3">
+                    {/* Space Specific Details */}
+                    {accessModel && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Access:</span>
+                            <span className="text-[10px] font-bold text-text-primary px-2 py-1 bg-surface-2 rounded-full border border-border">
+                                {accessModel}
+                            </span>
+                        </div>
+                    )}
+                    {amenities && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                            {(() => {
+                                try {
+                                    const parsed = typeof amenities === 'string' ? JSON.parse(amenities) : amenities;
+                                    if (Array.isArray(parsed) && parsed.length > 0) {
+                                        return parsed.slice(0, 3).map((am: string, i: number) => (
+                                            <span key={i} className="text-[9px] font-bold uppercase tracking-widest text-text-secondary bg-surface px-2 py-1 rounded-md border border-border">
+                                                {am}
+                                            </span>
+                                        ));
+                                    }
+                                } catch(e) {}
+                                return null;
+                            })()}
+                        </div>
+                    )}
                 </div>
-                <div className={`text-[10px] uppercase tracking-widest font-bold float-right ${
-                    daysLeft <= 1 ? "text-red-500" :
-                    daysLeft >= totalDuration - 2 ? "text-primary" :
-                    "text-orange-500"
-                }`}>
-                    {daysLeft > 0 ? `${daysLeft} Days Left` : `${hoursLeft} Hours Left`}
-                </div>
-                <div className="clear-both" />
-            </div>
+            )}
 
             {/* Social Proof Line */}
             {respondentToShow && (
@@ -388,17 +421,27 @@ export default function SignalCard({
                         <Zap className="w-4 h-4 fill-current" /> Help
                     </button>
                 )}
-                <button
-                    onClick={() => setShowComments(!showComments)}
-                    className={`flex-1 border py-2.5 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all ${
-                        showComments
-                            ? 'border-primary bg-primary text-background'
-                            : 'border-border hover:bg-surface-2'
-                    }`}
-                >
-                    <MessageSquare className="w-4 h-4" />
-                    Respond
-                </button>
+                {type === 'SPACE' ? (
+                    <Link
+                        href={`/signals/${id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 bg-primary text-background py-2.5 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all hover:opacity-90"
+                    >
+                        View Space Details
+                    </Link>
+                ) : (
+                    <button
+                        onClick={() => setShowComments(!showComments)}
+                        className={`flex-1 border py-2.5 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all ${
+                            showComments
+                                ? 'border-primary bg-primary text-background'
+                                : 'border-border hover:bg-surface-2'
+                        }`}
+                    >
+                        <MessageSquare className="w-4 h-4" />
+                        Respond
+                    </button>
+                )}
                 <button
                     onClick={() => {
                         const url = `${window.location.origin}/signals/${id}`;
