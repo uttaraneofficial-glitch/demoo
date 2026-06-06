@@ -1,7 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
-import MobileNavigation from '@/components/feed/MobileNavigation'
+import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -95,7 +95,6 @@ export default function NetworkPage() {
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
-                <MobileNavigation title="My Network" />
                 <Sidebar />
 
                 <main className="flex-1 w-full max-w-[680px] md:border-r border-border min-h-screen">
@@ -438,7 +437,7 @@ export default function NetworkPage() {
                         </button>
                     </div>
                 </aside>
-                
+                <MobileBottomNav />
             </div>
             <StatusModal 
                 isOpen={statusModal.isOpen} 

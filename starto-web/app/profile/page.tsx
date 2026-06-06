@@ -501,11 +501,11 @@ export default function UserProfile() {
                 <main className="flex-1 w-full max-w-[680px] md:border-r border-border min-h-screen p-0">
 
                     {/* ── Clean Profile Header (no cover) ── */}
-                    <div className="px-8 pt-8 pb-6 border-b border-border">
-                        <div className="flex items-start gap-6">
+                    <div className="px-4 md:px-8 pt-8 pb-6 border-b border-border">
+                        <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
                             {/* Avatar */}
                             <div className="relative shrink-0">
-                                <div className="w-24 h-24 bg-surface rounded-2xl border-2 border-border shadow-lg relative overflow-hidden flex items-center justify-center">
+                                <div className="w-20 h-20 md:w-24 md:h-24 bg-surface rounded-2xl border-2 border-border shadow-lg relative overflow-hidden flex items-center justify-center">
                                     <VerifiedAvatar 
                                         username={isEditing ? editForm.name : (user.name || user.username)}
                                         avatarUrl={isEditing ? editForm.avatarUrl : user.avatarUrl}
@@ -944,7 +944,7 @@ export default function UserProfile() {
                         </div>
                     </div>
                     {/* ── Logout & Delete Account ── */}
-                    <div className="px-8 py-6 border-t border-border flex flex-col gap-3">
+                    <div className="px-4 md:px-8 py-6 border-t border-border flex flex-col gap-3">
                         <button
                             onClick={async () => { 
                                 try {
@@ -1227,5 +1227,6 @@ export default function UserProfile() {
 
 
 }
+
 
 

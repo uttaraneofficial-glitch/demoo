@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Sidebar from '@/components/feed/Sidebar'
-import MobileNavigation from '@/components/feed/MobileNavigation'
+import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import { Map as MapIcon, Filter, Navigation, Search, Users, ChevronRight, ChevronDown, MapPin, Loader2, Zap, LayoutGrid, Map as MapType, Radio, Building } from 'lucide-react'
 import Image from 'next/image'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -108,7 +108,7 @@ export default function NearbyEcosystem() {
     return (
         <div className="min-h-screen bg-background text-text-primary flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
-                <MobileNavigation title="Nearby Startups" />
+                
                 <Sidebar />
 
                 <main className="flex-1 flex flex-col min-h-screen border-x border-border overflow-hidden">
@@ -308,8 +308,7 @@ export default function NearbyEcosystem() {
                         )}
                     </div>
                 </main>
-                
-            </div>
+    <MobileBottomNav /></div>
         </div>
     )
 }
@@ -421,5 +420,6 @@ function SpaceCard({ sp }: { sp: any }) {
         </div>
     )
 }
+
 
 

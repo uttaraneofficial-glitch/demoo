@@ -1,6 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
+import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import { Bell, Zap, UserPlus, MessageSquare, ArrowRight, ShieldAlert, CheckCircle2, Gift } from 'lucide-react'
 import { useState, useEffect, useCallback, useMemo } from 'react'
@@ -146,7 +147,7 @@ export default function NotificationsPage() {
 
     return (
         <div className="min-h-screen bg-background flex justify-center">
-            <div className="max-w-[1400px] w-full flex">
+            <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
                 <Sidebar />
 
                 <main className="flex-1 max-w-[720px] border-r border-border min-h-screen p-8">
@@ -237,7 +238,8 @@ export default function NotificationsPage() {
                         )}
                     </div>
                 </main>
-            </div>
+    <MobileBottomNav /></div>
         </div>
     )
 }
+

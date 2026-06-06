@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { usersApi, connectionsApi, signalsApi, ApiUser, ApiSignal } from '@/lib/apiClient'
 import { motion } from 'framer-motion'
+import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import StatusModal from '@/components/feed/StatusModal'
 import VerifiedAvatar from '@/components/feed/VerifiedAvatar'
 import NetworkModal from '@/components/feed/NetworkModal'
@@ -183,7 +184,7 @@ export default function PublicProfile({ params }: { params: { username: string }
 
     return (
         <div className="min-h-screen bg-background flex justify-center">
-            <div className="max-w-[1400px] w-full flex">
+            <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
                 <Sidebar />
 
                 <main className="flex-1 max-w-[680px] border-r border-border min-h-screen p-0">
@@ -729,6 +730,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                         </div>
                     )}
                 </aside>
+                <MobileBottomNav />
             </div>
             <StatusModal 
                 isOpen={statusModal.isOpen} 

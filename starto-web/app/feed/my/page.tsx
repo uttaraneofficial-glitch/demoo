@@ -1,6 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/feed/Sidebar'
+import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import { Plus, Search, Edit3, Trash2, ArrowUpRight, Loader2, RefreshCw, Building, MapPin } from 'lucide-react'
 import { useSignalStore, getSignalExpiration } from '@/store/useSignalStore'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -121,7 +122,7 @@ export default function MySignals() {
 
     return (
         <div className="min-h-screen bg-background flex justify-center">
-            <div className="max-w-[1400px] w-full flex">
+            <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
                 <Sidebar />
 
                 <main className="flex-1 max-w-[680px] border-r border-border min-h-screen p-6">
@@ -376,9 +377,9 @@ export default function MySignals() {
                         </button>
                     </div>
                 </aside>
-            </div>
-
-            <RaiseSignalModal
+<MobileBottomNav />
+</div>
+<RaiseSignalModal
                 isOpen={isRaiseModalOpen || !!editingSignal}
                 onClose={() => {
                     setIsRaiseModalOpen(false)
@@ -409,4 +410,5 @@ export default function MySignals() {
         </div>
     )
 }
+
 
