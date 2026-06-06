@@ -126,7 +126,7 @@ export default function MySignals() {
                 <Sidebar />
 
                 <main className="flex-1 max-w-[680px] border-r border-border min-h-screen p-6">
-                    <div className="flex justify-between items-center mb-8">
+                    <div className="flex flex-row justify-between items-start gap-4 mb-8">
                         <div>
                             <h1 className="text-2xl font-display">My Signals</h1>
                             <p className="text-xs text-text-secondary mt-1">Manage and track your active requests.</p>
@@ -139,8 +139,8 @@ export default function MySignals() {
                             >
                                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                             </button>
-                            <button onClick={() => setIsRaiseModalOpen(true)} className="bg-primary text-background px-4 py-2 rounded-md flex items-center gap-2 hover:opacity-90">
-                                <Plus className="w-5 h-5" /> New Signal
+                            <button onClick={() => setIsRaiseModalOpen(true)} className="bg-primary text-background px-3 py-1.5 md:px-4 md:py-2 rounded-md flex items-center gap-1 md:gap-2 hover:opacity-90 text-sm md:text-base shrink-0">
+                                <Plus className="w-4 h-4 md:w-5 md:h-5" /> New Signal
                             </button>
                         </div>
                     </div>

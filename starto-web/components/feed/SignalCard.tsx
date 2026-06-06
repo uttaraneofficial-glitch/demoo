@@ -217,8 +217,8 @@ export default function SignalCard({
             animate={{ opacity: 1, y: 0 }}
             className="bg-surface border border-border p-5 rounded-xl mb-4 hover:border-text-muted transition-all group"
         >
-            <div className="flex justify-between items-start mb-4">
-                <Link href={`/profile/${userId || username}`} className="flex items-center gap-3 group/profile hover:opacity-80 transition-opacity">
+            <div className="flex justify-between items-start mb-4 gap-2">
+                <Link href={`/profile/${userId || username}`} className="flex items-center gap-3 group/profile hover:opacity-80 transition-opacity min-w-0">
                     <VerifiedAvatar
                         username={username}
                         avatarUrl={avatarUrl}
@@ -228,7 +228,7 @@ export default function SignalCard({
                         badgeSize="w-4 h-4"
                     />
                     <div className="flex flex-col">
-                        <div className="flex items-center gap-2 overflow-hidden">
+                        <div className="flex items-center gap-1 sm:gap-2 overflow-hidden">
                             <span className="text-sm font-bold truncate hover:underline cursor-pointer">{username}</span>
                             {type === 'SPACE' && <Building className="w-3.5 h-3.5 text-primary" />}
                             <span className="text-text-muted text-xs shrink-0">•</span>
@@ -242,7 +242,7 @@ export default function SignalCard({
                         )}
                     </div>
                 </Link>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                     <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-primary text-background`}>
                         {type === 'SPACE' ? (strength || 'Space') : category}
                     </span>
@@ -304,8 +304,8 @@ export default function SignalCard({
             </div>
 
             <Link href={`/signals/${id}`} className="block group/link cursor-pointer">
-                <h3 className="text-lg font-medium mb-2 group-hover/link:text-primary group-hover/link:underline transition-colors">{title}</h3>
-                <p className="text-text-secondary text-sm mb-4 line-clamp-2">{description}</p>
+                <h3 className="text-lg font-medium mb-2 break-words group-hover/link:text-primary group-hover/link:underline transition-colors">{title}</h3>
+                <p className="text-text-secondary text-sm mb-4 line-clamp-2 break-words">{description}</p>
             </Link>
 
             {website && (
@@ -741,3 +741,5 @@ export default function SignalCard({
         </motion.div>
     )
 }
+
+

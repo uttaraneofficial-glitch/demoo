@@ -189,8 +189,8 @@ export default function PublicProfile({ params }: { params: { username: string }
 
                 <main className="flex-1 max-w-[680px] border-r border-border min-h-screen p-0">
                     {/* Profile Header (No Banner) */}
-                    <div className="pt-8 px-8 flex items-end gap-6 border-b border-border pb-8 bg-surface-2">
-                        <div className="w-32 h-32 bg-surface rounded-3xl p-1 border-4 border-background shadow-2xl relative shrink-0">
+                    <div className="pt-8 px-4 sm:px-8 flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 border-b border-border pb-8 bg-surface-2 text-center sm:text-left">
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 bg-surface rounded-3xl p-1 border-4 border-background shadow-2xl relative shrink-0 mx-auto sm:mx-0">
                             <VerifiedAvatar
                                 username={effectiveUsername}
                                 avatarUrl={displayAvatarUrl}
@@ -201,19 +201,19 @@ export default function PublicProfile({ params }: { params: { username: string }
                             />
                         </div>
                         
-                        <div className="flex-1 pb-2">
-                            <div className="flex flex-col mb-1">
-                                <div className="flex items-center gap-2">
-                                    <h1 className="text-3xl font-display font-bold text-text-primary">{displayName}</h1>
+                        <div className="flex-1 pb-2 min-w-0 flex flex-col items-center sm:items-start">
+                            <div className="flex flex-col mb-1 w-full">
+                                <div className="flex items-center justify-center sm:justify-start gap-2 max-w-full">
+                                    <h1 className="text-2xl sm:text-3xl font-display font-bold text-text-primary break-words truncate">{displayName}</h1>
                                     {(displayVerified || displaySubscription === 'Pro' || displaySubscription === 'Founder') && !displaySubscription.toLowerCase().includes('explorer') && (
-                                        <span title={`${displaySubscription} Verified`} className="relative inline-flex items-center justify-center">
-                                            <BadgeCheck className="w-6 h-6 fill-text-primary text-surface-2" />
+                                        <span title={`${displaySubscription} Verified`} className="relative inline-flex items-center justify-center shrink-0">
+                                            <BadgeCheck className="w-5 h-5 sm:w-6 sm:h-6 fill-text-primary text-surface-2" />
                                         </span>
                                     )}
                                 </div>
                                 <p className="text-sm font-medium text-text-secondary">@{effectiveUsername}</p>
                             </div>
-                            <p className="text-text-secondary font-medium flex items-center gap-2">
+                            <p className="text-text-secondary font-medium flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-2">
                                 {displayRole} • {displayCity.split(',')[0]}
                                 <span className="w-1.5 h-1.5 rounded-full bg-accent-green" />
                                 <span className={`text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest font-bold border whitespace-nowrap ${
@@ -250,7 +250,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                                 
                                 if (alreadyConnected) {
                                     return (
-                                        <div className="mt-4 flex gap-2">
+                                        <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-2">
                                             <button 
                                                 onClick={async () => {
                                                     try {
@@ -395,7 +395,7 @@ export default function PublicProfile({ params }: { params: { username: string }
                         </div>
 
                         {/* Public Stats — Signals, Connections, Rating */}
-                        <div className="flex gap-12 pt-6 mb-8">
+                        <div className="flex flex-wrap justify-center sm:justify-start gap-6 sm:gap-12 pt-6 mb-8 text-center sm:text-left">
                             <div>
                                 <p className="text-[10px] uppercase font-bold text-text-muted mb-1">Signals</p>
                                 <p className="text-2xl font-mono font-bold text-text-primary">{signalsCount}</p>
