@@ -22,6 +22,23 @@ const SPACE_TYPES = [
     'Community Cafe'
 ]
 
+const ACCESS_MODELS = [
+    'Free / Public',
+    'Paid / Co-working',
+    'Invite-Only',
+    'Buy-a-Coffee'
+]
+
+const AMENITIES_LIST = [
+    'Fast Wi-Fi',
+    'Meeting Rooms',
+    'Coffee / Tea',
+    'Parking',
+    'Quiet Zone',
+    '24/7 Access',
+    'Whiteboards'
+]
+
 export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalProps) {
     const { user, isAuthenticated } = useAuthStore()
     
@@ -35,6 +52,10 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
     const [lng, setLng] = useState<number | null>(null)
     const [contact, setContact] = useState('')
     const [website, setWebsite] = useState('')
+    
+    const [accessModel, setAccessModel] = useState(ACCESS_MODELS[0])
+    const [amenities, setAmenities] = useState<string[]>([])
+    const [isOwner, setIsOwner] = useState(true)
     
     const [submitting, setSubmitting] = useState(false)
     const [toast, setToast] = useState<{ type: 'success' | 'warn'; msg: string } | null>(null)
@@ -52,6 +73,9 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
             setLng(user?.lng || null)
             setContact('')
             setWebsite('')
+            setAccessModel(ACCESS_MODELS[0])
+            setAmenities([])
+            setIsOwner(true)
             setToast(null)
         }
     }, [isOpen, user])
@@ -77,7 +101,10 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
             lat,
             lng,
             contact,
-            website
+            website,
+            accessModel,
+            amenities: JSON.stringify(amenities),
+            isOwner
         })
 
         if (data && !error) {
@@ -269,4 +296,8 @@ export default function CreateSpaceModal({ isOpen, onClose }: CreateSpaceModalPr
         </AnimatePresence>
     )
 }
+
+
+
+
 

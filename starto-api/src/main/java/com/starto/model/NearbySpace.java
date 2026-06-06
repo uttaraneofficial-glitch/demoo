@@ -69,6 +69,17 @@ private UUID userId;
 
     private String contact;
     private String website;
+
+    @Column(name = "access_model")
+    private String accessModel;
+
+    @Column(columnDefinition = "TEXT")
+    private String amenities;
+
+    @Column(name = "is_owner")
+    @Builder.Default
+    private Boolean isOwner = false;
+
     @Builder.Default
     private Boolean verified = false;
 
@@ -88,3 +99,4 @@ private UUID userId;
     @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
 }
+

@@ -270,6 +270,24 @@ export default function MySignals() {
                                                 <h3 className="font-medium text-xl mb-1">{space.title}</h3>
                                                 {space.description && <p className="text-sm text-text-secondary mb-4 line-clamp-2">{space.description}</p>}
                                                 
+                                                {space.amenities && (
+                                                    <div className="flex flex-wrap gap-1.5 mb-4">
+                                                        {(() => {
+                                                            try {
+                                                                const parsed = typeof space.amenities === 'string' ? JSON.parse(space.amenities) : space.amenities;
+                                                                if (Array.isArray(parsed) && parsed.length > 0) {
+                                                                    return parsed.slice(0, 3).map((am: string, i: number) => (
+                                                                        <span key={i} className="text-[9px] font-bold uppercase tracking-widest text-text-secondary bg-surface px-2 py-1 rounded-md border border-border">
+                                                                            {am}
+                                                                        </span>
+                                                                    ));
+                                                                }
+                                                            } catch(e) {}
+                                                            return null;
+                                                        })()}
+                                                    </div>
+                                                )}
+                                                
                                                 {space.address && (
                                                     <div className="flex items-center gap-2 text-xs text-text-muted mb-4 bg-surface-2 p-3 rounded-xl">
                                                         <Building className="w-4 h-4 text-primary" />
@@ -391,3 +409,4 @@ export default function MySignals() {
         </div>
     )
 }
+

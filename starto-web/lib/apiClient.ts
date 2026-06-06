@@ -662,3 +662,4 @@ export async function getAuthToken(): Promise<string | null> {
   if (!user) return null;
   return await user.getIdToken();
 }
+
