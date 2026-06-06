@@ -87,6 +87,28 @@ function AuthFormContent() {
         }
     }, [isAuthenticated, isWaitingForVerification, router])
 
+    // Auto-detect if user is in Firebase but pending backend registration
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+            if (currentUser && currentUser.emailVerified && !isAuthenticated) {
+                try {
+                    const token = await currentUser.getIdToken();
+                    const { data: profile, error: apiError } = await usersApi.getMe(token);
+                    if (apiError || !profile || (profile as any).pending) {
+                        setIsCompletingRegistration(true);
+                        setMode('signup');
+                        setError('Your email is verified. Please complete your registration below.');
+                        // Pre-fill email
+                        if (currentUser.email) setEmail(currentUser.email);
+                    }
+                } catch (e) {
+                    console.error("Error auto-detecting pending user:", e);
+                }
+            }
+        });
+        return () => unsubscribe();
+    }, [isAuthenticated]);
+
     // Detect Firebase action codes from search parameters (email verification, password reset, etc.)
     useEffect(() => {
         if (!firebaseConfigured) return

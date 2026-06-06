@@ -27,8 +27,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 // Try to fetch existing user
                 const { data: existingUser, status } = await usersApi.getMe(token);
 
-                if (existingUser) {
+                if (existingUser && !(existingUser as any).pending) {
                     setAuth(firebaseUser, token, existingUser as any);
+                    return;
+                }
+
+                if (existingUser && (existingUser as any).pending) {
+                    console.warn('[Auth] User verified in Firebase but pending backend registration.');
+                    clearAuth();
+                    setLoading(false);
                     return;
                 }
 
