@@ -263,7 +263,7 @@ export default function SubscriptionPage() {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: orderData.amountPaid,
                 currency: orderData.currency || "INR",
-                name: "Starto V2",
+                name: "Startoindia",
                 description: `Upgrade to ${confirmPlan}`,
                 order_id: orderData.razorpayOrderId,
                 handler: async (response: any) => {

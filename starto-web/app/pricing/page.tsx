@@ -70,7 +70,7 @@ export default function PricingPage() {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: order.amountPaid,
                 currency: order.currency,
-                name: "Starto V2",
+                name: "Startoindia",
                 description: `Upgrade to ${planName} Plan`,
                 order_id: order.razorpayOrderId,
                 handler: async (response: any) => {

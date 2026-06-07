@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-    title: 'Starto V3',
+    title: 'Startoindia',
     description: 'Unified Growth Ecosystem Platform',
 };
 
