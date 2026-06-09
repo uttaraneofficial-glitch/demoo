@@ -652,7 +652,7 @@ export default function UserProfile() {
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="text-text-secondary text-sm font-medium mb-1 flex items-center gap-2">
+                                        <p className="text-text-secondary text-sm font-medium mb-1 flex flex-wrap items-center gap-2">
                                             {role} • {city}
                                             {displayPlan.toLowerCase() !== 'explorer' && (
                                                 <>

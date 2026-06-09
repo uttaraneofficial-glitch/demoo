@@ -248,12 +248,12 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/60 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-primary/60 backdrop-blur-sm">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="bg-surface w-full max-w-[540px] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]"
+                    className="bg-surface w-full max-w-[540px] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
                 >
                     <div className="p-6 border-b border-border flex justify-between items-center bg-surface">
                         <h2 className="text-2xl font-bold font-display">{editSignal ? 'Modify Signal' : 'Raise a New Signal'}</h2>
