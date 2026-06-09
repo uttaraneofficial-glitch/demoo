@@ -182,7 +182,7 @@ export default function NearbyEcosystem() {
                                                         setIsDropdownOpen(false);
                                                     }}
                                                     className={`w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest transition-colors ${
-                                                        searchRole === r.id ? 'bg-primary text-background' : 'text-background hover:bg-surface-2'
+                                                        searchRole === r.id ? 'bg-primary text-background' : 'text-background hover:bg-surface-2 hover:text-text-primary'
                                                     }`}
                                                 >
                                                     {r.label.toUpperCase()}
