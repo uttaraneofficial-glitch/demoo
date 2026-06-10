@@ -64,7 +64,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Fix #2: origins come from env, not hardcoded
-        List<String> allowedOrigins = Arrays.asList(allowedOriginsRaw.split(","));
+        List<String> allowedOrigins = new java.util.ArrayList<>(Arrays.asList(allowedOriginsRaw.split(",")));
+        allowedOrigins.add("https://www.startoindia.com");
+        allowedOrigins.add("https://startoindia.com");
+        allowedOrigins.add("https://demoo-production-f047.up.railway.app");
 
         http
             .csrf(csrf -> csrf.disable())
