@@ -14,7 +14,6 @@ const navItems = [
     { icon: BarChart3, label: 'Explore', href: '/explore' },
     { icon: Users, label: 'Network', href: '/network' },
     { icon: MapPin, label: 'Nearby', href: '/nearby' },
-    { icon: Settings, label: 'Profile', href: '/profile' },
 ]
 
 export default function MobileNavigation({ title = "Professional Network" }: { title?: string }) {
@@ -50,7 +49,7 @@ export default function MobileNavigation({ title = "Professional Network" }: { t
                     <button className="p-2 rounded-full hover:bg-surface-2 text-text-primary">
                         <Search className="w-5 h-5" />
                     </button>
-                    <button className="p-2 rounded-full hover:bg-surface-2 text-text-primary relative">
+                    <button onClick={() => router.push('/notifications')} className="p-2 rounded-full hover:bg-surface-2 text-text-primary relative">
                         <Bell className="w-5 h-5" />
                         {((pendingRequests?.length || 0) > 0 || (offers?.length || 0) > 0) && (
                             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full border border-background"></span>

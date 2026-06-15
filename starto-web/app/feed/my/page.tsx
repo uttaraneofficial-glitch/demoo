@@ -57,8 +57,8 @@ export default function MySignals() {
     const categories = ['Talent', 'Founder', 'Mentor', 'Instant Help']
 
     // Backend signals for this user
-    const safeApiSignals = Array.isArray(apiSignals) ? apiSignals : []
-    const safeApiSpaces = Array.isArray(apiSpaces) ? apiSpaces : []
+    const safeApiSignals = Array.isArray(apiSignals) ? apiSignals.filter(s => s.userId === user?.id) : []
+    const safeApiSpaces = Array.isArray(apiSpaces) ? apiSpaces.filter(s => s.creator?.id === user?.id || s.creatorId === user?.id) : []
     
     const backendIds = new Set(safeApiSignals.map(s => s.id))
 

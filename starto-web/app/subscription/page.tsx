@@ -132,7 +132,7 @@ const captainPlans = [
 const allPlans = [...mainPlans, ...captainPlans]
 
 export default function SubscriptionPage() {
-    const { user, updateUser, isAuthenticated } = useAuthStore()
+    const { user, updateUser, isAuthenticated, isInitialized } = useAuthStore()
     const router = useRouter()
     const [confirmPlan, setConfirmPlan] = useState<string | null>(null)
     const [isUpgrading, setIsUpgrading] = useState(false)
@@ -157,7 +157,7 @@ export default function SubscriptionPage() {
     }
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (isInitialized && !isAuthenticated) {
             router.push('/auth')
             return
         }

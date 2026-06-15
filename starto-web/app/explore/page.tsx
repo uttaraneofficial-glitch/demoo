@@ -12,7 +12,7 @@ import CityAutocomplete from '@/components/CityAutocomplete'
 import { useRouter } from 'next/navigation'
 
 export default function StartoAIExplore() {
-    const { user, isAuthenticated } = useAuthStore()
+    const { user, isAuthenticated, isInitialized } = useAuthStore()
     const router = useRouter()
     const [analyzing, setAnalyzing] = useState(false)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
@@ -45,13 +45,13 @@ export default function StartoAIExplore() {
     }
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (isInitialized && !isAuthenticated) {
             router.push('/auth')
-        } else {
+        } else if (isAuthenticated) {
             fetchUsage()
             fetchReports()
         }
-    }, [isAuthenticated, router])
+    }, [isAuthenticated, isInitialized, router])
 
     // Form state
     const [location, setLocation] = useState('')

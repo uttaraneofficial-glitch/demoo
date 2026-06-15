@@ -22,7 +22,6 @@ const navItems = [
     { icon: Users, label: 'My Network', href: '/network' },
     { icon: MapPin, label: 'Nearby', href: '/nearby' },
     { icon: Info, label: 'About Us', href: '/about' },
-    { icon: Settings, label: 'Settings', href: '/profile' },
 ]
 
 export default function Sidebar() {
@@ -73,23 +72,11 @@ export default function Sidebar() {
     // Listen for notification read events to update count
     useEffect(() => {
         const handleRead = () => {
-            if (isAuthenticated && user && isFirebaseReady) {
-                notificationsApi.getAll().then(({ data }) => {
-                    if (data) {
-                        const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-                        const count = data.filter((n: any) => {
-                            const created = new Date(n.createdAt).getTime();
-                            const isRead = n.isRead ?? n.read ?? n.is_read ?? false;
-                            return created >= sevenDaysAgo && !isRead;
-                        }).length;
-                        setUnreadNotifCount(count);
-                    }
-                })
-            }
+            setUnreadNotifCount(0);
         }
         window.addEventListener('notificationsRead', handleRead);
         return () => window.removeEventListener('notificationsRead', handleRead);
-    }, [isAuthenticated, user, isFirebaseReady])
+    }, [])
 
     // Ping backend to check connectivity
     useEffect(() => {
