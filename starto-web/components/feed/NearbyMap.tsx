@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { ApiUser, ApiSignal } from '@/lib/apiClient'
+import { MarkerClusterer } from '@googlemaps/markerclusterer'
 
 interface NearbyMapProps {
     center: { lat: number; lng: number };
@@ -83,6 +84,7 @@ export default function NearbyMap({ center, users, signals, spaces, radius }: Ne
     const mapRef = useRef<HTMLDivElement>(null)
     const [map, setMap] = useState<google.maps.Map | null>(null)
     const markersRef = useRef<google.maps.Marker[]>([])
+    const clustererRef = useRef<MarkerClusterer | null>(null)
 
     // 1. Load Script & Initialize Map
     useEffect(() => {
@@ -124,7 +126,11 @@ export default function NearbyMap({ center, users, signals, spaces, radius }: Ne
         map.panTo(center)
 
         // Clear existing markers
-        markersRef.current.forEach(m => m.setMap(null))
+        if (clustererRef.current) {
+            clustererRef.current.clearMarkers()
+        } else {
+            markersRef.current.forEach(m => m.setMap(null))
+        }
         markersRef.current = []
 
         console.log(`[NearbyMap] Rendering markers: Users=${users?.length}, Signals=${signals?.length}, Spaces=${spaces?.length}`);
@@ -135,7 +141,6 @@ export default function NearbyMap({ center, users, signals, spaces, radius }: Ne
                 if (u.lat && u.lng) {
                     const marker = new google.maps.Marker({
                         position: { lat: Number(u.lat) + getJitter(), lng: Number(u.lng) + getJitter() },
-                        map,
                         title: u.name,
                         label: {
                             text: '👤',
@@ -165,7 +170,6 @@ export default function NearbyMap({ center, users, signals, spaces, radius }: Ne
                 if (s.lat && s.lng) {
                     const marker = new google.maps.Marker({
                         position: { lat: Number(s.lat) + getJitter(), lng: Number(s.lng) + getJitter() },
-                        map,
                         title: s.title,
                         label: {
                             text: '📡',
@@ -195,7 +199,6 @@ export default function NearbyMap({ center, users, signals, spaces, radius }: Ne
                 if (sp.lat && sp.lng) {
                     const marker = new google.maps.Marker({
                         position: { lat: Number(sp.lat) + getJitter(), lng: Number(sp.lng) + getJitter() },
-                        map,
                         title: sp.name,
                         label: {
                             text: '🏢',
@@ -219,21 +222,27 @@ export default function NearbyMap({ center, users, signals, spaces, radius }: Ne
             })
         }
 
-        // Add center marker (Current Search Location)
+        // Add Center marker (Blue)
         const centerMarker = new google.maps.Marker({
             position: center,
-            map,
-            title: 'Your Search Location',
+            title: "Search Center",
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#4169E1',
+                fillOpacity: 1,
                 scale: 10,
-                fillColor: '#4285F4',
-                fillOpacity: 0.5,
                 strokeWeight: 2,
                 strokeColor: '#FFFFFF',
             }
         })
         markersRef.current.push(centerMarker)
+        
+        // Initialize or update MarkerClusterer
+        if (!clustererRef.current) {
+            clustererRef.current = new MarkerClusterer({ map, markers: markersRef.current })
+        } else {
+            clustererRef.current.addMarkers(markersRef.current)
+        }
         
     }, [map, users, signals, spaces, center])
 

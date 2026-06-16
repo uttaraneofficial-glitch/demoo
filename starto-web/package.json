@@ -8,6 +8,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@googlemaps/markerclusterer": "^2.6.2",
         "@tanstack/react-query": "^5.90.21",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",

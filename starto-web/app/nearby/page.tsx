@@ -31,6 +31,11 @@ export default function NearbyEcosystem() {
     const [radius, setRadius] = useState(25)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
+    // Pagination states for list view
+    const [visibleUsers, setVisibleUsers] = useState(3)
+    const [visibleSignals, setVisibleSignals] = useState(3)
+    const [visibleSpaces, setVisibleSpaces] = useState(3)
+
     const roles = [
         { id: '', label: 'All Roles' },
         { id: 'founder', label: 'Founders' },
@@ -44,6 +49,11 @@ export default function NearbyEcosystem() {
         setNearbyUsers([]) // Clear current lists
         setNearbySignals([])
         setNearbySpaces([])
+        
+        // Reset visible counts
+        setVisibleUsers(3)
+        setVisibleSignals(3)
+        setVisibleSpaces(3)
         
         if (!searchLat || !searchLng) {
             setLoading(false)
@@ -234,10 +244,20 @@ export default function NearbyEcosystem() {
                                                     <h3 className="font-display text-xl">Nodes ({nearbyUsers.length})</h3>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                    {nearbyUsers.map(u => (
+                                                    {nearbyUsers.slice(0, visibleUsers).map(u => (
                                                         <UserCard key={u.id} u={u} />
                                                     ))}
                                                 </div>
+                                                {nearbyUsers.length > visibleUsers && (
+                                                    <div className="mt-6 flex justify-center">
+                                                        <button 
+                                                            onClick={() => setVisibleUsers(prev => prev + 6)}
+                                                            className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-text-primary transition-colors py-2 px-6 rounded-full border border-primary/20 hover:border-border hover:bg-surface-2"
+                                                        >
+                                                            View More Nodes ({nearbyUsers.length - visibleUsers} left)
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
 
@@ -251,10 +271,20 @@ export default function NearbyEcosystem() {
                                                     <h3 className="font-display text-xl">Active Signals ({nearbySignals.length})</h3>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                    {nearbySignals.map(s => (
+                                                    {nearbySignals.slice(0, visibleSignals).map(s => (
                                                         <SignalMiniCard key={s.id} s={s} />
                                                     ))}
                                                 </div>
+                                                {nearbySignals.length > visibleSignals && (
+                                                    <div className="mt-6 flex justify-center">
+                                                        <button 
+                                                            onClick={() => setVisibleSignals(prev => prev + 6)}
+                                                            className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-text-primary transition-colors py-2 px-6 rounded-full border border-primary/20 hover:border-border hover:bg-surface-2"
+                                                        >
+                                                            View More Signals ({nearbySignals.length - visibleSignals} left)
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                         
@@ -268,10 +298,20 @@ export default function NearbyEcosystem() {
                                                     <h3 className="font-display text-xl">Collab Spaces ({nearbySpaces.length})</h3>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                    {nearbySpaces.map(sp => (
+                                                    {nearbySpaces.slice(0, visibleSpaces).map(sp => (
                                                         <SpaceCard key={sp.id} sp={sp} />
                                                     ))}
                                                 </div>
+                                                {nearbySpaces.length > visibleSpaces && (
+                                                    <div className="mt-6 flex justify-center">
+                                                        <button 
+                                                            onClick={() => setVisibleSpaces(prev => prev + 6)}
+                                                            className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-text-primary transition-colors py-2 px-6 rounded-full border border-primary/20 hover:border-border hover:bg-surface-2"
+                                                        >
+                                                            View More Spaces ({nearbySpaces.length - visibleSpaces} left)
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
 
