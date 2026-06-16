@@ -264,6 +264,7 @@ opacity: 0; transition: opacity var(--transition);
 .feature-card:hover { background: var(--bg3); }
 .feature-card:hover::before { opacity: 1; }
 .feature-card.wide { grid-column: span 2; }
+.feature-wide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
 .feature-icon {
 width: 52px; height: 52px;
 background: var(--surface2);
@@ -741,6 +742,7 @@ white-space: nowrap;
 @media (max-width: 1024px) {
 .feature-grid { grid-template-columns: 1fr; }
 .feature-card.wide { grid-column: span 1; }
+.feature-wide-grid { grid-template-columns: 1fr; gap: 30px; }
 .steps-grid { grid-template-columns: repeat(2, 1fr); }
 .platform-inner { grid-template-columns: 1fr; gap: 48px; }
 .platform-inner.reverse { direction: ltr; }
