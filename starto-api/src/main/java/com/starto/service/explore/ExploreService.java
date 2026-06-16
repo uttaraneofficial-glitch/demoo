@@ -70,18 +70,23 @@ public class ExploreService {
 
             ExploreResponse response = parse(aiResponse, aiResponse);
             
-            // FETCH REAL COMPETITORS FROM GOOGLE MAPS
-            try {
-                List<ExploreResponse.Competitor> realCompetitors = locationService.getCompetitors(request.getIndustry(), request.getLocation());
-                if (realCompetitors != null && !realCompetitors.isEmpty()) {
-                    response.setCompetitors(realCompetitors);
-                    System.out.println("INJECTED " + realCompetitors.size() + " REAL COMPETITORS FROM GOOGLE MAPS");
-                } else {
-                    System.out.println("GOOGLE MAPS RETURNED 0 COMPETITORS. USING AI PREDICTED FALLBACK.");
-                    // response.setCompetitors(new java.util.ArrayList<>()); // REMOVED to keep AI competitors
+            // FETCH REAL COMPETITORS FROM GOOGLE MAPS IF VALID
+            if (response.getMarketDemand() != null && response.getMarketDemand().getScore() > 0) {
+                try {
+                    List<ExploreResponse.Competitor> realCompetitors = locationService.getCompetitors(request.getIndustry(), request.getLocation());
+                    if (realCompetitors != null && !realCompetitors.isEmpty()) {
+                        response.setCompetitors(realCompetitors);
+                        System.out.println("INJECTED " + realCompetitors.size() + " REAL COMPETITORS FROM GOOGLE MAPS");
+                    } else {
+                        System.out.println("GOOGLE MAPS RETURNED 0 COMPETITORS. USING AI PREDICTED FALLBACK.");
+                        // response.setCompetitors(new java.util.ArrayList<>()); // REMOVED to keep AI competitors
+                    }
+                } catch (Exception e) {
+                    log.warn("Failed to inject real competitors", e);
                 }
-            } catch (Exception e) {
-                log.warn("Failed to inject real competitors", e);
+            } else {
+                System.out.println("AI REFUSED ANALYSIS (ILLEGAL/UNETHICAL). SKIPPING GOOGLE MAPS COMPETITORS.");
+                response.setCompetitors(new java.util.ArrayList<>());
             }
 
             // SAVE TO DB
