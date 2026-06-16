@@ -5,7 +5,7 @@ import MobileBottomNav from '@/components/feed/MobileBottomNav'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { MapPin, Search, BarChart4, TrendingUp, AlertTriangle, Briefcase, FileText, CheckCircle2, Crown, Sparkles } from 'lucide-react'
+import { MapPin, Search, BarChart4, TrendingUp, AlertTriangle, Briefcase, FileText, CheckCircle2, Crown, Sparkles, Landmark } from 'lucide-react'
 import { exploreApi, ApiExploreResponse } from '@/lib/apiClient'
 import { useAuthStore } from '@/store/useAuthStore'
 import CityAutocomplete from '@/components/CityAutocomplete'
@@ -448,6 +448,54 @@ export default function StartoAIExplore() {
                                         </tbody>
                                     </table>
                                 </div>
+
+                                {results?.governmentSchemes && results.governmentSchemes.length > 0 && (
+                                    <div className="bg-surface border border-border p-8 rounded-2xl">
+                                        <h3 className="text-2xl font-display mb-8 flex items-center gap-3">
+                                            <Landmark className="w-6 h-6" /> Government Schemes & Subsidies
+                                        </h3>
+                                        <div className="space-y-4">
+                                            {results.governmentSchemes.map((scheme, idx) => (
+                                                <div key={idx} className="p-6 border border-border rounded-xl group hover:border-primary/50 transition-all bg-surface-2/50 relative overflow-hidden">
+                                                    <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-10 transition-opacity">
+                                                        <Landmark className="w-16 h-16 text-primary" />
+                                                    </div>
+                                                    <div className="relative z-10">
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <h4 className="text-lg font-bold text-primary">{scheme.name}</h4>
+                                                        </div>
+                                                        <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4 pb-4 border-b border-border/50">
+                                                            By: {scheme.body}
+                                                        </p>
+                                                        <div className="space-y-3">
+                                                            <div>
+                                                                <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Benefits</span>
+                                                                <p className="text-sm text-text-primary leading-relaxed">{scheme.benefits}</p>
+                                                            </div>
+                                                            <div>
+                                                                <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Eligibility</span>
+                                                                <p className="text-sm text-text-primary leading-relaxed">{scheme.eligibility}</p>
+                                                            </div>
+                                                        </div>
+                                                        {scheme.applyUrl && scheme.applyUrl.toLowerCase() !== 'n/a' && scheme.applyUrl.toLowerCase() !== 'unknown' && scheme.applyUrl !== '' && (
+                                                            <div className="mt-6 pt-4 border-t border-border/50 flex justify-end">
+                                                                <a 
+                                                                    href={scheme.applyUrl.startsWith('http') ? scheme.applyUrl : `https://${scheme.applyUrl}`} 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-xs font-bold uppercase tracking-widest text-primary hover:text-text-primary flex items-center gap-2 transition-colors"
+                                                                >
+                                                                    Official Portal →
+                                                                </a>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
                             </motion.section>
 
                             <aside className="space-y-6 report-sidebar">

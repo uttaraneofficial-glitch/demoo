@@ -217,6 +217,13 @@ export interface ApiExploreResponse {
         description: string;
         threatLevel: string;
     }[];
+    governmentSchemes?: {
+        name: string;
+        body: string;
+        benefits: string;
+        eligibility: string;
+        applyUrl: string;
+    }[];
     risks: {
         title: string;
         description: string;
