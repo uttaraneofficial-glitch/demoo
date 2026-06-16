@@ -127,6 +127,7 @@ public class ExploreService {
                 "Target customer: " + req.getTargetCustomer() + ". " +
                 "Location context: " + locationData + ".\n\n" +
                 "CRITICAL INSTRUCTIONS: Your insights MUST be senior-level, extremely valuable, and highly strategic. Write in a highly professional, authoritative, and analytical tone. Do NOT use emojis. Avoid generic advice; provide highly specific, actionable, and data-driven insights. Structure your language as if you are presenting to a board of directors or institutional investors.\n\n" +
+                "SAFETY & LEGALITY GUARDRAIL (CRITICAL): If the requested industry or business (e.g., weed plantation, illegal drugs, prostitution, weapons, or any illegal/unethical activity) is illegal in the specified location or generally unethical, you MUST refuse to generate a positive report. Instead, set 'marketDemand.score' to 0, write a 'marketSummary' clearly stating 'WARNING: This business activity is illegal or violates safety/ethical guidelines in this region and cannot be analyzed.', and populate 'risks' with a HIGH severity risk detailing the legal consequences. Do NOT provide any growth indicators, competitors, or action plans for illegal businesses.\n\n" +
                 "IMPORTANT: Provide REAL and VALID government schemes, subsidies, or policies available for this specific industry and location. Do not hallucinate.\n\n" +
                 "Return ONLY a valid JSON object with EXACTLY the following structure (do not add any comments or markdown):\n" +
                 "{\n" +
