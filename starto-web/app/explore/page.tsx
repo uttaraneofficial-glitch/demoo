@@ -497,7 +497,7 @@ export default function StartoAIExplore() {
                                     ) : (
                                         <div className="text-center py-8 px-4 border border-border border-dashed rounded-xl bg-surface-2/30">
                                             <p className="text-sm text-text-muted italic mb-2">No verified government schemes or subsidies could be confidently matched.</p>
-                                            <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold">Starto AI prioritizes accuracy over assumptions.</p>
+                                            <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold">Real Market Intelligence. No Assumptions. No Hallucinations. Only Verified Data.</p>
                                         </div>
                                     )}
                                 </div>
