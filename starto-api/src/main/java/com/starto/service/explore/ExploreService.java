@@ -134,10 +134,11 @@ public class ExploreService {
                 "CRITICAL INSTRUCTIONS: Your insights MUST be senior-level, extremely valuable, and highly strategic. Write in a highly professional, authoritative, and analytical tone. Do NOT use emojis. Avoid generic advice; provide highly specific, actionable, and data-driven insights. Structure your language as if you are presenting to a board of directors or institutional investors.\n\n" +
                 "SAFETY & LEGALITY GUARDRAIL (CRITICAL): If the requested industry or business (e.g., weed plantation, illegal drugs, prostitution, weapons, or any illegal/unethical activity) is illegal in the specified location or generally unethical, you MUST refuse to generate a positive report. Instead, set 'marketDemand.score' to 0, write a 'marketSummary' clearly stating 'WARNING: This business activity is illegal or violates safety/ethical guidelines in this region and cannot be analyzed.', and populate 'risks' with a HIGH severity risk detailing the legal consequences. Do NOT provide any growth indicators, competitors, or action plans for illegal businesses.\n\n" +
                 "IMPORTANT: Provide REAL and VALID government schemes, subsidies, or policies available for this specific industry and location. Do not hallucinate.\n\n" +
+                "CRITICAL METRIC INSTRUCTION: The 'score' under 'marketDemand' MUST be a highly accurate integer from 1 to 10. You MUST intelligently calculate this based on REAL market intelligence, verified demand, competition density, and macroeconomic factors. Do NOT hallucinate. Do NOT hardcode a default value. Provide a realistic rating.\n\n" +
                 "Return ONLY a valid JSON object with EXACTLY the following structure (do not add any comments or markdown):\n" +
                 "{\n" +
                 "  \"marketDemand\": {\n" +
-                "    \"score\": 8,\n" +
+                "    \"score\": 5,\n" +
                 "    \"marketSummary\": \"Write a deeply analytical, 3-paragraph strategic executive summary. Detail the macroeconomic opportunity, immediate localized threats, and the sustainable competitive advantage required. Use sophisticated, precise business terminology.\",\n" +
                 "    \"drivers\": [\"driver1\", \"driver2\"],\n" +
                 "    \"sources\": [\"source1\", \"source2\"]\n" +
