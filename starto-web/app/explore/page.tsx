@@ -449,11 +449,12 @@ export default function StartoAIExplore() {
                                     </table>
                                 </div>
 
-                                {results?.governmentSchemes && results.governmentSchemes.length > 0 && (
-                                    <div className="bg-surface border border-border p-8 rounded-2xl">
-                                        <h3 className="text-2xl font-display mb-8 flex items-center gap-3">
-                                            <Landmark className="w-6 h-6" /> Government Schemes & Subsidies
-                                        </h3>
+                                <div className="bg-surface border border-border p-8 rounded-2xl">
+                                    <h3 className="text-2xl font-display mb-8 flex items-center gap-3">
+                                        <Landmark className="w-6 h-6" /> Government Schemes & Subsidies
+                                    </h3>
+                                    
+                                    {results?.governmentSchemes && results.governmentSchemes.length > 0 ? (
                                         <div className="space-y-4">
                                             {results.governmentSchemes.map((scheme, idx) => (
                                                 <div key={idx} className="p-6 border border-border rounded-xl group hover:border-primary/50 transition-all bg-surface-2/50 relative overflow-hidden">
@@ -493,8 +494,13 @@ export default function StartoAIExplore() {
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
-                                )}
+                                    ) : (
+                                        <div className="text-center py-8 px-4 border border-border border-dashed rounded-xl bg-surface-2/30">
+                                            <p className="text-sm text-text-muted italic mb-2">No verified government schemes or subsidies could be confidently matched.</p>
+                                            <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold">Starto AI prioritizes accuracy over assumptions.</p>
+                                        </div>
+                                    )}
+                                </div>
 
                             </motion.section>
 
