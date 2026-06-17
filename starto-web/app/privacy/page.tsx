@@ -65,97 +65,79 @@ export default function PrivacyPage() {
 
                 <div className="terms-content" style={{ color: 'var(--text-muted)', lineHeight: '1.8', fontSize: '16px' }}>
                     <p style={{ marginBottom: '32px', fontSize: '18px', color: 'var(--text)' }}>
-                        At Starto, we respect your privacy and are committed to protecting your data.
+                        At Starto, we prioritize the privacy and security of our ecosystem. This policy outlines how we handle your data in compliance with the Digital Personal Data Protection (DPDP) Act, 2023 of India, and other applicable global standards.
                     </p>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
                             1. Information We Collect
                         </h2>
-                        <p style={{ marginBottom: '16px' }}>
-                            We may collect:
-                        </p>
                         <ul style={{ paddingLeft: '20px', listStyleType: 'disc' }}>
-                            <li style={{ marginBottom: '8px' }}>Name and email</li>
-                            <li style={{ marginBottom: '8px' }}>Startup Ideas and inputs</li>
-                            <li>Usage data (analytics)</li>
+                            <li style={{ marginBottom: '8px' }}><strong>Personal Information:</strong> Name, email address, profile picture, and professional background.</li>
+                            <li style={{ marginBottom: '8px' }}><strong>Location Data:</strong> When you use our "Nearby Map" feature, we collect precise geographical coordinates (latitude/longitude) to connect you with local opportunities.</li>
+                            <li style={{ marginBottom: '8px' }}><strong>User-Generated Content:</strong> Startup ideas, industry inputs, budget parameters, signals, comments, and direct messages.</li>
+                            <li><strong>Financial Information:</strong> We use third-party payment gateways (like Razorpay) for subscriptions. We do not store raw credit card or banking details on our servers.</li>
                         </ul>
                     </section>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            2. How We Use Data
+                            2. AI Data Processing & Third-Party LLMs
                         </h2>
                         <p style={{ marginBottom: '16px' }}>
-                            We use your data to:
+                            Starto utilizes advanced Artificial Intelligence to generate Market Reports and Action Plans. By utilizing these features:
                         </p>
                         <ul style={{ paddingLeft: '20px', listStyleType: 'disc' }}>
-                            <li style={{ marginBottom: '8px' }}>Provide AI analysis</li>
-                            <li style={{ marginBottom: '8px' }}>Improve platform performance</li>
-                            <li>Personalize recommendations</li>
+                            <li style={{ marginBottom: '8px' }}>Your specific queries (industry, budget, location) are processed by third-party Large Language Models (LLMs).</li>
+                            <li style={{ marginBottom: '8px' }}>We do <strong>not</strong> use your Personally Identifiable Information (PII) to train external third-party AI models.</li>
+                            <li>However, do not submit highly sensitive, non-patented trade secrets into the general AI analysis prompt.</li>
                         </ul>
                     </section>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            3. Data Protection
+                            3. Data Retention and Deletion
                         </h2>
                         <p>
-                            We implement security measures to protect your data. However, no system is 100% secure.
+                            We retain your personal data only for as long as your account is active or as needed to provide you services. If you choose to delete your account, your profile and associated data will be removed from active databases within 30 days. Residual copies may remain in secure, encrypted backups for up to 90 days for legal and compliance auditing purposes.
                         </p>
                     </section>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            4. Data Sharing
+                            4. Data Sharing & Third Parties
                         </h2>
                         <p style={{ marginBottom: '16px' }}>
-                            We do NOT sell your data. We may share data with:
+                            We <strong>never</strong> sell your personal data to data brokers. We only share information with:
                         </p>
                         <ul style={{ paddingLeft: '20px', listStyleType: 'disc' }}>
-                            <li style={{ marginBottom: '8px' }}>Trusted service providers (hosting, analytics)</li>
-                            <li>Legal authorities if required</li>
+                            <li style={{ marginBottom: '8px' }}><strong>Service Providers:</strong> Cloud hosting, AI processing partners, and payment gateways strictly bound by confidentiality agreements.</li>
+                            <li style={{ marginBottom: '8px' }}><strong>Other Users:</strong> Information you voluntarily make public on your profile or the "Nearby Map."</li>
+                            <li><strong>Legal Authorities:</strong> When required by a valid legal subpoena, court order, or to prevent imminent physical harm.</li>
                         </ul>
                     </section>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            5. Cookies
-                        </h2>
-                        <p>
-                            We may use cookies to enhance user experience and track usage.
-                        </p>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            6. User Rights
+                            5. Your Rights (Under DPDP Act, 2023)
                         </h2>
                         <p style={{ marginBottom: '16px' }}>
-                            You can:
+                            As an Indian user, you have the right to:
                         </p>
                         <ul style={{ paddingLeft: '20px', listStyleType: 'disc' }}>
-                            <li style={{ marginBottom: '8px' }}>Request data deletion</li>
-                            <li style={{ marginBottom: '8px' }}>Update your information</li>
-                            <li>Opt-out of communications</li>
+                            <li style={{ marginBottom: '8px' }}>Request access to your personal data.</li>
+                            <li style={{ marginBottom: '8px' }}>Request correction or erasure of your personal data.</li>
+                            <li style={{ marginBottom: '8px' }}>Nominate an individual to exercise these rights in the event of your death or incapacity.</li>
+                            <li>Withdraw consent at any time (though this may affect your ability to use the platform).</li>
                         </ul>
                     </section>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            7. Changes to Policy
+                            6. Contact & Grievance Officer
                         </h2>
                         <p>
-                            We may update this policy periodically.
-                        </p>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            8. Contact
-                        </h2>
-                        <p>
-                            For privacy concerns, contact: <a href="mailto:startoindiaofficial@gmail.com" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>startoindiaofficial@gmail.com</a>
+                            To exercise your privacy rights or file a grievance regarding data usage, please contact our Data Protection Officer at: <a href="mailto:startoindiaofficial@gmail.com" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>startoindiaofficial@gmail.com</a>. We aim to respond to all legitimate requests within 30 days.
                         </p>
                     </section>
                 </div>

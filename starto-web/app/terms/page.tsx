@@ -65,115 +65,87 @@ export default function TermsPage() {
 
                 <div className="terms-content" style={{ color: 'var(--text-muted)', lineHeight: '1.8', fontSize: '16px' }}>
                     <p style={{ marginBottom: '32px', fontSize: '18px', color: 'var(--text)' }}>
-                        Welcome to Starto. By accessing or using our platform, you agree to the following terms.
+                        Welcome to Starto. By accessing or using our platform, you agree to be bound by these Terms of Service. Please read them carefully.
                     </p>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            1. Use of Service
+                            1. Platform Usage & Restrictions
                         </h2>
                         <p style={{ marginBottom: '16px' }}>
-                            Starto provides an AI-powered platform to analyze startup ideas, assess market demand, and connect users with relevant resources such as freelancers, investors, and service providers.
-                        </p>
-                        <p>
-                            You agree to use the platform only for lawful purposes and not to misuse, exploit, or reverse engineer the system.
-                        </p>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            2. User Accounts
-                        </h2>
-                        <ul style={{ paddingLeft: '20px', listStyleType: 'disc' }}>
-                            <li style={{ marginBottom: '12px' }}>You are responsible for maintaining the confidentiality of your account.</li>
-                            <li style={{ marginBottom: '12px' }}>You agree to provide accurate and complete information.</li>
-                            <li>Starto reserves the right to suspend accounts involved in misuse.</li>
-                        </ul>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            3. Intellectual Property
-                        </h2>
-                        <p style={{ marginBottom: '16px' }}>
-                            All content, algorithms, UI/UX, and platform features are the intellectual property of Starto.
-                        </p>
-                        <p>
-                            You may not copy, reproduce, or distribute any part of the platform without permission.
-                        </p>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            4. AI-Generated Insights Disclaimer
-                        </h2>
-                        <p style={{ marginBottom: '16px' }}>
-                            Starto uses AI to generate insights. These are:
-                        </p>
-                        <ul style={{ paddingLeft: '20px', listStyleType: 'disc', marginBottom: '16px' }}>
-                            <li style={{ marginBottom: '8px' }}>Informational only</li>
-                            <li style={{ marginBottom: '8px' }}>Not guaranteed to be accurate</li>
-                            <li>Not financial or legal advice</li>
-                        </ul>
-                        <p>
-                            Users should make independent decisions before acting on insights.
-                        </p>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            5. Limitation of Liability
-                        </h2>
-                        <p style={{ marginBottom: '16px' }}>
-                            Starto is not liable for:
-                        </p>
-                        <ul style={{ paddingLeft: '20px', listStyleType: 'disc', marginBottom: '16px' }}>
-                            <li style={{ marginBottom: '8px' }}>Business losses</li>
-                            <li style={{ marginBottom: '8px' }}>Investment decisions</li>
-                            <li>Data inaccuracies</li>
-                        </ul>
-                        <p>
-                            Use the platform at your own risk.
-                        </p>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            6. Third-Party Services
-                        </h2>
-                        <p>
-                            We may connect you with freelancers, investors, or third-party services. We are not responsible for their actions or outcomes.
-                        </p>
-                    </section>
-
-                    <section style={{ marginBottom: '48px' }}>
-                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            7. Termination
-                        </h2>
-                        <p style={{ marginBottom: '16px' }}>
-                            We reserve the right to terminate access if:
+                            Starto provides an AI-powered ecosystem for entrepreneurs. You agree to use the platform only for lawful purposes. You strictly agree <strong>NOT</strong> to:
                         </p>
                         <ul style={{ paddingLeft: '20px', listStyleType: 'disc' }}>
-                            <li style={{ marginBottom: '8px' }}>Terms are violated</li>
-                            <li>Platform misuse is detected</li>
+                            <li style={{ marginBottom: '8px' }}>Web scrape, data mine, or use automated bots to extract AI reports or user data.</li>
+                            <li style={{ marginBottom: '8px' }}>Post illegal content, including but not limited to the promotion of illegal drugs, weapons, or unregulated services.</li>
+                            <li>Reverse engineer our proprietary AI algorithms or matching systems.</li>
                         </ul>
+                        <p style={{ marginTop: '16px' }}>Violation of these rules will result in an immediate, permanent ban without notice.</p>
                     </section>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            8. Changes to Terms
+                            2. AI-Generated Insights Disclaimer
                         </h2>
+                        <p style={{ marginBottom: '16px' }}>
+                            Starto uses Artificial Intelligence to generate Market Demand scores, Risk Analyses, and Execution Plans. These reports are for <strong>informational purposes only</strong>.
+                        </p>
+                        <ul style={{ paddingLeft: '20px', listStyleType: 'disc', marginBottom: '16px' }}>
+                            <li style={{ marginBottom: '8px' }}>They do <strong>not</strong> constitute financial, legal, or professional investment advice.</li>
+                            <li>Starto does not guarantee the absolute accuracy or future real-world performance of any AI-generated prediction.</li>
+                        </ul>
                         <p>
-                            We may update these terms at any time. Continued use means acceptance of updated terms.
+                            Users must conduct their own independent due diligence before making financial or business decisions based on Starto AI reports.
                         </p>
                     </section>
 
                     <section style={{ marginBottom: '48px' }}>
                         <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                            9. Contact
+                            3. User-Generated Content (UGC)
+                        </h2>
+                        <p style={{ marginBottom: '16px' }}>
+                            By posting "Signals", comments, or profile updates, you grant Starto a non-exclusive, royalty-free, worldwide license to display, distribute, and reproduce your content across the platform. You are solely responsible for the content you post and must ensure you have the rights to share it.
+                        </p>
+                    </section>
+
+                    <section style={{ marginBottom: '48px' }}>
+                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                            4. Subscriptions, Billing, and Refunds
+                        </h2>
+                        <ul style={{ paddingLeft: '20px', listStyleType: 'disc', marginBottom: '16px' }}>
+                            <li style={{ marginBottom: '8px' }}><strong>Billing:</strong> Premium subscriptions (Explorer, Sprint, Pro) are billed in advance on a recurring basis as selected.</li>
+                            <li style={{ marginBottom: '8px' }}><strong>Auto-Renewal:</strong> Subscriptions auto-renew unless cancelled at least 24 hours before the billing cycle ends.</li>
+                            <li><strong>Refunds:</strong> Due to the immediate cost of AI generation, all purchases are <strong>strictly non-refundable</strong> unless required by law.</li>
+                        </ul>
+                    </section>
+
+                    <section style={{ marginBottom: '48px' }}>
+                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                            5. Indemnification & Limitation of Liability
+                        </h2>
+                        <p style={{ marginBottom: '16px' }}>
+                            You agree to indemnify and hold harmless Starto, its directors, and employees from any claims, damages, or legal costs arising from your use of the platform, your violation of these Terms, or your infringement of any third-party rights.
+                        </p>
+                        <p>
+                            To the maximum extent permitted by law, Starto shall not be liable for any indirect, incidental, or consequential damages (including lost profits or business failure) resulting from your use of our AI reports, matching tools, or third-party connections.
+                        </p>
+                    </section>
+
+                    <section style={{ marginBottom: '48px' }}>
+                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                            6. Governing Law & Dispute Resolution
                         </h2>
                         <p>
-                            For any queries, contact us at: <a href="mailto:startoindiaofficial@gmail.com" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>startoindiaofficial@gmail.com</a>
+                            These terms shall be governed by and construed in accordance with the laws of India. Any disputes arising out of or related to these terms or the Starto platform shall be subject to the exclusive jurisdiction of the competent courts located in Bengaluru, Karnataka, India.
+                        </p>
+                    </section>
+
+                    <section style={{ marginBottom: '48px' }}>
+                        <h2 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)', fontSize: '24px', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                            7. Contact Us
+                        </h2>
+                        <p>
+                            For legal inquiries regarding these Terms, please contact us at: <a href="mailto:startoindiaofficial@gmail.com" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>startoindiaofficial@gmail.com</a>
                         </p>
                     </section>
                 </div>
