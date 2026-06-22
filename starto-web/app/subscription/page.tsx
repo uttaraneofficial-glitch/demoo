@@ -157,7 +157,9 @@ export default function SubscriptionPage() {
     }
 
     useEffect(() => {
-        if (isInitialized && !isAuthenticated) {
+        if (!isInitialized) return;
+
+        if (!isAuthenticated) {
             router.push('/auth')
             return
         }
@@ -172,7 +174,7 @@ export default function SubscriptionPage() {
             }
         }
         loadData();
-    }, [isAuthenticated, router, updateUser])
+    }, [isInitialized, isAuthenticated, router, updateUser])
 
     // Merge backend prices into local plan objects
     const mergedMainPlans = mainPlans.map(lp => {
