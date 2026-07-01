@@ -30,6 +30,7 @@ export default function NearbyEcosystem() {
     const [searchRole, setSearchRole] = useState('')
     const [radius, setRadius] = useState(25)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+    const [initialLoad, setInitialLoad] = useState(true)
 
     // Pagination states for list view
     const [visibleUsers, setVisibleUsers] = useState(3)
@@ -88,18 +89,19 @@ export default function NearbyEcosystem() {
 
     // Initial load from user profile - Forcefully ignore 'mailapurrr'
     useEffect(() => {
-        if (user && !searchLat) {
+        if (user && initialLoad) {
+            setInitialLoad(false);
             const city = user.city || '';
             if (city.toLowerCase().includes('mailapurrr')) {
                 setSearchCity('');
                 setLoading(false); // Stop the spinner
-            } else {
+            } else if (user.lat && user.lng) {
                 setSearchCity(city);
                 setSearchLat(user.lat);
                 setSearchLng(user.lng);
             }
         }
-    }, [user, searchLat])
+    }, [user, initialLoad])
 
     useEffect(() => {
         if (searchLat && searchLng) {
