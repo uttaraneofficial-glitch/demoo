@@ -18,7 +18,8 @@ import {
     AlertCircle,
     UserCircle,
     Calendar,
-    Briefcase
+    Briefcase,
+    MapPin
 } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -218,6 +219,10 @@ export default function AdminDashboard() {
                                                         <div className="flex items-center gap-2 text-xs text-text-secondary">
                                                             <Phone className="w-3 h-3 opacity-50" />
                                                             {u.phone || 'No phone'}
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-xs text-text-secondary">
+                                                            <MapPin className="w-3 h-3 opacity-50" />
+                                                            {u.city ? `${u.city}${u.state ? `, ${u.state}` : ''}` : 'Location unknown'}
                                                         </div>
                                                     </div>
                                                 </td>
