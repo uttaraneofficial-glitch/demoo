@@ -7,6 +7,49 @@ interface LinkPreviewProps {
     url: string
 }
 
+function generateSyntheticProfilePreview(url: string) {
+    let publisher = 'Link';
+    let username = '';
+    let logoUrl = '';
+
+    if (url.includes('linkedin.com/in/')) {
+        publisher = 'LinkedIn';
+        username = url.split('linkedin.com/in/')[1]?.split('/')[0]?.split('?')[0];
+        logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png';
+    } else if (url.includes('instagram.com/')) {
+        // Only if it's a profile, not a post/reel
+        if (!url.includes('/p/') && !url.includes('/reel/')) {
+            publisher = 'Instagram';
+            username = url.split('instagram.com/')[1]?.split('/')[0]?.split('?')[0];
+            logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg';
+        }
+    } else if (url.includes('twitter.com/') || url.includes('x.com/')) {
+        if (!url.includes('/status/')) {
+            publisher = 'X';
+            const splitStr = url.includes('x.com/') ? 'x.com/' : 'twitter.com/';
+            username = url.split(splitStr)[1]?.split('/')[0]?.split('?')[0];
+            logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg';
+        }
+    } else if (url.includes('youtube.com/c/') || url.includes('youtube.com/channel/') || url.includes('youtube.com/@')) {
+        publisher = 'YouTube';
+        username = url.includes('@') ? url.split('@')[1]?.split('/')[0]?.split('?')[0] : 'Channel';
+        logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg';
+    }
+
+    if (username) {
+        // Format username (remove dashes if any, capitalize)
+        const formattedName = username.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+        return {
+            title: `${formattedName} on ${publisher}`,
+            description: `View ${formattedName}'s professional profile, activity, and connections on ${publisher}.`,
+            publisher,
+            logo: { url: logoUrl },
+            image: null // Force compact mode
+        };
+    }
+    return null;
+}
+
 export default function LinkPreview({ url }: LinkPreviewProps) {
     const [preview, setPreview] = useState<any>(null)
     const [loading, setLoading] = useState(true)
@@ -18,11 +61,20 @@ export default function LinkPreview({ url }: LinkPreviewProps) {
             try {
                 const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
                 const json = await res.json();
-                if (json.status === 'success' && json.data) {
+                
+                const isAuthWall = json.data?.title?.toLowerCase().includes('sign up | linkedin') || json.data?.title?.toLowerCase().includes('sign in') || json.data?.title?.toLowerCase().includes('login');
+                
+                if (json.status === 'success' && json.data && !isAuthWall) {
                     setPreview(json.data);
+                } else {
+                    const synthetic = generateSyntheticProfilePreview(url);
+                    if (synthetic) setPreview(synthetic);
+                    else if (json.data) setPreview(json.data); // Fallback to auth wall if not a recognized profile
                 }
             } catch (error) {
                 console.error("Failed to fetch link preview", error);
+                const synthetic = generateSyntheticProfilePreview(url);
+                if (synthetic) setPreview(synthetic);
             } finally {
                 setLoading(false);
             }
