@@ -49,6 +49,58 @@ function formatUsername(username: string): string {
     return username ? `@${username}` : '@'
 }
 
+const renderMedia = (url: string) => {
+    if (!url) return null;
+    
+    // 1. YouTube Shorts
+    if (url.includes('youtube.com/shorts/')) {
+        const embedUrl = url.replace('youtube.com/shorts/', 'youtube.com/embed/').split('?')[0];
+        return <iframe src={embedUrl} className="w-full aspect-[9/16] max-h-[500px] mx-auto border-0 bg-black" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
+    }
+
+    // 2. YouTube Standard
+    if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
+        const embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/').split('&')[0];
+        return <iframe src={embedUrl} className="w-full aspect-video border-0 bg-black" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
+    }
+
+    // 3. Instagram
+    if (url.includes('instagram.com/p/') || url.includes('instagram.com/reel/')) {
+        const cleanUrl = url.split('?')[0].replace(/\/$/, '');
+        return <iframe src={`${cleanUrl}/embed`} className="w-full aspect-square max-h-[600px] border-0 bg-white" allowFullScreen />;
+    }
+
+    // 4. X / Twitter
+    if (url.includes('twitter.com/') || url.includes('x.com/')) {
+        const tweetId = url.split('/status/')[1]?.split('?')[0];
+        if (tweetId) {
+            return <iframe src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetId}`} className="w-full h-[400px] border-0 bg-transparent" allowFullScreen />;
+        }
+    }
+
+    // 5. LinkedIn
+    if (url.includes('linkedin.com/posts/')) {
+        const match = url.match(/activity-([0-9]+)/) || url.match(/ugcPost-([0-9]+)/);
+        if (match && match[1]) {
+            const urn = url.includes('ugcPost') ? `urn:li:ugcPost:${match[1]}` : `urn:li:activity:${match[1]}`;
+            return <iframe src={`https://www.linkedin.com/embed/feed/update/${urn}`} className="w-full h-[500px] border-0 bg-white" allowFullScreen title="Embedded post" />;
+        }
+    }
+
+    // 6. Direct Images
+    if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || url.includes('imgur.com')) {
+        const imgSrc = (url.includes('imgur.com') && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) ? `${url}.png` : url;
+        return <img src={imgSrc} alt="Attached Media" className="w-full h-auto object-cover max-h-[600px]" loading="lazy" />;
+    }
+
+    // 7. Generic Fallback
+    return (
+        <a href={url} target="_blank" rel="noopener noreferrer" className="block p-4 bg-surface-2 hover:bg-primary/5 transition-colors text-primary text-sm font-medium flex items-center justify-center gap-2">
+            <ExternalLink className="w-4 h-4" /> View Attached Media
+        </a>
+    );
+}
+
 interface SignalCardProps {
     id: string
     type?: string // SIGNAL or SPACE
@@ -318,21 +370,8 @@ export default function SignalCard({
             </Link>
 
             {mediaUrl && (
-                <div className="mb-4 rounded-lg overflow-hidden border border-border bg-surface-2 relative">
-                    {mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be') ? (
-                        <iframe 
-                            src={mediaUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/').split('&')[0]} 
-                            className="w-full aspect-video" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowFullScreen
-                        />
-                    ) : mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i) || mediaUrl.includes('imgur.com') ? (
-                        <img src={mediaUrl.includes('imgur.com') && !mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? mediaUrl + '.png' : mediaUrl} alt="Attached Media" className="w-full h-auto object-cover max-h-96" loading="lazy" />
-                    ) : (
-                        <a href={mediaUrl} target="_blank" rel="noopener noreferrer" className="block p-4 hover:bg-primary/5 transition-colors text-primary text-sm font-medium flex items-center justify-center gap-2">
-                            <ExternalLink className="w-4 h-4" /> View Attached Media
-                        </a>
-                    )}
+                <div className="mb-4 rounded-lg overflow-hidden border border-border bg-surface-2 relative w-full">
+                    {renderMedia(mediaUrl)}
                 </div>
             )}
 
