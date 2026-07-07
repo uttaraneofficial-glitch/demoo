@@ -49,6 +49,38 @@ export default function LinkPreview({ url }: LinkPreviewProps) {
 
     const { title, description, image, logo, publisher } = preview;
 
+    // Detect if we should use compact mode (missing image, or known generic banners)
+    const isGenericImage = image?.url?.includes('linkedin.com') || image?.url?.includes('google.com/docs') || image?.url?.includes('drive.google.com');
+    const useCompactMode = !image?.url || isGenericImage;
+
+    if (useCompactMode) {
+        return (
+            <a 
+                href={url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-4 p-4 rounded-xl border border-border bg-surface hover:border-primary/50 transition-colors group"
+            >
+                <div className="w-16 h-16 shrink-0 bg-surface-2 rounded-lg overflow-hidden flex items-center justify-center border border-border">
+                    {logo?.url ? (
+                        <img src={logo.url} alt={publisher || "Logo"} className="w-8 h-8 object-contain" />
+                    ) : (
+                        <ExternalLink className="w-6 h-6 text-text-muted" />
+                    )}
+                </div>
+                <div className="flex-1 min-w-0">
+                    {publisher && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">{publisher}</span>
+                    )}
+                    <h4 className="text-sm font-bold text-text-primary line-clamp-1 mb-1 group-hover:text-primary transition-colors">{title || url}</h4>
+                    {description && (
+                        <p className="text-xs text-text-secondary line-clamp-1">{description}</p>
+                    )}
+                </div>
+            </a>
+        );
+    }
+
     return (
         <a 
             href={url} 
@@ -56,19 +88,13 @@ export default function LinkPreview({ url }: LinkPreviewProps) {
             rel="noopener noreferrer" 
             className="block rounded-xl overflow-hidden border border-border bg-surface hover:border-primary/50 transition-colors group"
         >
-            {image?.url ? (
-                <div className="w-full h-48 sm:h-64 bg-surface-2 overflow-hidden relative">
-                    <img 
-                        src={image.url} 
-                        alt={title || "Link preview image"} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    />
-                </div>
-            ) : (
-                <div className="w-full h-24 bg-surface-2 flex items-center justify-center">
-                    <ImageIcon className="w-8 h-8 text-border" />
-                </div>
-            )}
+            <div className="w-full h-48 sm:h-64 bg-surface-2 overflow-hidden relative">
+                <img 
+                    src={image.url} 
+                    alt={title || "Link preview image"} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                />
+            </div>
             
             <div className="p-4 bg-surface">
                 {publisher && (

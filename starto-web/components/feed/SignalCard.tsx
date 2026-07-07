@@ -50,8 +50,9 @@ function formatUsername(username: string): string {
     return username ? `@${username}` : '@'
 }
 
-const renderMedia = (url: string) => {
-    if (!url) return null;
+const renderMedia = (rawUrl: string) => {
+    if (!rawUrl) return null;
+    const url = rawUrl.trim();
     
     // 1. YouTube Shorts
     if (url.includes('youtube.com/shorts/')) {
@@ -65,7 +66,16 @@ const renderMedia = (url: string) => {
         return <iframe src={embedUrl} className="w-full aspect-video border-0 bg-black overflow-hidden" scrolling="no" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
     }
 
-    // 3. Direct Images
+    // 3. LinkedIn Post (Native Iframe for proper thumbnail)
+    if (url.includes('linkedin.com/posts/')) {
+        const match = url.match(/activity-([0-9]+)/) || url.match(/ugcPost-([0-9]+)/);
+        if (match && match[1]) {
+            const urn = url.includes('ugcPost') ? `urn:li:ugcPost:${match[1]}` : `urn:li:activity:${match[1]}`;
+            return <iframe src={`https://www.linkedin.com/embed/feed/update/${urn}`} className="w-full bg-white rounded-xl overflow-hidden" style={{ height: '550px' }} scrolling="no" frameBorder="0" allowFullScreen title="Embedded post" />;
+        }
+    }
+
+    // 4. Direct Images
     if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || url.includes('imgur.com')) {
         const imgSrc = (url.includes('imgur.com') && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) ? `${url}.png` : url;
         return <img src={imgSrc} alt="Attached Media" className="w-full h-auto object-cover max-h-[600px] rounded-xl" loading="lazy" />;
