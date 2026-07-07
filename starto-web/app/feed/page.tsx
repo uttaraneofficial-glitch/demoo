@@ -8,6 +8,7 @@ import SignalCard from '@/components/feed/SignalCard'
 import { Plus, Search, Loader2, WifiOff, Bell, X, Building } from 'lucide-react'
 import RaiseSignalModal from '@/components/feed/RaiseSignalModal'
 import CreateSpaceModal from '@/components/feed/CreateSpaceModal'
+import SuggestedProfiles from '@/components/feed/SuggestedProfiles'
 import { useSignalStore, Signal, getSignalExpiration } from '@/store/useSignalStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useNetworkStore } from '@/store/useNetworkStore'
@@ -263,19 +264,23 @@ export default function HomeFeed() {
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {displaySignals.map(signal => (
-                                <SignalCard
-                                    key={signal.id}
-                                    {...signal}
-                                    hideViews={true}
-                                    onRefresh={() => setRefreshKey(k => k + 1)}
-                                />
+                            {displaySignals.map((signal, index) => (
+                                <React.Fragment key={signal.id}>
+                                    <SignalCard
+                                        {...signal}
+                                        hideViews={true}
+                                        onRefresh={() => setRefreshKey(k => k + 1)}
+                                    />
+                                    {index === 1 && <SuggestedProfiles variant="feed" limit={10} />}
+                                </React.Fragment>
                             ))}
                         </div>
                     )}
                 </main>
 
                 <aside className="hidden lg:block w-[320px] p-8 space-y-4">
+                    <SuggestedProfiles variant="sidebar" limit={3} />
+                    
                     <div className="bg-surface/[0.02] border border-border p-6 rounded-xl relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <h3 className="font-display text-lg mb-2 relative z-10">Need Market Analysis?</h3>
