@@ -54,6 +54,19 @@ export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: Sugge
         const filtered = Array.from(uniqueUsers.values())
             .filter(u => !allConnectedUsernames.has(u.username))
             
+        // If empty (e.g. testing alone), add a dummy suggestion so UI is visible
+        if (filtered.length === 0) {
+            filtered.push({
+                id: 'starto_admin',
+                username: 'starto_admin',
+                name: 'Starto Network',
+                avatarUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg', // Just a placeholder
+                role: 'Platform Guide',
+                plan: 'Admin',
+                isVerified: true
+            })
+        }
+
         // Limit
         return filtered.slice(0, limit)
     }, [signals, user, isAuthenticated, connections, pendingRequests, sentRequests, limit, hiddenUsers])
