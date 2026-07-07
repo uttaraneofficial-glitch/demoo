@@ -253,6 +253,16 @@ export default function PublicProfile({ params }: { params: { username: string }
                                         <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-2">
                                             <button 
                                                 onClick={async () => {
+                                                    const userPlan = currentUser?.plan || currentUser?.subscription || 'Explorer';
+                                                    if (userPlan.toUpperCase() === 'EXPLORER') {
+                                                        setStatusModal({
+                                                            isOpen: true,
+                                                            type: 'upgrade',
+                                                            title: 'Upgrade Required',
+                                                            message: 'Upgrade your plan to unlock WhatsApp contact. The Explorer plan does not include this feature.'
+                                                        });
+                                                        return;
+                                                    }
                                                     try {
                                                         const conn = connections.find(c => 
                                                             c.requesterUsername?.toLowerCase() === paramUsername?.toLowerCase() || 

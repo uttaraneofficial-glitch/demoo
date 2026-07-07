@@ -35,6 +35,17 @@ export default function NetworkPage() {
     const closeStatusModal = () => setStatusModal(prev => ({ ...prev, isOpen: false }))
     
     const handleWhatsappClick = async (connectionId: string) => {
+        const userPlan = user?.plan || user?.subscription || 'Explorer';
+        if (userPlan.toUpperCase() === 'EXPLORER') {
+            setStatusModal({
+                isOpen: true,
+                type: 'upgrade',
+                title: 'Upgrade Required',
+                message: 'Upgrade your plan to unlock WhatsApp contact. The Explorer plan does not include this feature.'
+            });
+            return;
+        }
+
         try {
             const { data, error } = await connectionsApi.getWhatsappLink(connectionId);
             if (data?.whatsappUrl) {
