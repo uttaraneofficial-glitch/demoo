@@ -211,6 +211,14 @@ export default function SignalCard({
 
     const respondentToShow = connectionRespondent || (currentSignal?.comments?.some(c => c.username === currentUser) ? currentUser : null);
 
+    let cleanDescription = description || '';
+    let mediaUrl = '';
+    const mediaMatch = cleanDescription.match(/\[\[MEDIA:(.*?)\]\]/);
+    if (mediaMatch) {
+        mediaUrl = mediaMatch[1];
+        cleanDescription = cleanDescription.replace(mediaMatch[0], '').trim();
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -306,8 +314,27 @@ export default function SignalCard({
 
             <Link href={`/signals/${id}`} className="block group/link cursor-pointer">
                 <h3 className="text-lg font-medium mb-2 break-words group-hover/link:text-primary group-hover/link:underline transition-colors">{title}</h3>
-                <p className="text-text-secondary text-sm mb-4 line-clamp-2 break-words">{description}</p>
+                <p className="text-text-secondary text-sm mb-4 line-clamp-2 break-words whitespace-pre-wrap">{cleanDescription}</p>
             </Link>
+
+            {mediaUrl && (
+                <div className="mb-4 rounded-lg overflow-hidden border border-border bg-surface-2 relative">
+                    {mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be') ? (
+                        <iframe 
+                            src={mediaUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/').split('&')[0]} 
+                            className="w-full aspect-video" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowFullScreen
+                        />
+                    ) : mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i) || mediaUrl.includes('imgur.com') ? (
+                        <img src={mediaUrl.includes('imgur.com') && !mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? mediaUrl + '.png' : mediaUrl} alt="Attached Media" className="w-full h-auto object-cover max-h-96" loading="lazy" />
+                    ) : (
+                        <a href={mediaUrl} target="_blank" rel="noopener noreferrer" className="block p-4 hover:bg-primary/5 transition-colors text-primary text-sm font-medium flex items-center justify-center gap-2">
+                            <ExternalLink className="w-4 h-4" /> View Attached Media
+                        </a>
+                    )}
+                </div>
+            )}
 
             {website && (
                 <div className="mb-4">

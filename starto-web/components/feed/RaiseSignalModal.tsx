@@ -25,6 +25,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
     const [category, setCategory] = useState('Talent');
     const [headline, setHeadline] = useState('');
     const [details, setDetails] = useState('');
+    const [mediaUrl, setMediaUrl] = useState('');
     const [duration, setDuration] = useState(0);
     const [stage, setStage] = useState('MVP');
     const [address, setAddress] = useState('');
@@ -38,7 +39,16 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
             setSignalType(editSignal.type || 'need');
             setCategory(editSignal.category);
             setHeadline(editSignal.title || '');
-            setDetails(editSignal.description || '');
+            
+            let finalDetails = editSignal.description || '';
+            let parsedMediaUrl = '';
+            const mediaMatch = finalDetails.match(/\[\[MEDIA:(.*?)\]\]/);
+            if (mediaMatch) {
+                parsedMediaUrl = mediaMatch[1];
+                finalDetails = finalDetails.replace(mediaMatch[0], '').trim();
+            }
+            setDetails(finalDetails);
+            setMediaUrl(parsedMediaUrl);
             const parsedDuration = parseInt((editSignal.strength || '7').split(' ')[0]);
             setDuration(isNaN(parsedDuration) ? 7 : parsedDuration);
             setStage((editSignal as any).stage || 'MVP');
@@ -53,6 +63,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
         } else if (isOpen && !editSignal) {
             setHeadline('');
             setDetails('');
+            setMediaUrl('');
             setCategory('Talent');
             setDuration(0);
             setStage('MVP');
@@ -103,6 +114,11 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
             return;
         }
 
+        let finalDetailsToSave = details;
+        if (mediaUrl && mediaUrl.trim() !== '') {
+            finalDetailsToSave += `\n\n[[MEDIA:${mediaUrl.trim()}]]`;
+        }
+
         const currentCount = user?.signalCount || 0;
         const limit = getSignalLimit(user?.plan);
         if (!canPostSignal(user?.plan, currentCount) && !editSignal) {
@@ -128,7 +144,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 editSignal.id,
                 {
                     title: headline,
-                    description: details,
+                    description: finalDetailsToSave,
                     category,
                     type: signalType,
                     seeking: category,
@@ -148,7 +164,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 useSignalStore.getState().updateSignal(editSignal.id, {
                     title: headline,
                     category,
-                    description: details,
+                    description: finalDetailsToSave,
                     strength: `${duration} Days`,
                     type: signalType,
                 });
@@ -160,7 +176,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 useSignalStore.getState().updateSignal(editSignal.id, {
                     title: headline,
                     category,
-                    description: details,
+                    description: finalDetailsToSave,
                     strength: `${duration} Days`,
                     type: signalType,
                 });
@@ -173,7 +189,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
         const { data, error, status } = await signalsApi.create(
             {
                 title: headline,
-                description: details,
+                description: finalDetailsToSave,
                 category,
                 type: signalType,
                 seeking: category,
@@ -197,7 +213,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 username: currentUsername,
                 timeAgo: 'Just now',
                 category,
-                description: details,
+                description: finalDetailsToSave,
                 strength: `${duration} Days`,
                 type: signalType,
                 userPlan: user?.subscription || user?.plan || 'Free',
@@ -212,7 +228,7 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                 username: currentUsername,
                 timeAgo: 'Just now',
                 category,
-                description: details,
+                description: finalDetailsToSave,
                 strength: `${duration} Days`,
                 type: signalType,
                 userPlan: user?.subscription || user?.plan || 'Free',
@@ -371,6 +387,21 @@ export default function RaiseSignalModal({ isOpen, onClose, editSignal }: RaiseS
                                 value={details}
                                 onChange={(e) => setDetails(e.target.value)}
                             />
+                        </section>
+
+                        {/* Media URL */}
+                        <section>
+                            <label className="text-sm font-medium text-text-primary mb-2 flex items-center gap-2">
+                                Media URL (Optional) <span className="text-[10px] bg-surface-2 px-2 py-0.5 rounded text-text-muted border border-border">Zero Cost</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Paste a YouTube, Loom, or Image URL here..."
+                                className="w-full bg-surface p-3 rounded-xl border border-border outline-none focus:border-primary text-sm placeholder:text-text-muted/60 shadow-sm"
+                                value={mediaUrl}
+                                onChange={(e) => setMediaUrl(e.target.value)}
+                            />
+                            <p className="text-[10px] text-text-muted mt-1.5 ml-1">Connect natively without uploading heavy files.</p>
                         </section>
 
                         {/* Duration */}
