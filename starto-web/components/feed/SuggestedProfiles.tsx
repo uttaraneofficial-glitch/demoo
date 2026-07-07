@@ -17,7 +17,7 @@ interface SuggestedProfilesProps {
 export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: SuggestedProfilesProps) {
     const router = useRouter()
     const { user, isAuthenticated } = useAuthStore()
-    const { signals } = useSignalStore()
+    const { signals, cachedGlobalFeed } = useSignalStore()
     const { connections, pendingRequests, sentRequests, sendRequest } = useNetworkStore()
     const [sending, setSending] = useState<Record<string, boolean>>({})
     const [hiddenUsers, setHiddenUsers] = useState<Set<string>>(new Set())
@@ -26,9 +26,10 @@ export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: Sugge
         if (!isAuthenticated || !user) return []
 
         const uniqueUsers = new Map<string, any>()
+        const allSignals = [...cachedGlobalFeed, ...signals]
         
         // Extract users from signals
-        signals.forEach(signal => {
+        allSignals.forEach(signal => {
             if (signal.username && signal.username !== user.username && !hiddenUsers.has(signal.username)) {
                 if (!uniqueUsers.has(signal.username)) {
                     uniqueUsers.set(signal.username, {
@@ -54,22 +55,9 @@ export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: Sugge
         const filtered = Array.from(uniqueUsers.values())
             .filter(u => !allConnectedUsernames.has(u.username))
             
-        // If empty (e.g. testing alone), add a dummy suggestion so UI is visible
-        if (filtered.length === 0) {
-            filtered.push({
-                id: 'starto_admin',
-                username: 'starto_admin',
-                name: 'Starto Network',
-                avatarUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg', // Just a placeholder
-                role: 'Platform Guide',
-                plan: 'Admin',
-                isVerified: true
-            })
-        }
-
         // Limit
         return filtered.slice(0, limit)
-    }, [signals, user, isAuthenticated, connections, pendingRequests, sentRequests, limit, hiddenUsers])
+    }, [signals, cachedGlobalFeed, user, isAuthenticated, connections, pendingRequests, sentRequests, limit, hiddenUsers])
 
     if (suggestedUsers.length === 0) return null
 
