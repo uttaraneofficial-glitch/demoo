@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Fragment } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/feed/Sidebar'
 import MobileBottomNav from '@/components/feed/MobileBottomNav'
@@ -265,14 +265,14 @@ export default function HomeFeed() {
                     ) : (
                         <div className="space-y-4">
                             {displaySignals.map((signal, index) => (
-                                <React.Fragment key={signal.id}>
+                                <Fragment key={signal.id}>
                                     <SignalCard
                                         {...signal}
                                         hideViews={true}
                                         onRefresh={() => setRefreshKey(k => k + 1)}
                                     />
                                     {index === 1 && <SuggestedProfiles variant="feed" limit={10} />}
-                                </React.Fragment>
+                                </Fragment>
                             ))}
                         </div>
                     )}
