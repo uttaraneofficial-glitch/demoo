@@ -18,10 +18,16 @@ export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: Sugge
     const router = useRouter()
     const { user, isAuthenticated } = useAuthStore()
     const { signals, cachedGlobalFeed } = useSignalStore()
-    const { connections, pendingRequests, sentRequests, sendRequest } = useNetworkStore()
+    const { connections, pendingRequests, sentRequests, sendRequest, fetchRequests } = useNetworkStore()
     const [sending, setSending] = useState<Record<string, boolean>>({})
     const [hiddenUsers, setHiddenUsers] = useState<Set<string>>(new Set())
     const [requestedUsers, setRequestedUsers] = useState<Set<string>>(new Set())
+
+    React.useEffect(() => {
+        if (isAuthenticated) {
+            fetchRequests();
+        }
+    }, [isAuthenticated, fetchRequests]);
 
     const suggestedUsers = useMemo(() => {
         if (!isAuthenticated || !user) return []
@@ -56,11 +62,14 @@ export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: Sugge
         ])
 
         const filtered = Array.from(uniqueUsers.values())
-            .filter(u => !allConnectedUsernames.has(u.username) && !hiddenUsers.has(u.username))
+            .filter(u => 
+                requestedUsers.has(u.username) || 
+                (!allConnectedUsernames.has(u.username) && !hiddenUsers.has(u.username))
+            )
             
         // Limit
         return filtered.slice(0, limit)
-    }, [signals, cachedGlobalFeed, user, isAuthenticated, connections, pendingRequests, sentRequests, limit, hiddenUsers])
+    }, [signals, cachedGlobalFeed, user, isAuthenticated, connections, pendingRequests, sentRequests, limit, hiddenUsers, requestedUsers])
 
     if (suggestedUsers.length === 0) return null
 
