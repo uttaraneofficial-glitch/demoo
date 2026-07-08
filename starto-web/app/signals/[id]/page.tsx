@@ -32,6 +32,43 @@ import { useResponseStore } from '@/store/useResponseStore'
 import { CommentThread, Comment } from '@/components/feed/CommentSystem'
 import Toast from '@/components/feed/Toast'
 import StatusModal from '@/components/feed/StatusModal'
+import LinkPreview from '@/components/feed/LinkPreview'
+
+// Helper to render media properly
+const renderMedia = (rawUrl: string) => {
+    if (!rawUrl) return null;
+    const url = rawUrl.trim();
+    
+    // 1. YouTube Shorts
+    if (url.includes('youtube.com/shorts/')) {
+        const embedUrl = url.replace('youtube.com/shorts/', 'youtube.com/embed/').split('?')[0];
+        return <iframe src={embedUrl} className="w-full aspect-[9/16] max-h-[500px] mx-auto border-0 bg-black overflow-hidden" scrolling="no" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
+    }
+
+    // 2. YouTube Standard
+    if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
+        const embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/').split('&')[0];
+        return <iframe src={embedUrl} className="w-full aspect-video border-0 bg-black overflow-hidden" scrolling="no" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
+    }
+
+    // 3. LinkedIn Post (Native Iframe for proper thumbnail)
+    if (url.includes('linkedin.com/posts/')) {
+        const match = url.match(/activity-([0-9]+)/) || url.match(/ugcPost-([0-9]+)/);
+        if (match && match[1]) {
+            const urn = url.includes('ugcPost') ? `urn:li:ugcPost:${match[1]}` : `urn:li:activity:${match[1]}`;
+            return <iframe src={`https://www.linkedin.com/embed/feed/update/${urn}`} className="w-full bg-white rounded-xl overflow-hidden" style={{ height: '550px' }} scrolling="no" frameBorder="0" allowFullScreen title="Embedded post" />;
+        }
+    }
+
+    // 4. Direct Images
+    if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || url.includes('imgur.com')) {
+        const imgSrc = (url.includes('imgur.com') && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i)) ? `${url}.png` : url;
+        return <img src={imgSrc} alt="Attached Media" className="w-full h-auto object-cover max-h-[600px] rounded-xl" loading="lazy" />;
+    }
+
+    // 5. Everything else (Instagram, LinkedIn, X, Google Drive, News, etc.)
+    return <LinkPreview url={url} />;
+}
 
 // Reuse the map function to convert ApiSignal to card-like shape if needed, 
 // but here we want the raw data for maximum detail.
@@ -181,6 +218,15 @@ export default function SignalDetailPage() {
     const createdAt = signal.createdAt ? new Date(signal.createdAt) : new Date(Date.now() - (1000 * 60 * 60 * 24))
     const { isExpired, daysLeft, hoursLeft, totalDuration, progressPercent } = getSignalExpiration(signal)
 
+    // Extract Media
+    let cleanDescription = signal.description || '';
+    let mediaUrl = '';
+    const mediaMatch = cleanDescription.match(/\[\[MEDIA:(.*?)\]\]/);
+    if (mediaMatch) {
+        mediaUrl = mediaMatch[1];
+        cleanDescription = cleanDescription.replace(mediaMatch[0], '').trim();
+    }
+
     return (
         <div className="min-h-screen bg-background flex justify-center">
             <div className="max-w-[1400px] w-full flex flex-col md:flex-row pb-16 md:pb-0">
@@ -285,9 +331,14 @@ export default function SignalDetailPage() {
                                 </h3>
                                 <div className="prose prose-slate max-w-none">
                                     <p className="text-lg text-text-secondary leading-relaxed whitespace-pre-wrap">
-                                        {signal.description}
+                                        {cleanDescription}
                                     </p>
                                 </div>
+                                {mediaUrl && (
+                                    <div className="w-full mt-6 rounded-xl overflow-hidden shadow-sm border border-border/50">
+                                        {renderMedia(mediaUrl)}
+                                    </div>
+                                )}
                                 {signal.address && (
                                     <div className="flex items-start gap-3 p-4 bg-surface-2 rounded-xl border border-border/40 mt-4">
                                         <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
