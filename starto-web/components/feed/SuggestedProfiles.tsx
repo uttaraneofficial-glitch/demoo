@@ -16,7 +16,7 @@ interface SuggestedProfilesProps {
 
 export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: SuggestedProfilesProps) {
     const router = useRouter()
-    const { user, isAuthenticated } = useAuthStore()
+    const { user, isAuthenticated, isFirebaseReady } = useAuthStore()
     const { signals, cachedGlobalFeed } = useSignalStore()
     const { connections, pendingRequests, sentRequests, sendRequest, fetchRequests } = useNetworkStore()
     const [sending, setSending] = useState<Record<string, boolean>>({})
@@ -24,10 +24,10 @@ export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: Sugge
     const [requestedUsers, setRequestedUsers] = useState<Set<string>>(new Set())
 
     React.useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && isFirebaseReady) {
             fetchRequests();
         }
-    }, [isAuthenticated, fetchRequests]);
+    }, [isAuthenticated, isFirebaseReady, fetchRequests]);
 
     const suggestedUsers = useMemo(() => {
         if (!isAuthenticated || !user) return []
