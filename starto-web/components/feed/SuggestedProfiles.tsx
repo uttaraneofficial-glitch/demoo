@@ -67,6 +67,19 @@ export default function SuggestedProfiles({ variant = 'feed', limit = 5 }: Sugge
                 (!allConnectedUsernames.has(u.username) && !hiddenUsers.has(u.username))
             )
             
+        // If empty, add a dummy suggestion so the UI always renders for testing
+        if (filtered.length === 0) {
+            filtered.push({
+                id: 'dummy_starto_admin',
+                username: 'starto_network',
+                name: 'Starto Platform',
+                role: 'Platform Guide',
+                avatarUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=starto',
+                plan: 'pro',
+                isVerified: true
+            })
+        }
+            
         // Limit
         return filtered.slice(0, limit)
     }, [signals, cachedGlobalFeed, user, isAuthenticated, connections, pendingRequests, sentRequests, limit, hiddenUsers, requestedUsers])
