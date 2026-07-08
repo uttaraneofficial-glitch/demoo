@@ -194,7 +194,7 @@ export default function HomeFeed() {
                 <Sidebar />
 
                 {/* Signals Feed */}
-                <main className="flex-1 max-w-2xl w-full px-4 py-8 md:overflow-y-auto border-r border-border">
+                <main className="flex-1 max-w-2xl w-full px-4 py-8 border-r border-border min-h-screen">
                     <header className="mb-8 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-background/90 backdrop-blur-md sticky top-0 z-20 py-4 -mx-4 px-4 border-b border-border">
                         <div className="flex items-center gap-4">
                             <h1 className="text-2xl font-display tracking-tight text-text-primary">Signals Feed</h1>
