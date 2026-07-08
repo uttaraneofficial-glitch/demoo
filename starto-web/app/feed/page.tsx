@@ -278,7 +278,7 @@ export default function HomeFeed() {
                     )}
                 </main>
 
-                <aside className="hidden lg:block w-[320px] p-8 space-y-4">
+                <aside className="hidden lg:flex w-[320px] sticky top-0 h-screen flex-col p-8 space-y-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     <SuggestedProfiles variant="sidebar" limit={3} />
                     
                     <div className="bg-surface/[0.02] border border-border p-6 rounded-xl relative overflow-hidden group">
