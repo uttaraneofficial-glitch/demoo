@@ -59,6 +59,15 @@ export default function LinkPreview({ url }: LinkPreviewProps) {
             if (!url) return;
             setLoading(true);
             try {
+                // Pre-emptively generate synthetic profile for known domains (LinkedIn, etc.)
+                // to avoid unnecessary 400 Bad Request console errors from microlink API
+                const synthetic = generateSyntheticProfilePreview(url);
+                if (synthetic) {
+                    setPreview(synthetic);
+                    setLoading(false);
+                    return;
+                }
+
                 const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
                 const json = await res.json();
                 
@@ -66,15 +75,11 @@ export default function LinkPreview({ url }: LinkPreviewProps) {
                 
                 if (json.status === 'success' && json.data && !isAuthWall) {
                     setPreview(json.data);
-                } else {
-                    const synthetic = generateSyntheticProfilePreview(url);
-                    if (synthetic) setPreview(synthetic);
-                    else if (json.data) setPreview(json.data); // Fallback to auth wall if not a recognized profile
+                } else if (json.data) {
+                    setPreview(json.data); // Fallback to auth wall if not a recognized profile
                 }
             } catch (error) {
                 console.error("Failed to fetch link preview", error);
-                const synthetic = generateSyntheticProfilePreview(url);
-                if (synthetic) setPreview(synthetic);
             } finally {
                 setLoading(false);
             }
