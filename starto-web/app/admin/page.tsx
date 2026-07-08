@@ -151,18 +151,25 @@ export default function AdminDashboard() {
                     </header>
 
                     {/* Tabs */}
-                    <div className="flex gap-2 mb-6">
+                    <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-4 px-4 md:px-0 md:mx-0 md:pb-0 hide-scrollbar">
                         <button
                             onClick={() => router.push('/admin')}
-                            className="px-6 py-2 bg-primary text-background text-xs font-bold uppercase tracking-widest rounded-full"
+                            className="px-6 py-2 bg-primary text-background text-xs font-bold uppercase tracking-widest rounded-full whitespace-nowrap shrink-0"
                         >
                             Ecosystem Users
                         </button>
                         <button
                             onClick={() => router.push('/admin/promo-codes')}
-                            className="px-6 py-2 bg-surface border border-border text-text-primary text-xs font-bold uppercase tracking-widest rounded-full hover:bg-surface-2 transition-colors"
+                            className="px-6 py-2 bg-surface border border-border text-text-primary text-xs font-bold uppercase tracking-widest rounded-full hover:bg-surface-2 transition-colors whitespace-nowrap shrink-0"
                         >
                             Promo Codes
+                        </button>
+                        <button
+                            onClick={() => router.push('/admin/comms')}
+                            className="px-6 py-2 bg-surface border border-border text-text-primary text-xs font-bold uppercase tracking-widest rounded-full hover:bg-surface-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0"
+                        >
+                            Email & Comms
+                            <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full border border-primary/20">BETA</span>
                         </button>
                     </div>
 
