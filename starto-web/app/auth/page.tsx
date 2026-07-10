@@ -75,6 +75,7 @@ function AuthFormContent() {
     const [manualChecking, setManualChecking] = useState(false)
     const [resendingEmail, setResendingEmail] = useState(false)
     const [resendStatus, setResendStatus] = useState('')
+    const [requiresManualBrowserFallback, setRequiresManualBrowserFallback] = useState(false)
     const checkPromiseRef = useRef<Promise<any> | null>(null)
     const isRegisteringRef = useRef(false)
     const checkVerificationRef = useRef<((isManual?: boolean) => Promise<void>) | null>(null)
@@ -126,17 +127,35 @@ function AuthFormContent() {
             try {
                 if (modeParam === 'verifyEmail') {
                     // 1. Verify in Firebase
-                    await applyActionCode(auth, oobCodeParam)
-
-                    // ✅ Email is now verified (Firebase confirmed it).
-                    // Broadcast this to ALL other tabs of this app immediately,
-                    // so the original signup tab can skip Firebase propagation delay
-                    // and proceed directly with registration.
                     try {
-                        const bc = new BroadcastChannel('starto_auth')
-                        bc.postMessage({ type: 'EMAIL_VERIFIED' })
-                        bc.close()
-                    } catch {}
+                        await applyActionCode(auth, oobCodeParam)
+
+                        // ✅ Email is now verified (Firebase confirmed it).
+                        // Broadcast this to ALL other tabs of this app immediately,
+                        // so the original signup tab can skip Firebase propagation delay
+                        // and proceed directly with registration.
+                        try {
+                            const bc = new BroadcastChannel('starto_auth')
+                            bc.postMessage({ type: 'EMAIL_VERIFIED' })
+                            bc.close()
+                        } catch {}
+                    } catch (verifyError: any) {
+                        // Check if error is related to WebView/iframe blocking (common in Gmail/Outlook apps)
+                        const errMsg = verifyError?.message?.toLowerCase() || ''
+                        if (
+                            errMsg.includes('targetorigin is not set') ||
+                            errMsg.includes('invalid json') ||
+                            errMsg.includes('getinstalledrelatedapps') ||
+                            errMsg.includes('network')
+                        ) {
+                            setRequiresManualBrowserFallback(true)
+                            setIsVerifyingAction(false)
+                            return
+                        }
+                        
+                        // If it's a normal Firebase error (like expired code), let it fall through to generic error handling
+                        throw verifyError
+                    }
 
                     // 2. Refresh browser session if they are currently logged in
                     const currentUser = auth.currentUser
@@ -723,7 +742,40 @@ function AuthFormContent() {
                 <h1 className="text-4xl font-bold mb-2 tracking-tight">Starto</h1>
                 <p className="text-gray-400 mb-8 text-sm">Where Ecosystems Connect.</p>
 
-                {isVerifyingAction ? (
+                {requiresManualBrowserFallback ? (
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex flex-col items-center justify-center py-10"
+                    >
+                        <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
+                            <AlertCircle className="w-8 h-8 text-red-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold mb-2 text-center">Restricted Browser Detected</h2>
+                        <p className="text-gray-400 mb-6 px-4 text-center text-sm leading-relaxed">
+                            It looks like you opened this link inside an email app (like Gmail or Outlook) which blocks our secure verification process.
+                        </p>
+                        <div className="w-full bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-3">
+                            <p className="text-xs text-gray-300 font-medium">To securely verify your account, please copy the link below and open it directly in <span className="text-white">Safari</span> or <span className="text-white">Google Chrome</span>:</p>
+                            <div className="flex items-center bg-black/50 border border-white/10 rounded-lg p-2 overflow-hidden">
+                                <input 
+                                    readOnly 
+                                    value={typeof window !== 'undefined' ? window.location.href : ''} 
+                                    className="bg-transparent text-gray-400 text-xs flex-1 outline-none truncate mr-2"
+                                />
+                                <button 
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(window.location.href);
+                                        alert('Link copied! Please open Safari or Chrome and paste it in the address bar.');
+                                    }}
+                                    className="bg-white text-black px-3 py-1.5 rounded text-xs font-bold whitespace-nowrap hover:bg-gray-200 transition-colors"
+                                >
+                                    Copy Link
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                ) : isVerifyingAction ? (
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
