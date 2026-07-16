@@ -238,7 +238,7 @@ public User updateProfile(User user) {
     User existing = userRepository.findById(user.getId())
             .orElseThrow(() -> new RuntimeException("User not found"));
 
-   // UserService.updateProfile — add missing fields
+    // UserService.updateProfile — add missing fields
 if (user.getName() != null) existing.setName(user.getName());
 if (user.getBio() != null) existing.setBio(user.getBio());
 if (user.getCity() != null) existing.setCity(user.getCity());
@@ -259,6 +259,14 @@ if (user.getAvatarUrl() != null) existing.setAvatarUrl(user.getAvatarUrl());
     existing.setUpdatedAt(OffsetDateTime.now());
 
     return userRepository.save(existing);
+}
+
+@Transactional
+public void updateFcmToken(String firebaseUid, String fcmToken) {
+    userRepository.findByFirebaseUid(firebaseUid).ifPresent(user -> {
+        user.setFcmToken(fcmToken);
+        userRepository.save(user);
+    });
 }
 
    public boolean isUsernameAvailable(String baseUsername, String role) { ///////

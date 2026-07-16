@@ -107,6 +107,25 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Update FCM Token",
+               description = "Registers the Android device FCM token for push notifications.",
+               security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "Token updated")
+    @PutMapping("/fcm-token")
+    public ResponseEntity<?> updateFcmToken(Authentication authentication, @RequestBody Map<String, String> payload) {
+        if (authentication == null) return ResponseEntity.status(401).build();
+        
+        String fcmToken = payload.get("fcmToken");
+        if (fcmToken == null || fcmToken.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "fcmToken is required"));
+        }
+
+        String firebaseUid = authentication.getPrincipal().toString();
+        userService.updateFcmToken(firebaseUid, fcmToken);
+
+        return ResponseEntity.ok().build();
+    }
+
 
     /**
      * Get the authenticated user's own full profile.
