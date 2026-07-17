@@ -370,10 +370,7 @@ function AuthFormContent() {
             const firebaseUser = userCredential.user
 
             if (!firebaseUser.emailVerified) {
-                await sendEmailVerification(firebaseUser, {
-                    url: `${window.location.origin}/auth?mode=verifyEmail`,
-                    handleCodeInApp: true,
-                });
+                await usersApi.sendVerificationEmail(firebaseUser.accessToken || (await firebaseUser.getIdToken()));
                 setError('Please verify your email address. A new verification link has been sent to your email.');
                 await auth.signOut();
                 return;
@@ -559,10 +556,7 @@ function AuthFormContent() {
         try {
             const user = auth.currentUser
             if (user) {
-                await sendEmailVerification(user, {
-                    url: `${window.location.origin}/auth?mode=verifyEmail`,
-                    handleCodeInApp: true,
-                });
+                await usersApi.sendVerificationEmail(user.accessToken || (await user.getIdToken()));
                 setResendStatus('Verification email resent successfully! Please check your inbox.')
             } else {
                 setError('No active session found. Please reload and try signing up again.')
@@ -713,10 +707,7 @@ function AuthFormContent() {
             const token = await firebaseUser.getIdToken()
 
             // 2. Send Verification Email & Poll
-            await sendEmailVerification(firebaseUser, {
-                url: `${window.location.origin}/auth?mode=verifyEmail`,
-                handleCodeInApp: true,
-            });
+            await usersApi.sendVerificationEmail(token);
             // Reset cross-tab verification flag on entering the verification flow.
             // This prevents a stale BroadcastChannel message from a previous session
             // (e.g., another tab from an earlier signup attempt) from falsely bypassing

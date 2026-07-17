@@ -360,6 +360,11 @@ export const usersApi = {
     checkVerification: (overrideToken?: string) =>
         apiFetch<{ verified: boolean }>('/api/auth/check-verification', {}, overrideToken),
 
+    /** POST /api/users/send-verification — requires auth */
+    sendVerificationEmail: (overrideToken?: string) =>
+        apiFetch<void>('/api/users/send-verification', { method: 'POST' }, overrideToken),
+
+
     /** PUT /api/users/profile — requires auth */
     updateProfile: (payload: Partial<ApiUser>) =>
         apiFetch<ApiUser>('/api/users/profile', {
