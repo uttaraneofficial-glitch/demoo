@@ -411,14 +411,16 @@ background: rgba(255, 255, 255, 0.4);
 .mockup-dot.green { background: #34d399; opacity: 0.7; }
 .mockup-body { padding: 20px; height: calc(100% - 49px); overflow: hidden; }
 .signal-card-preview {
-background: var(--surface);
-border: 1px solid rgba(0,0,0,0.05);
+background: rgba(255, 255, 255, 0.85);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.6);
 border-radius: var(--radius-md);
 padding: 16px;
 margin-bottom: 12px;
 transition: all var(--transition);
 animation: float 3s ease-in-out infinite;
-box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+box-shadow: 0 8px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1);
 }
 .signal-card-preview:nth-child(2) { animation-delay: 0.5s; }
 .signal-card-preview:nth-child(3) { animation-delay: 1s; }

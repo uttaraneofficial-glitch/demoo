@@ -320,7 +320,7 @@ export default function LandingPage() {
                                 <div className="mockup-dot red"></div>
                                 <div className="mockup-dot yellow"></div>
                                 <div className="mockup-dot green"></div>
-                                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-dim)', marginLeft: '8px', letterSpacing: '0.06em' }}>starto.io / feed</span>
+                                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-dim)', marginLeft: '8px', letterSpacing: '0.06em' }}>startoindia.com / feed</span>
                             </div>
                             <div className="mockup-body">
                                 <div className="signal-card-preview">
