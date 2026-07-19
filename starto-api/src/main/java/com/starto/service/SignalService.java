@@ -56,6 +56,7 @@ public class SignalService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final NotificationService notificationService;
+    private final NetworkNotificationService networkNotificationService;
     private final OfferRepository offerRepository;
 
     private static boolean syncedResponseCounts = false;
@@ -86,47 +87,10 @@ public class SignalService {
         Signal saved = signalRepository.save(signal);
         log.info("[DEBUG] Signal saved to DB. ID: {}", saved.getId());
         
-        // Broadcast instant_help alerts to ALL users
-        // Normalize strings for comparison (lowercase and remove spaces/underscores)
-        String type = saved.getType() != null ? saved.getType().toLowerCase().replace(" ", "").replace("_", "") : "";
-        String category = saved.getCategory() != null ? saved.getCategory().toLowerCase().replace(" ", "").replace("_", "") : "";
+        // Broadcast new signal to ALL users asynchronously
+        log.info("[DEBUG] Triggering async network broadcast for Signal ID: {}", saved.getId());
+        networkNotificationService.broadcastNewSignalToAllUsers(saved);
         
-        boolean isInstantHelp = type.contains("instanthelp") || category.contains("instanthelp");
-        
-        log.info("[DEBUG] Checking broadcast. Type: '{}', Category: '{}', isInstantHelp: {}", type, category, isInstantHelp);
-        
-        if (isInstantHelp) {
-            List<User> talentUsers = userRepository.findByRoleIgnoreCase("TALENT");
-            UUID creatorId = saved.getUser().getId();
-            log.info("[DEBUG] instant_help detected! Found {} talent users in DB. Creator: {}", talentUsers.size(), creatorId);
-            
-            int notified = 0;
-            for (User u : talentUsers) {
-                String uIdStr = u.getId().toString();
-                String cIdStr = creatorId.toString();
-                
-                if (!uIdStr.equals(cIdStr)) {
-                    try {
-                        log.info("[DEBUG] Attempting to notify user: {} ({})", u.getEmail(), uIdStr);
-                        notificationService.send(
-                            u.getId(), 
-                            "urgent_signal", 
-                            "🚨 Urgent: " + saved.getTitle(), 
-                            saved.getDescription(), 
-                            Map.of("signalId", saved.getId().toString())
-                        );
-                        notified++;
-                    } catch (Exception e) {
-                        log.error("[ERROR] Failed to notify user {}: {}", uIdStr, e.getMessage());
-                    }
-                } else {
-                    log.info("[DEBUG] Skipping creator: {}", cIdStr);
-                }
-            }
-            log.info("[DEBUG] Broadcast complete. Notified {} users.", notified);
-        } else {
-            log.info("[DEBUG] Not an instant_help signal. Skipping broadcast. Type: {}, Category: {}", saved.getType(), saved.getCategory());
-        }
         
         return saved;
     }
