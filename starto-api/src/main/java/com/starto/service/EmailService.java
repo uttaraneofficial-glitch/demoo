@@ -21,16 +21,24 @@ public class EmailService {
 
     private static final String FROM_EMAIL = "startoindiaofficial@gmail.com";
 
-    // COMMON METHOD (Called internally — runs on the background thread spawned by public entry points)
-    public void sendEmail(String to, String subject, String body) {
+    public void sendEmail(String to, String subject, String htmlBody) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(to);
             helper.setFrom("Starto Ecosystem <startoindiaofficial@gmail.com>");
+            helper.setReplyTo("startoindiaofficial@gmail.com");
             helper.setSubject(subject);
-            helper.setText(body, true);
+
+            // Wrap in proper HTML structure
+            String fullHtml = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body>" + htmlBody + "</body></html>";
+            
+            // Create a plain text fallback to bypass spam filters
+            String plainText = htmlBody.replaceAll("<br\\s*/?>", "\n").replaceAll("<[^>]*>", "").replaceAll("&nbsp;", " ").trim();
+            
+            // Set multipart content (true = HTML, false = plain text fallback)
+            helper.setText(plainText, fullHtml);
 
             mailSender.send(message);
             log.info("🚀 SUCCESS: Email sent to: [{}]", to);
@@ -67,10 +75,34 @@ public class EmailService {
             """.formatted(user.getName(), user.getPlan().name(), daysLeft);
     }
 
+    // VERIFICATION
+    @Async("aiExecutor")
+    public void sendCustomVerificationEmail(String email, String verificationLink) {
+        String subject = "Verify your email for Starto";
+        sendEmail(email, subject, buildVerificationBody(verificationLink));
+    }
+
+    private String buildVerificationBody(String verificationLink) {
+        return """
+            <div style="font-family: Arial; max-width:600px; margin:auto;">
+                <h2 style="color:#f97316;">Verify Your Account</h2>
+                <p>Welcome to Starto!</p>
+                <p>Please click the button below to verify your email address and activate your account.</p>
+                <br/>
+                <a href="%s"
+                   style="background:#f97316;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block;">
+                   Verify Email
+                </a>
+                <br/><br/>
+                <p style="color:#666;font-size:12px;">If you didn't create this account, you can safely ignore this email.</p>
+            </div>
+            """.formatted(verificationLink);
+    }
+
     // WELCOME 
     @Async("aiExecutor")
     public void sendWelcomePlanEmail(User user) {
-        String subject = "Welcome to Starto " + user.getPlan().name() + " 🎉";
+        String subject = "Welcome to Starto " + user.getPlan().name();
         sendEmail(user.getEmail(), subject, buildWelcomeBody(user));
     }
 
@@ -100,7 +132,7 @@ public class EmailService {
 
         double amount = amountPaise / 100.0;
 
-        String subject = "Payment Successful — " + plan + " Activated 🎉";
+        String subject = "Payment Successful — " + plan + " Activated";
 
         String body = """
             <div style="font-family: Arial; max-width:600px; margin:auto;">
