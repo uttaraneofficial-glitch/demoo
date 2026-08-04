@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 export default function AdminEventsPage() {
-    const { isAuthenticated, user, isAuthReady } = useAuthStore();
+    const { isAuthenticated, user, isInitialized } = useAuthStore();
     const router = useRouter();
     const [startups, setStartups] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -15,13 +15,13 @@ export default function AdminEventsPage() {
     const [editing, setEditing] = useState<any>(null); // null means adding new or not editing
 
     useEffect(() => {
-        if (!isAuthReady) return;
+        if (!isInitialized) return;
         if (!isAuthenticated || !user || user.email !== 'krishnamurthikm07@gmail.com') {
             router.push('/');
             return;
         }
         loadStartups();
-    }, [isAuthReady, isAuthenticated, user]);
+    }, [isInitialized, isAuthenticated, user]);
 
     const loadStartups = async () => {
         try {
