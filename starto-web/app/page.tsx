@@ -70,6 +70,7 @@ export default function LandingPage() {
                     <li><Link href="/feed">Platform</Link></li>
                     <li><Link href="/subscription">Pricing</Link></li>
                     <li><Link href="/careers">Careers</Link></li>
+                    <li><Link href="/events">Events</Link></li>
                 </ul>
                 <div className="nav-cta">
                     {isAuthenticated && user ? (

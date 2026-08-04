@@ -677,3 +677,29 @@ export async function getAuthToken(): Promise<string | null> {
   return await user.getIdToken();
 }
 
+// ─── Event Startups API ──────────────────────────────────────────────────────
+export const eventStartupsApi = {
+    /** GET /api/events/startups - public */
+    getAll: () => apiFetch<any[]>('/api/events/startups'),
+
+    /** GET /api/events/startups/:slug - public */
+    getBySlug: (slug: string) => apiFetch<any>(`/api/events/startups/${slug}`),
+
+    /** POST /api/events/startups - admin only */
+    create: (payload: any) =>
+        apiFetch<any>('/api/events/startups', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        }),
+
+    /** PUT /api/events/startups/:id - admin only */
+    update: (id: number, payload: any) =>
+        apiFetch<any>(`/api/events/startups/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+        }),
+
+    /** DELETE /api/events/startups/:id - admin only */
+    delete: (id: number) =>
+        apiFetch<void>(`/api/events/startups/${id}`, { method: 'DELETE' }),
+};

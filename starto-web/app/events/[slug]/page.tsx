@@ -1,21 +1,33 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import '../events.css';
-import { startups } from '../data/startups';
-
-export function generateStaticParams() {
-    return startups.map((startup) => ({
-        slug: startup.slug,
-    }));
-}
+import { eventStartupsApi } from '@/lib/apiClient';
 
 export default function ProfilePage({ params }: { params: { slug: string } }) {
-    const startup = startups.find(s => s.slug === params.slug);
+    const [startup, setStartup] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
 
-    if (!startup) {
-        notFound();
-    }
+    useEffect(() => {
+        const fetchStartup = async () => {
+            try {
+                const data = await eventStartupsApi.getBySlug(params.slug);
+                if (!data) notFound();
+                setStartup(data);
+            } catch (err) {
+                console.error("Failed to fetch startup", err);
+                notFound();
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStartup();
+    }, [params.slug]);
+
+    if (loading) return <div className="sarathi-body flex items-center justify-center p-20">Loading...</div>;
+    if (!startup) return <div className="sarathi-body flex items-center justify-center p-20">Startup not found.</div>;
 
     return (
         <div className="sarathi-body">

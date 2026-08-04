@@ -1,12 +1,35 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import '../landing.css';
 import './events.css';
-import { startups } from './data/startups';
+import { useAuthStore } from '@/store/useAuthStore';
+import { eventStartupsApi } from '@/lib/apiClient';
 
 export default function EventsPage() {
     const [searchQuery, setSearchQuery] = useState('');
+    const [scrolled, setScrolled] = useState(false);
+    const { isAuthenticated, user } = useAuthStore();
+    const [startups, setStartups] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchStartups = async () => {
+            try {
+                const data = await eventStartupsApi.getAll();
+                setStartups(data);
+            } catch (err) {
+                console.error("Failed to fetch startups", err);
+            }
+        };
+        fetchStartups();
+
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 40);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const filteredStartups = startups.filter(startup => {
         const query = searchQuery.toLowerCase();
@@ -18,7 +41,41 @@ export default function EventsPage() {
     });
 
     return (
-        <div className="sarathi-body">
+        <div className="sarathi-body" style={{ paddingTop: '72px' }}>
+            {/* ── GLOBAL NAVIGATION ──────────────────────────────────────────── */}
+            <nav id="navbar" className={`landing-nav ${scrolled ? 'scrolled' : ''}`}>
+                <Link href="/" className="nav-logo">
+                    <img src="/logo.png" alt="Starto Logo" className="nav-logo-img dark:invert" />
+                </Link>
+                <ul className="nav-links">
+                    <li><Link href="/">Home</Link></li>
+                    <li><Link href="/about">About</Link></li>
+                    <li><Link href="/feed">Platform</Link></li>
+                    <li><Link href="/subscription">Pricing</Link></li>
+                    <li><Link href="/careers">Careers</Link></li>
+                    <li><Link href="/events">Events</Link></li>
+                </ul>
+                <div className="nav-cta">
+                    {isAuthenticated && user ? (
+                        <Link href="/profile" className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[1px] text-text-secondary hover:text-primary transition-all">
+                            {user.avatarUrl ? (
+                                <img src={user.avatarUrl} alt={user.name || 'User'} className="w-6 h-6 rounded-full" />
+                            ) : (
+                                <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-[10px] font-bold text-primary">
+                                    {user.name ? user.name[0].toUpperCase() : 'U'}
+                                </div>
+                            )}
+                            <span>{user.name || user.username}</span>
+                        </Link>
+                    ) : (
+                        <>
+                            <Link href="/auth" className="btn-ghost">Sign In</Link>
+                            <Link href="/auth" className="btn-primary">Get Started →</Link>
+                        </>
+                    )}
+                </div>
+            </nav>
+
             {/* HERO SECTION */}
             <section className="sarathi-hero">
                 <div className="sarathi-container">
