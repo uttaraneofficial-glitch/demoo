@@ -123,7 +123,7 @@ public class SecurityConfig {
                     "/avatar/**",
                     "/actuator/health"
                 ).permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/users/*", "/api/users/*/online-status").permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/users/*", "/api/users/*/online-status", "/api/events/startups", "/api/events/startups/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(firebaseAuthFilter(), UsernamePasswordAuthenticationFilter.class);
