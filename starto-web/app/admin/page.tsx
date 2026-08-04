@@ -171,6 +171,12 @@ export default function AdminDashboard() {
                             Email & Comms
                             <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full border border-primary/20">BETA</span>
                         </button>
+                        <button
+                            onClick={() => router.push('/admin/events')}
+                            className="px-6 py-2 bg-surface border border-border text-text-primary text-xs font-bold uppercase tracking-widest rounded-full hover:bg-surface-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0"
+                        >
+                            Events
+                        </button>
                     </div>
 
                     {/* Users Table */}

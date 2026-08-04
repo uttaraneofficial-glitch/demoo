@@ -22,6 +22,7 @@ export default function CareersPage() {
                     <li><Link href="/feed" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Platform</Link></li>
                     <li><Link href="/subscription" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Pricing</Link></li>
                     <li><Link href="/careers" className="text-[11px] font-bold uppercase tracking-[2px] text-primary transition-all border-b-2 border-black pb-1">Careers</Link></li>
+                    <li><Link href="/events" className="text-[11px] font-bold uppercase tracking-[2px] text-text-secondary hover:text-primary transition-all">Events</Link></li>
                 </ul>
                 <div className="flex items-center gap-5">
                     {isAuthenticated && user ? (
