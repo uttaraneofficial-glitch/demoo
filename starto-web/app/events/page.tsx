@@ -17,9 +17,15 @@ export default function EventsPage() {
         const fetchStartups = async () => {
             try {
                 const data = await eventStartupsApi.getAll();
-                setStartups(data);
+                if (Array.isArray(data)) {
+                    setStartups(data);
+                } else {
+                    console.warn("API did not return an array. Using empty array.", data);
+                    setStartups([]);
+                }
             } catch (err) {
                 console.error("Failed to fetch startups", err);
+                setStartups([]);
             }
         };
         fetchStartups();

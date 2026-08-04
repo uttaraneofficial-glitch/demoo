@@ -26,9 +26,15 @@ export default function AdminEventsPage() {
     const loadStartups = async () => {
         try {
             const data = await eventStartupsApi.getAll();
-            setStartups(data);
+            if (Array.isArray(data)) {
+                setStartups(data);
+            } else {
+                console.warn("API did not return an array. Using empty array.", data);
+                setStartups([]);
+            }
         } catch (error: any) {
             toast.error('Failed to load startups: ' + error.message);
+            setStartups([]);
         } finally {
             setLoading(false);
         }
