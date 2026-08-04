@@ -13,9 +13,15 @@ export default function ProfilePage({ params }: { params: { slug: string } }) {
     useEffect(() => {
         const fetchStartup = async () => {
             try {
-                const data = await eventStartupsApi.getBySlug(params.slug);
-                if (!data) notFound();
-                setStartup(data);
+                const { data, error } = await eventStartupsApi.getBySlug(params.slug);
+                if (error) {
+                    console.error("Failed to fetch startup:", error);
+                    notFound();
+                } else if (!data) {
+                    notFound();
+                } else {
+                    setStartup(data);
+                }
             } catch (err) {
                 console.error("Failed to fetch startup", err);
                 notFound();
