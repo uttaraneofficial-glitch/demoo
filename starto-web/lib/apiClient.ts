@@ -48,7 +48,16 @@ export async function apiFetch<T>(
                     console.error('[apiFetch] Failed to get Firebase token:', e);
                 }
             }
-            // NO localStorage fallback — stale tokens cause 400/401 loops
+            // Fallback to Zustand persisted token if Firebase fails (e.g., IndexedDB error)
+            if (!token) {
+                try {
+                    const { useAuthStore } = require('@/store/useAuthStore');
+                    token = useAuthStore.getState().token;
+                    if (token) {
+                        console.log('[apiFetch] Falling back to persisted token');
+                    }
+                } catch (e) {}
+            }
         }
 
         if (token && !skipAuth) {
