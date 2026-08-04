@@ -16,8 +16,11 @@ export default function EventsPage() {
     useEffect(() => {
         const fetchStartups = async () => {
             try {
-                const data = await eventStartupsApi.getAll();
-                if (Array.isArray(data)) {
+                const { data, error } = await eventStartupsApi.getAll();
+                if (error) {
+                    console.error("Failed to fetch startups", error);
+                    setStartups([]);
+                } else if (Array.isArray(data)) {
                     setStartups(data);
                 } else {
                     console.warn("API did not return an array. Using empty array.", data);

@@ -25,8 +25,11 @@ export default function AdminEventsPage() {
 
     const loadStartups = async () => {
         try {
-            const data = await eventStartupsApi.getAll();
-            if (Array.isArray(data)) {
+            const { data, error } = await eventStartupsApi.getAll();
+            if (error) {
+                toast.error('Failed to load startups: ' + error);
+                setStartups([]);
+            } else if (Array.isArray(data)) {
                 setStartups(data);
             } else {
                 console.warn("API did not return an array. Using empty array.", data);
@@ -43,7 +46,8 @@ export default function AdminEventsPage() {
     const handleDelete = async (id: number) => {
         if (!confirm('Are you sure you want to delete this startup?')) return;
         try {
-            await eventStartupsApi.delete(id);
+            const { error } = await eventStartupsApi.delete(id);
+            if (error) throw new Error(error);
             toast.success('Deleted successfully');
             loadStartups();
         } catch (error: any) {
@@ -55,10 +59,12 @@ export default function AdminEventsPage() {
         e.preventDefault();
         try {
             if (editing.id) {
-                await eventStartupsApi.update(editing.id, editing);
+                const { error } = await eventStartupsApi.update(editing.id, editing);
+                if (error) throw new Error(error);
                 toast.success('Updated successfully');
             } else {
-                await eventStartupsApi.create(editing);
+                const { error } = await eventStartupsApi.create(editing);
+                if (error) throw new Error(error);
                 toast.success('Created successfully');
             }
             setEditing(null);
