@@ -87,8 +87,7 @@ export default function EventsPage() {
 
             {/* HERO SECTION */}
             <section className="sarathi-hero">
-                <img src="/dotted-india-map.png" alt="" className="sarathi-hero-map" />
-                <div className="sarathi-container" style={{ position: 'relative', zIndex: 10 }}>
+                <div className="sarathi-container">
                     <h1 className="sarathi-h1 animate-fade-up">SARATHI 2047</h1>
                     <h2 className="sarathi-subtitle animate-fade-up delay-100" style={{ margin: '0 auto 2rem' }}>
                         Building Viksit Bharat.<br/>One Startup at a Time.
