@@ -71,6 +71,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 80vh;
+  justify-content: center;
+}
+
+.sarathi-hero-map {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+  animation: pulseMap 6s ease-in-out infinite;
+}
+
+@keyframes pulseMap {
+  0% { opacity: 0.1; transform: translate(-50%, -50%) scale(0.98); filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.2)); }
+  50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.02); filter: drop-shadow(0 0 30px rgba(249, 115, 22, 0.4)); }
+  100% { opacity: 0.1; transform: translate(-50%, -50%) scale(0.98); filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.2)); }
 }
 
 .sarathi-hero::before {
@@ -81,7 +103,7 @@
   transform: translateX(-50%);
   width: 1000px;
   height: 600px;
-  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.08) 0%, rgba(21, 128, 61, 0.03) 50%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.05) 0%, rgba(21, 128, 61, 0.02) 50%, transparent 70%);
   z-index: 0;
   pointer-events: none;
 }
