@@ -87,18 +87,23 @@ export default function EventsPage() {
 
             {/* HERO SECTION */}
             <section className="sarathi-hero">
-                <div className="sarathi-container">
-                    <h1 className="sarathi-h1 animate-fade-up">SARATHI 2047</h1>
-                    <h2 className="sarathi-subtitle animate-fade-up delay-100" style={{ margin: '0 auto 2rem' }}>
-                        Building Viksit Bharat.<br/>One Startup at a Time.
-                    </h2>
-                    <p className="sarathi-body-text animate-fade-up delay-200" style={{ maxWidth: '700px', margin: '0 auto 3rem' }}>
-                        SARATHI 2047 is Starto India's Independence Day initiative dedicated to celebrating startups that are solving real-world problems and building the future of India.
-                    </p>
-                    <div className="animate-fade-up delay-300">
-                        <a href="#showcase" className="sarathi-btn sarathi-btn-primary">
-                            Explore Startups
-                        </a>
+                <div className="sarathi-container sarathi-hero-content">
+                    <div className="sarathi-hero-text">
+                        <h1 className="sarathi-h1 animate-fade-up">SARATHI 2047</h1>
+                        <h2 className="sarathi-subtitle animate-fade-up delay-100" style={{ marginBottom: '2rem' }}>
+                            Building Viksit Bharat.<br/>One Startup at a Time.
+                        </h2>
+                        <p className="sarathi-body-text animate-fade-up delay-200" style={{ marginBottom: '3rem' }}>
+                            SARATHI 2047 is Starto India's Independence Day initiative dedicated to celebrating startups that are solving real-world problems and building the future of India.
+                        </p>
+                        <div className="animate-fade-up delay-300">
+                            <a href="#showcase" className="sarathi-btn sarathi-btn-primary">
+                                Explore Startups
+                            </a>
+                        </div>
+                    </div>
+                    <div className="sarathi-hero-map-wrapper animate-fade-up delay-200">
+                        <img src="/india-map.png" alt="India Map" className="sarathi-hero-side-map" />
                     </div>
                 </div>
             </section>

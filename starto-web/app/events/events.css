@@ -67,26 +67,60 @@
   padding: 8rem 0 6rem;
   position: relative;
   overflow: hidden;
-  text-align: center;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.sarathi-hero-content {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+  position: relative;
+  z-index: 10;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .sarathi-hero-content {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+.sarathi-hero-text {
+  flex: 1;
+  max-width: 600px;
+}
+
+.sarathi-hero-map-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.sarathi-hero-side-map {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  object-fit: contain;
+  animation: floatMap 6s ease-in-out infinite;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05));
+}
+
+@keyframes floatMap {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
 }
 
 .sarathi-hero::before {
-  content: '';
-  position: absolute;
-  top: -20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1000px;
-  height: 600px;
-  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.08) 0%, rgba(21, 128, 61, 0.03) 50%, transparent 70%);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.sarathi-hero > * {
   position: relative;
   z-index: 1;
 }
